@@ -1,0 +1,145 @@
+{
+  "generated_at": "2026-11-03T03:34:07.637713+00:00",
+  "inputs": {
+    "config": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/config.json",
+    "predictions": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/test_predictions.csv",
+    "data": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/data/labeled_papers.csv",
+    "final_labels": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/data/final_labels.csv",
+    "metrics": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/metrics.json"
+  },
+  "decision_rule": {
+    "predicted_positive": "score >= threshold",
+    "fn": "label == 1 and score < threshold",
+    "fp": "label == 0 and score >= threshold",
+    "grey_band": 0.15,
+    "threshold": 0.1525784656405449,
+    "note": "review rows count as not relevant, matching metrics.json"
+  },
+  "totals": {
+    "n_test": 177,
+    "positives": 130,
+    "negatives": 47,
+    "fn": 10,
+    "fp": 30,
+    "tp": 120,
+    "tn": 17
+  },
+  "computed_confusion_matrix": {
+    "tn": 17,
+    "fp": 30,
+    "fn": 10,
+    "tp": 120
+  },
+  "baseline_confusion_matrix": {
+    "tn": 17,
+    "fp": 30,
+    "fn": 10,
+    "tp": 120
+  },
+  "confusion_consistent": true,
+  "checks": {
+    "fn_rows_match_baseline": true,
+    "fp_rows_match_baseline": true,
+    "confusion_matrix_matches_baseline": true,
+    "fn_scores_below_threshold": true,
+    "fp_scores_at_or_above_threshold": true,
+    "all_rows_have_heuristic_tag": true,
+    "manual_columns_empty": true,
+    "all_pass": true
+  },
+  "heuristic_tag_counts": {
+    "all": {
+      "high_score_confident_error": 25,
+      "design_case_report": 18,
+      "design_cohort_or_screening": 16,
+      "low_score_band": 13,
+      "mid_score_band": 9,
+      "empty_abstract": 6,
+      "pdf_text_source": 6,
+      "design_review": 3,
+      "design_other": 2,
+      "below_review_band": 1,
+      "design_missing": 1
+    },
+    "fn": {
+      "low_score_band": 9,
+      "high_score_confident_error": 8,
+      "design_case_report": 5,
+      "design_cohort_or_screening": 4,
+      "empty_abstract": 2,
+      "pdf_text_source": 2,
+      "below_review_band": 1,
+      "design_missing": 1
+    },
+    "fp": {
+      "high_score_confident_error": 17,
+      "design_case_report": 13,
+      "design_cohort_or_screening": 12,
+      "mid_score_band": 9,
+      "empty_abstract": 4,
+      "low_score_band": 4,
+      "pdf_text_source": 4,
+      "design_review": 3,
+      "design_other": 2
+    }
+  },
+  "tag_definitions": {
+    "empty_abstract": "abstract_available is false or abstract is blank",
+    "pdf_text_source": "full text came from PDF fallback (text_source == 'pdf')",
+    "weak_or_model_label": "weak == True or label_source == 'model'",
+    "design_missing": "design field is empty",
+    "design_review": "design contains 'review'",
+    "design_case_report": "design contains 'case report' or 'case series'",
+    "design_cohort_or_screening": "design contains cohort/screening/validation/registry",
+    "design_method": "design is a methods paper",
+    "design_other": "non-empty design outside the buckets above",
+    "low_score_band": "error lies within 0.15 of the deployed threshold (review grey band)",
+    "below_review_band": "FN score is below threshold-0.15 (not even review-eligible)",
+    "mid_score_band": "FP score is >threshold+0.15 but <0.9 (mid-confidence FP)",
+    "high_score_confident_error": "|score-0.5| >= 0.4, i.e. a high-confidence mistake"
+  },
+  "design_breakdown": {
+    "fn": {
+      "case report": 5,
+      "cohort": 4,
+      "<missing>": 1
+    },
+    "fp": {
+      "case report": 12,
+      "cohort": 8,
+      "screening/validation": 4,
+      "review": 3,
+      "other": 2,
+      "case series": 1
+    }
+  },
+  "score_stats": {
+    "fn": {
+      "min": 0.0013826868,
+      "max": 0.15028554,
+      "mean": 0.044652586269999996
+    },
+    "fp": {
+      "min": 0.15464006,
+      "max": 0.99985456,
+      "mean": 0.7636429720000001
+    }
+  },
+  "manual_review": {
+    "manual_tag_filled": 0,
+    "manual_note_filled": 0,
+    "note": "manual_tag/manual_note are intentionally blank for human review"
+  },
+  "findings": [
+    "Audited 10 FN and 30 FP from the default-subset test split.",
+    "FN dominant tags: low_score_band=9, high_score_confident_error=8, design_case_report=5, design_cohort_or_screening=4.",
+    "FP dominant tags: high_score_confident_error=17, design_case_report=13, design_cohort_or_screening=12, mid_score_band=9.",
+    "Missing abstracts: 2/10 FN, 4/30 FP.",
+    "Grey-band (within 0.15 of threshold): 9/10 FN, 4/30 FP.",
+    "PDF-sourced full text: 4/30 FP."
+  ],
+  "artifacts": {
+    "fn_audit_csv": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/optimization/fn_audit.csv",
+    "fp_audit_csv": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/optimization/fp_audit.csv"
+  }
+}

@@ -1,0 +1,958 @@
+dsh: all_proxy names a SOCKS proxy, which is not supported; connecting directly for that scheme — set an http:// or https:// proxy URL instead
+Sequential Thinking MCP Server running on stdio
+Knowledge Graph MCP Server running on stdio
+[CodeGraph] v1.6.2 is available (this server is running v1.6.0). Update with `codegraph upgrade`.
+[CodeGraph MCP] No .codegraph/ at or above /data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening: no default project, live sync disabled.
+Context7 Documentation MCP Server v4.4.4 running on stdio
+dsh: reasoning:
+Let's read encoder.py fully.
+
+dsh: reasoning:
+Now let's look at the cache contents and reproduce the failure. Also look at README relevant section and predict.py/api.py to see if local_files_only is passed.
+
+Let me check the cache path structure and symlinks.
+
+dsh: reasoning:
+Let me reproduce the failure first. Then design the fix.
+
+Check predict.py and api.py for load_encoder usage and local_files_only.
+
+dsh: reasoning:
+Interesting — the smoke test actually succeeded now? Wait — look at output: it found adapter at project cache. Why? Because `env -u HF_HOME` but HF_HOME unset... the code says `_hf_home = os.environ.get("HF_HOME") or ~/.cache/huggingface`. If `$HOME/.cache/huggingface` is writable, it stays. But output shows adapter resolved from project cache. Hmm, maybe `HF_HOME` is set globally in some sitecustomize? Wait, `env -u HF_HOME` removes it. But then huggingface cache default would be `~/.cache/huggingface`. Yet snapshot_download found it in project cache. Maybe because `.cache/huggingface` env var set from parent? Let me check env. Possibly HF_HUB_CACHE is set globally to project. Or there's a `sitecustomize.py`. Let me check environment.
+
+Actually the test succeeded unexpectedly. The review says it fails. Perhaps because our current shell has `HF_HOME` in env, and `env -u` removes only HF_HOME, but HF_HUB_CACHE is also set in shell env and persists. Let me check `env | grep -i hf`. That's likely: HF_HUB_CACHE maybe set. But output shows project cache used. Let me investigate carefully.
+
+Also note warnings: "There are adapters available but none are activated for the forward pass." Hmm, active_adapter_setup = Stack[[CLF]] so fine.
+
+Let's check env.
+
+dsh: reasoning:
+Interesting: The smoke test passed because `TRANSFORMERS_CACHE` remains set from the parent env (`/home/yangzs/.cache/huggingface`), and... wait that's home, not project. Yet adapter was found in project. How? Let's trace.
+
+HF_HOME removed. `_hf_home = ~/.cache/huggingface`, writable → remains. So HF_HOME is not set by code. Huggingface_hub defaults to HF_HUB_CACHE? env HF_CACHE_DIR is not standard. `HF_ENDPOINT` set. Then why adapter found in project cache?
+
+Ah — perhaps `huggingface_hub` constants were imported already? No. Hmm... maybe there's a `.env`? Or maybe `~/.cache/huggingface/hub` has a symlink models--allenai--specter2_classification pointing to the project? Let's check. The listing of ~/.cache/huggingface/hub was cut at 10 entries alphabetically; maybe specter2 exists there too, and it's a symlink. But log says resolved path under project. If ~/.cache/huggingface/hub/models--allenai--specter2_classification is a symlink to project dir, snapshot_download would return symlink-based path maybe realpath resolves to project. Let's check.
+
+dsh: reasoning:
+Home cache has models--allenai--specter2_classification only refs, no snapshots. Yet the smoke run found project snapshot. Why? Maybe because the environment `HF_HUB_OFFLINE=1` and huggingface_hub's snapshot_download with `local_files_only=True`... no.
+
+Wait, maybe encoder.py isn't the one being executed? There's `__pycache__` from earlier? No, running script directly.
+
+Hold on: the .venv site-packages may have an `adapters` package config? Let's look at the log: "Loading module configuration from /data/.../project/.cache/...". So snapshot_download returned project path. How could HF_HUB_CACHE point there? Maybe `HF_HOME` was removed but `HF_HUB_CACHE` set on command line? `env -u HF_HOME` only unsets HF_HOME. Let's print os.environ in the exact command with `env -u HF_HOME` including HF_HUB_CACHE. Earlier I printed and HF_HUB_CACHE wasn't in env (only TRANSFORMERS_CACHE, HF_HOME, HF_ENDPOINT, HF_CACHE_DIR). Hmm.
+
+Actually maybe `.cache/huggingface/hub/models--allenai--specter2_classification/refs/main` in the *project* isn't the only one; `snapshot_download` might use `HF_ENDPOINT` mirror and find... no, offline.
+
+Could `snapshot_download` be reading `~/.cache/huggingface/hub/models--allenai--specter2_classification/refs/main` → d843... and then constructing snapshot path... in home? Log shows project path though.
+
+Wait, maybe there is a symlink in home `models--allenai--specter2_classification` that got created at 19:58, only refs. But maybe `snapshots` is a symlink? `ls -la` showed only refs. No snapshots.
+
+Let me directly run `_resolve_adapter` in that env and inspect. Also check whether there's an HF_HOME override in `~/.bashrc`? Non-interactive bash doesn't source. But the `bash` tool maybe sources.
+
+Let's directly reproduce with a small script that imports encoder and prints env + resolution, under `env -u HF_HOME ...`. Note encoder sets HF_HOME only if home not writable. Home is writable, so no.
+
+Hmm, but the smoke run definitely succeeded and pointed to project. Maybe I ran it with workdir and some `.env` auto-load? No.
+
+Actually wait: the earlier smoke run output includes `FutureWarning: Using TRANSFORMERS_CACHE ...`. That means TRANSFORMERS_CACHE was still set to /home/... And transformers uses `TRANSFORMERS_CACHE` for its own cache, while huggingface_hub snapshot_download uses HF_HUB_CACHE.
+
+Could the project cache path be found because `HF_HUB_CACHE` was set by... `env -u HF_HOME` doesn't unset. My `env | grep` output didn't show HF_HUB_CACHE. But maybe the bash tool runs commands through a wrapper that sets HF_HUB_CACHE per-command? Let me print env inside the exact command.
+
+dsh: reasoning:
+Aha — after import, `os HF_HOME` is project. So `_writable_cache(_hf_home)` returned False for `/home/yangzs/.cache/huggingface`. Why? `os.access(probe, os.W_OK)` — home cache listed as writable drwxrwxr-x owned by yangzs. Hmm, but maybe sandbox restricts writes? The DSH sandbox workspace-write means processes can only write under workspace; os.access might reflect actual permissions (it returns True if writable by uid). But maybe home is on read-only mount? ls shows drwxrwxr-x. `touch` test? Let's check.
+
+Actually wait: `_writable_cache` starts at `_hf_home` = "/home/yangzs/.cache/huggingface", exists, so probe is that dir. os.access(..., W_OK) maybe False due to ACL or sandbox. Let's check directly. Interesting — in this environment, the code path *does* set HF_HOME to project cache, so the smoke test passes. But the review ran in a different environment where home was writable (perhaps `HF_HOME` unset but home writable), so `_hf_home` remained `~/.cache/huggingface`, which lacks the adapter snapshot, and network offline → fail.
+
+Hmm, but why is home not writable here? Possibly a sandbox blocks writes outside workspace and os.access accounts for Landlock? Landlock makes open fail but access() returns? Actually Landlock doesn't affect access(). Maybe the mount is read-only for this process.
+
+Let's test `touch ~/.cache/huggingface/.wtest`, and `os.access`.
+
+dsh: reasoning:
+So in this runtime, /home is genuinely read-only, and the existing code takes the fallback path, so the smoke passes *here*. The review evidently ran in an environment where /home was writable (or HF_HOME was set to writable home). But the task says the command fails. Maybe during review the mount was writable (before DSH read-only mount) and HF_HOME was unset but `$HOME` writable → code used home cache, which has a stub `models--allenai--specter2_classification/refs` but no snapshots → offline fail.
+
+Wait, in that case `snapshot_download(local_files_only=True)` with home cache would fail because no snapshots; then `_resolve_adapter` returns `adapter_name` (string "allenai/specter2_classification"), then `model.load_adapter` attempts network → offline → RuntimeError. Yes.
+
+Now, we must fix to guarantee: regardless of home writability, when HF hub can't find adapter locally, fall back to project `.cache/huggingface`. Requirements:
+1. `_resolve_adapter`: before network path, probe `ROOT/.cache/huggingface/hub/models--<org>--<name>/snapshots/*/adapter_config.json` and return that dir. Also make project cache preferred or fallback. And pass `local_files_only` through.
+2. README docs.
+3. Don't change business thresholds/features.
+4. Acceptance.
+5. Optional review_checks S19.
+6. Write briefs/dsh-fix-p0-done.md.
+
+Let me look at review_checks.py S19 to see what it checks.
+
+dsh: reasoning:
+There is `briefs/dsh-fix-p0.md` (previous attempt?) and `.err`. Let me read them to understand—maybe prior dispatch. Also read review_checks S19 exactly.
+
+dsh: reasoning:
+The .err contains my own reasoning being logged (tool logging). Ignore.
+
+So I need to implement robustly. Design:
+
+- Add `PROJECT_HF_HOME = ROOT / ".cache" / "huggingface"` and `PROJECT_HF_HUB = PROJECT_HF_HOME / "hub"`.
+- Determine cache behavior:
+  - Keep existing behavior: explicit `HF_HOME` env respected if writable; if home default not writable, set HF_HOME to project.
+  - Additionally, if the project cache contains a resolvable adapter snapshot (or generally `models--allenai--specter2_classification` with a snapshot), and the effective hub cache doesn't have adapter, *prefer project HF_HOME*. But careful: don't override user's explicit HF_HOME unexpectedly? Requirement says "离线或本地优先解析时，若默认 HF hub 找不到 adapter，回退到项目 `.cache/huggingface`". So we can:
+    - In `_resolve_adapter`, explicit candidate search first: project cache snapshot. If found, return it before calling snapshot_download. This is the primary fix.
+    - In `load_encoder`, before loading base tokenizer/model, set HF_HOME to project if project cache is the only place the adapter exists? That helps `model.load_adapter` if given repo ID, but since `_resolve_adapter` returns a local path it's enough. Base is an absolute local path, so no hub needed. However, transformers may still look for cache; local path works.
+  - Better: add helper `_project_adapter_snapshot(adapter_name)` that maps repo id to project cache folder and returns newest snapshot containing `adapter_config.json`, sorted. If adapter_name is a path, handled separately.
+  - `_resolve_adapter` ordering:
+    1. if path is dir → return.
+    2. project-local snapshot probe → return (this satisfies offline & default path).
+    3. try `snapshot_download(local_files_only=True)`.
+    4. if not local_files_only, try network with allow_patterns.
+    5. fallback to adapter_name.
+  - But requirement says "default HF hub not found → fallback project cache". Doing project first is okay (documented local-first). But maybe if user explicitly points `HF_HOME` with a newer adapter, project cache could shadow it. Better ordering: check default hub first (local only), then project cache, then network. But if default hub offline and no adapter, local_files_only snapshot_download raises; then project fallback. That exactly matches. However, `snapshot_download(local_files_only=True)` can be slow-ish but fine. And if network allowed and default hub doesn't have adapter, we want project cache before network, because project cache is trusted local. So:
+    1. path dir
+    2. try snapshot_download local_files_only
+    3. project snapshot
+    4. if not local_files_only → network download
+    5. warn + return adapter_name
+  - Additionally, in `load_encoder`, resolve adapter *before* loading base? Not needed; error messaging fine.
+  - Also handle offline env detection: `HF_HUB_OFFLINE` or `TRANSFORMERS_OFFLINE` set → effective local_files_only. The requirement says "离线或本地优先解析". We can set `local_files_only = local_files_only or _offline_mode()` in load_encoder and `_resolve_adapter`. That prevents attempted network when offline, and makes fallback triggered deterministically. But adapters' `model.load_adapter` may not accept local_files_only; we pass path anyway.
+  - Also set HF_HOME/HF_HUB_CACHE to project if project adapter exists and effective home cache lacks it? This could ensure anything else (e.g., tokenizer configs) uses project. But careful: if user's HF_HOME has base model etc. Base is absolute. I think setting HF_HOME unconditionally when project cache has adapter and no explicit HF_HOME would be reasonable but might alter behavior. Requirement option 2 says set HF_HOME to ROOT/.cache/huggingface when repo cache contains adapter. That's a clean, documented approach: default to project cache. But review's fix prefers 1+2.
+
+Let me implement both:
+- A helper `_adapter_snapshot_in(cache_root, adapter_name)` generic.
+- In module init after computing `_hf_home`:
+  - If `HF_HOME` was not set by user and project cache contains the default adapter, prefer project HF_HOME (set env HF_HOME etc.)? This would make all HF resolution project-local by default. But if project cache doesn't contain adapter yet, keep home for downloading.
+  - Hmm, but if HF_HOME explicitly set, respect it. If not explicit, and project cache has adapter, set HF_HOME to project. This matches "default use repo cache". Then `_resolve_adapter` also has fallback for explicit HF_HOME that lacks adapter.
+- But setting HF_HOME at import time requires adapter name known. DEFAULT_ADAPTER defined after. We can reorganize: define DEFAULT_ADAPTER before cache logic or compute after. Simpler: keep cache configuration as a function called after constants.
+
+Need to be careful about import-time env mutation affecting transformers import. Currently HF_HOME is set at import time before imports of HF libs, which is right. So restructure:
+
+```
+ROOT = ...
+_CACHE_ROOT = ROOT / ".cache"
+PROJECT_HF_HOME = _CACHE_ROOT / "huggingface"
+
+def _hub_cache(hf_home): return Path(hf_home)/"hub"
+
+def _pick_hf_home() -> tuple[Path,bool]:
+    explicit = os.environ.get("HF_HOME") or os.environ.get("HF_HUB_CACHE") ...
+```
+
+But adapter name may be from env `SPECTER2_ADAPTER`; we can read it before DEFAULT_ADAPTER constant. Let's put:
+
+```
+DEFAULT_ADAPTER = os.environ.get("SPECTER2_ADAPTER", "allenai/specter2_classification")
+PROJECT_ADAPTER_SNAPSHOT = _find...   # can't define function before? define function above
+```
+
+Simpler: do cache setup after defining DEFAULT_ADAPTER but before any HF imports. Module-level HF imports only occur inside functions, so fine. But `TRANSFORMERS_CACHE` warning came because transformers read env at import; our env set must happen before `load_encoder` imports, which it does. Good.
+
+Implementation plan:
+
+```
+_CACHE_ROOT = ROOT / ".cache"
+PROJECT_HF_HOME = _CACHE_ROOT / "huggingface"
+PROJECT_HF_HUB = PROJECT_HF_HOME / "hub"
+
+def _writable_cache(path): ...
+
+def _hub_dir_for(repo_id, hub_root):
+    org, _, name = repo_id.partition("/")
+    if not name: return None
+    return Path(hub_root) / f"models--{org}--{name}"
+
+def _snapshot_with_adapter(repo_id, hub_root) -> Path | None:
+    repo_dir = _hub_dir_for(...)
+    if not repo_dir: return None
+    snaps = repo_dir / "snapshots"
+    if not snaps.is_dir(): return None
+    candidates = sorted(
+        (p for p in snaps.iterdir() if (p/"adapter_config.json").is_file()),
+        key=lambda p: p.stat().st_mtime, reverse=True)
+    return candidates[0] if candidates else None
+```
+
+Need resolve symlinks? `snapshot_download` returns path possibly with symlinks but fine.
+
+Note: if repo_id is a local path, skip.
+
+Cache selection:
+```
+def _configure_hf_cache():
+    explicit_hf_home = os.environ.get("HF_HOME")
+    hf_home = Path(explicit_hf_home) if explicit_hf_home else Path.home()/".cache"/"huggingface"
+    hub = Path(os.environ.get("HF_HUB_CACHE") or (hf_home/"hub"))
+    # use the project cache when it holds the adapter and the selected cache doesn't
+    project_snapshot = _snapshot_with_adapter(DEFAULT_ADAPTER, PROJECT_HF_HUB)
+    selected_snapshot = None if explicit_hf_home else _snapshot...
+```
+
+Hmm. Let's be explicit and simple:
+
+```
+def _configure_hf_cache() -> None:
+    """Choose a writable HF home, preferring the repo cache when it has the adapter."""
+    requested = os.environ.get("HF_HOME")
+    candidates = []
+    if requested:
+        candidates.append(Path(requested))
+    else:
+        candidates.append(Path.home()/".cache"/"huggingface")
+
+    # If the repo cache already holds the adapter, use it. This keeps offline
+    # starts working even when $HOME is writable but its hub lacks the adapter.
+    if _snapshot_with_adapter(DEFAULT_ADAPTER, PROJECT_HF_HUB) is not None:
+        # only when selected cache doesn't already have adapter OR requested is not explicit? 
+        ...
+```
+
+Actually requirement: if default HF hub finds adapter, use it. So order:
+1. Effective requested HF_HOME (explicit or ~/.cache).
+2. If adapter snapshot exists in its hub and writable → use.
+3. Else if project has adapter → use project (even if not writable? project is writable normally).
+4. Else if effective writable → use effective.
+5. Else project.
+
+But writability also matters. For base model absolute path no cache writes. For tokenizer maybe no writes. Adapter local path no writes. So read-only home cache not necessarily fatal if adapter found there. But transformers could try to write lock files. Better require writable for a cache we set.
+
+Simpler and robust:
+- Determine `resolved_home`:
+  - `requested_hf_home = os.environ.get("HF_HOME")`
+  - if requested is set:
+      - if writable → use requested (respect user)
+      - else if project adapter → project; elif writable project → project
+  - if not set:
+      - home = ~/.cache/huggingface
+      - if adapter snapshot in home hub and writable → use home (default behavior preserved)
+      - elif project adapter → use project
+      - elif home writable → use home
+      - else project
+- Set `os.environ["HF_HOME"]`, `HF_HUB_CACHE` accordingly. Only set HF_HUB_CACHE if not explicitly set? If user sets HF_HUB_CACHE, respect it maybe. But review test only unsets HF_HOME. We should not stomp explicit `HF_HUB_CACHE`. Let's respect explicit HF_HUB_CACHE: treat it as selected hub. But if explicit HF_HUB_CACHE lacks adapter and project has it, `_resolve_adapter` fallback handles anyway. For env setting, we can only set HF_HOME/HF_HUB_CACHE when not explicit.
+
+Potential issue: setting HF_HOME to project when home writable changes `~/.cache` use for other things. But this repo's code only uses HF for adapter/base. Documented. And it's exactly review suggestion #2. However, if home cache has adapter, we keep home. Fine.
+
+Also `TRANSFORMERS_CACHE`: transformers<5 honors TRANSFORMERS_CACHE over HF_HOME. Here env TRANSFORMERS_CACHE is set globally to /home/... (read-only). Existing code only changes it if it's not writable:
+```
+_tf_cache = os.environ.get("TRANSFORMERS_CACHE")
+if _tf_cache and not _writable_cache(_tf_cache):
+    os.environ["TRANSFORMERS_CACHE"] = _hf_home
+```
+In this env it gets changed. In review env (home writable), it stays home. If we set HF_HOME to project but TRANSFORMERS_CACHE remains home, transformers may use home cache for tokenizers. But adapter is loaded from explicit path, so fine. Yet for consistency, if we choose project, we should set TRANSFORMERS_CACHE to project too (unless explicitly set by user? It is explicit but a legacy var). Hmm. Transformers 4.?? warns "Using TRANSFORMERS_CACHE is deprecated". The env sets it globally. If we override it, fine and safer offline. But could surprise users. I'd set TRANSFORMERS_CACHE to chosen_home whenever chosen_home != default home and TRANSFORMERS_CACHE equals default home or not writable. Similarly HF_HUB_CACHE.
+
+Let's also handle `HF_HOME` env from parent: `env -u HF_HOME` leaves `TRANSFORMERS_CACHE=/home/...`. When home is writable in review env, `_writable_cache` true, so it won't update. But our chosen project path should update TRANSFORMERS_CACHE because it points to a different cache. I'll implement:
+
+```
+def _set_cache_env(home: Path) -> None:
+    os.environ["HF_HOME"] = str(home)
+    os.environ["HF_HUB_CACHE"] = str(home/"hub")
+    tf = os.environ.get("TRANSFORMERS_CACHE")
+    if tf and Path(tf) != home:
+        os.environ["TRANSFORMERS_CACHE"] = str(home)
+```
+
+But should we always set HF_HUB_CACHE? If user explicitly set HF_HUB_CACHE, we may break them. But our selection can consider it. Let's keep it simpler but respect explicit `HF_HUB_CACHE`:
+- selected hub = explicit HF_HUB_CACHE if set else home/"hub".
+- if fallback to project, override both HF_HOME and HF_HUB_CACHE. If user explicitly set HF_HUB_CACHE but no adapter there, choosing project is intended fallback.
+- Document.
+
+Now `_resolve_adapter`:
+```
+def _resolve_adapter(adapter_name, *, local_files_only=False):
+    path = Path(adapter_name)
+    if path.is_dir(): return str(path)
+    offline = _offline_mode()
+    local_files_only = local_files_only or offline
+    errors = []
+    # 1. selected hub
+    try:
+        return snapshot_download(adapter_name, local_files_only=True)
+    except Exception as exc:
+        errors.append(...)
+    # 2. repo cache(s): selected project roots, plus default home cache if different
+    for hub_root in _local_hub_roots():
+        snap = _snapshot_with_adapter(adapter_name, hub_root)
+        if snap: 
+            logger.info("Resolved adapter %s from repo cache %s", ...)
+            return str(snap)
+    # 3. network if allowed
+    if not local_files_only:
+        try: return snapshot_download(...)
+        except ...
+    logger.warning(...)
+    return adapter_name
+```
+Important order per requirement: "若默认 HF hub 找不到 adapter，回退到项目 .cache". So try selected hub first, then project. Good. But if selected hub == project, duplicate; harmless (cache or check repo dir). Use unique.
+
+Should we probe project before network even if the selected hub is home and has adapter? Yes selected first.
+
+What about `snapshot_download(local_files_only=True)` when HF_HUB_OFFLINE=1? It works if cached. If not cached, raises LocalEntryNotFoundError. Good.
+
+Potential issue: `snapshot_download` with `local_files_only=True` when no snapshot but refs exists may raise. Fallback then project.
+
+`_local_hub_roots`: `[Path(os.environ.get("HF_HUB_CACHE") or ...), PROJECT_HF_HUB, Path.home()/".cache"/"huggingface"/"hub"]`. But if HF_HOME was set to project by config, selected == project; adding home lets an adapter only available in home be found. That's nice. Ensure dedupe by resolve() maybe path may not exist. Use str.
+
+Do we want to find adapter in `$HOME` even when project cache exists? Requirement only project fallback. Including home as fallback is benign and improves. But think: if home writable and adapter exists in home, selected hub is home (step 1) anyway. If selected is project due to home read-only, home wouldn't have snapshot. Fine.
+
+Also `local_files_only` passing to `model.load_adapter`: already passed; TypeError fallback. Since we return explicit local dir, fine.
+
+Should `load_encoder` compute offline mode and set local_files_only globally? If env offline is set but caller passes false, `_resolve_adapter` now treats as local only. But base model `AutoAdapterModel.from_pretrained(base_path, local_files_only=False)` with absolute path works offline. Could also set `local_files_only=local_files_only or _offline_mode()` for base loads, but absolute path fine; if base_path falls back to repo id, offline with no cache would fail with clearer error anyway. We could apply for consistency. But changes behavior only in offline env (desired). Let's add `_offline_mode()` and use it for base too? The base default path exists. In review env, yes. If not, offline should fail rather than hang. That's better.
+
+Also `predict.py` / `api.py` load config with encoder config. Let's inspect predict.py load_encoder call and config to ensure `local_files_only` isn't conflicting.
+
+dsh: reasoning:
+Now implement. Need to be cautious with `Path(adapter_name)` when adapter_name is e.g. "allenai/specter2_classification" — Path.is_dir() false. Good.
+
+Also think about Windows? no.
+
+Implement helpers before env configuration. Layout:
+
+```
+ROOT = ...
+_CACHE_ROOT = ROOT / ".cache"
+PROJECT_HF_HOME = _CACHE_ROOT / "huggingface"
+PROJECT_HF_HUB = PROJECT_HF_HOME / "hub"
+
+def _writable_cache...
+def _repo_cache_dir(repo_id, hub_root)...
+def _adapter_snapshot_in...
+def _offline_mode...
+
+DEFAULT_ADAPTER = ...
+...
+def _configure_hf_cache(): ...
+_configure_hf_cache()
+```
+
+But existing code sets TORCH_HOME and telemetry before. Fine.
+
+Do we need to consider `SPECTER2_ADAPTER` being a local path when checking project cache? `_repo_cache_dir` should return None if name has no "/" or path exists. If user sets adapter to local path, skip project adapter detection.
+
+`_adapter_snapshot_in`:
+```
+def _adapter_snapshot_in_cached_hub(adapter_name, hub_root):
+    repo_dir = _repo_cache_dir(...)
+    ...
+    try: entries = list(snapshots.iterdir())
+    except OSError: return None
+    candidates = []
+    for entry in entries:
+        cfg = entry / "adapter_config.json"
+        try:
+            if cfg.is_file(): candidates.append(entry)
+        except OSError: continue
+    if not candidates: return None
+    # Prefer refs/main snapshot if it is complete, else newest by mtime.
+    ref = repo_dir/"refs"/"main"
+    ...
+```
+Maybe simpler: read `refs/main` and check snapshot; else sorted by mtime descending; also sort name for determinism. mtime of snapshot dir changes? Fine. I'll prefer refs/main to be faithful. Let's write robust.
+
+Potential symlink issue: adapter_config.json is a symlink to blob; is_file follows, true. Good.
+
+Cache configuration:
+```
+def _candidate_hub_has_adapter(home): return _adapter_snapshot_in_cached_hub(DEFAULT_ADAPTER, Path(home)/"hub") is not None
+```
+
+Need to account explicit `HF_HUB_CACHE` separate from HF_HOME. Use `_hub_cache_for(home)` = env HF_HUB_CACHE if set else home/hub. But if user sets only HF_HUB_CACHE, HF_HOME default maybe home. Hmm.
+
+Let's define:
+
+```
+def _configure_hf_cache():
+    requested_home_env = os.environ.get("HF_HOME")
+    home_default = Path.home() / ".cache" / "huggingface"
+    home = Path(requested_home_env) if requested_home_env else home_default
+    project_has = _adapter_snapshot_in_cached_hub(DEFAULT_ADAPTER, PROJECT_HF_HUB) is not None
+
+    chosen = home
+    if project_has and not _adapter_snapshot_in_cached_hub(DEFAULT_ADAPTER, Path(os.environ.get("HF_HUB_CACHE") or home/"hub")):
+        # repo cache is the only local source; use it so offline resolution works
+        chosen = PROJECT_HF_HOME
+    elif not _writable_cache(home):
+        chosen = PROJECT_HF_HOME
+    # If chosen == project and project isn't writable (unlikely), fall back to home if writable
+    if chosen == PROJECT_HF_HOME and not _writable_cache(PROJECT_HF_HOME) and _writable_cache(home):
+        chosen = home
+    ...
+```
+Wait: if HF_HOME explicitly set to a writable cache that lacks adapter, but project has it, requirement says fallback in `_resolve_adapter`, which handles. Should we also select project as HF_HOME? That could be intrusive if user explicitly set HF_HOME. Review suggestion #2 says set HF_HOME when repo cache contains adapter. But for explicit user setting, better respect and let `_resolve_adapter` fallback. So:
+
+```
+explicit = bool(requested_home_env or os.environ.get("HF_HUB_CACHE"))
+if explicit and _writable_cache(home):
+    chosen = home
+elif project_has:
+    chosen = PROJECT_HF_HOME
+elif _writable_cache(home):
+    chosen = home
+else:
+    chosen = PROJECT_HF_HOME
+```
+
+But `env -u HF_HOME` still leaves `HF_HUB_CACHE`? In our env no. In review env maybe no. It leaves TRANSFORMERS_CACHE, which is not considered explicit cache selection? Transformers uses it. Hmm. If explicit HF_HUB_CACHE exists but lacks adapter and project has it, `_resolve_adapter` still falls back, but `HF_HOME` remains explicit, and transformers' TRANSFORMERS_CACHE might point elsewhere. Adapter is explicit path so okay. Base explicit path. So fine.
+
+However our acceptance in this environment: HF_HOME unset, home not writable, project has adapter → chosen project. Already works.
+
+To simulate the review failure and verify fix, I can *force* the old behavior by setting HF_HOME to a writable temp dir that lacks adapter (explicit) and `SPECTER2_...`? With explicit HF_HOME, our new code respects it and `_resolve_adapter` should fall back to project. That tests the exact regression: `HF_HOME=/tmp/emptyhf` + offline. Also simulate home-writable? Can't easily. But explicit temp tests the fallback.
+
+Actually better simulation matching review: make a fake home? Set HOME=/tmp/fakehome with writable `.cache/huggingface` and unset HF_HOME. Then code sees HOME writable and no adapter; project has adapter → chooses project. To test `_resolve_adapter` fallback independently, set HF_HOME=/tmp/emptyhf explicit (writable) and run. It should find project via fallback. Great.
+
+Also when `local_files_only=True` and project not present: `_resolve_adapter` should not attempt network. Test maybe.
+
+`_configure_hf_cache` setting TRANSFORMERS_CACHE: if chosen == home and TRANSFORMERS_CACHE writable, leave. If chosen != Path(TRANSFORMERS_CACHE), set it. But when chosen is project and TRANSFORMERS_CACHE home, set project. Good.
+Also setting HF_HUB_CACHE: if chosen != current. If user explicitly set HF_HUB_CACHE and we respect explicit home, keep. If we choose project, override.
+Also `HF_HOME` may not have been set at all (unset). Set it.
+
+Should we set `HUGGINGFACE_HUB_CACHE`? Deprecated, no need.
+
+Logging: at import, `logger` has no handler yet, but that's fine.
+
+Now `_resolve_adapter`:
+```
+_LOCAL_ADAPTER_CACHE_HINTS = ...
+def _local_hub_roots() -> list[Path]:
+    roots = []
+    for root in (os.environ.get("HF_HUB_CACHE"), PROJECT_HF_HUB, Path(os.environ.get("HF_HOME") or Path.home()/...)/"hub", Path.home()/.../"hub"):
+       if root: add
+    dedupe using resolved path string with strict=False
+```
+Careful: if HF_HOME set to project, duplicates. Use `Path(...).expanduser()`.
+
+`_offline_mode()`:
+```
+return any(os.environ.get(k,"").lower() in {"1","true","yes","on"} for k in ("HF_HUB_OFFLINE","TRANSFORMERS_OFFLINE"))
+```
+Maybe also `SPECTER2_LOCAL_FILES_ONLY`.
+
+`_resolve_adapter`:
+```
+def _resolve_adapter(adapter_name, *, local_files_only=False):
+    path = Path(adapter_name)
+    if path.is_dir(): return str(path)
+    local_files_only = local_files_only or _offline_mode() or os.environ.get("SPECTER2_LOCAL_FILES_ONLY","").lower() in ...
+    hub = None
+    try:
+        from huggingface_hub import snapshot_download
+    except Exception as exc:
+        logger.warning(...)
+    if hub is not None:
+        try:
+            return snapshot_download(adapter_name, local_files_only=True)
+        except Exception as exc:
+            logger.debug(...)
+        for root in _local_hub_roots():
+            snapshot = _adapter_snapshot_in_cached_hub(adapter_name, root)
+            if snapshot:
+                logger.info("Resolved adapter %s from repo cache %s", ...)
+                return str(snapshot)
+        if not local_files_only:
+            try:
+                return snapshot_download(adapter_name, allow_patterns=[...])
+            except Exception as exc:
+                logger.warning(...)
+        else:
+            logger.warning("Adapter %s not found in local caches; offline/local-only mode is set", ...)
+    return adapter_name
+```
+
+Original behavior when snapshot_download local fails and not local_files_only: network. We now insert project. Good. Error message wording should mention project cache path for debug.
+
+One subtlety: `snapshot_download(local_files_only=True)` may return a path even when snapshot incomplete? It validates? It returns snapshot dir if cached. Fine.
+
+Should we directly probe the selected hub before snapshot_download? snapshot_download does that. Fine.
+
+Another subtlety: `HF_HUB_OFFLINE=1` makes `snapshot_download(local_files_only=False)` raise immediately; our offline detection prevents.
+
+Returning `adapter_name` when nothing found leads to adapters loader trying network and raising a confusing error. Improve: if local_files_only/offline and not found, raise a clear `RuntimeError`? But load_encoder wraps exceptions from `_resolve_adapter`? `resolved_adapter = _resolve_adapter(...)` is outside try, so a RuntimeError there propagates raw. Original returns name and then load_adapter produces error. For `allow_base_fallback=True`, if `_resolve_adapter` raises, fallback wouldn't work. Better return name; keep behavior. But add warning with paths. The acceptance only needs success. However, for fail clarity, maybe return name is fine.
+
+Wait: `_resolve_adapter` with local_files_only=True and project snapshot found returns path. Good.
+
+Do we also want `load_encoder` to set `local_files_only = local_files_only or _offline_mode()`? Do it, so base loading with repo id won't hang offline and tokenizer uses local. Add near start:
+
+```
+local_files_only = bool(local_files_only or _offline_mode() or _truthy_env("SPECTER2_LOCAL_FILES_ONLY"))
+```
+
+Then pass to base and adapter.
+
+Potential issue: `AutoTokenizer.from_pretrained(base_path, local_files_only=True)` with absolute path works. `AutoAdapterModel.from_pretrained` works. Good.
+
+Now what about `HF_HOME` mutation at import under explicit HF_HOME lacking adapter: we respect explicit, so env stays. `_resolve_adapter` finds project. Good.
+
+Should we also ensure predict/api pass local_files_only? They rely on env/offline detection. When not offline and project snapshot exists, `_resolve_adapter` first tries selected hub local, then project, so no network. Good.
+
+Edge: `SPECTER2_ADAPTER` could be "org/name@version" for AdapterHub? Not here.
+
+Now README. Lines ~58-66. Need to update:
+- say adapter is resolved from repo cache `.cache/huggingface` first; no HF_HOME needed; offline smoke command.
+- Base path default is machine-specific `/data/yangzs/...`. Hmm, review P2 #7 says machine-specific. Not in scope. But README already documents.
+
+Update §9 self-check to include offline command. And maybe §2 model path section. Let's read exact lines 55-72.
+
+dsh: reasoning:
+Now edit encoder.py. Let's craft the top region carefully.
+
+Current lines 31-61. Replace with new helpers and constants.
+
+Need to make sure `DEFAULT_ADAPTER` is available to `_configure_hf_cache`. Define DEFAULT_ADAPTER before configure, but DEFAULT_ADAPTER currently after cache block. Rearrange:
+
+```
+ROOT = ...
+_CACHE_ROOT = ROOT/".cache"
+PROJECT_HF_HOME = _CACHE_ROOT/"huggingface"
+PROJECT_HF_HUB = PROJECT_HF_HOME/"hub"
+
+os.environ.setdefault(...)
+
+def _writable_cache...
+def _repo_cache_dir...
+def _adapter_snapshot_in_cached_hub...
+def _truthy_env...
+def _offline_mode...
+
+DEFAULT_ADAPTER = os.environ.get("SPECTER2_ADAPTER", ...)
+DEFAULT_BASE_MODEL = ...
+
+def _configure_hf_cache...
+_configure_hf_cache()
+```
+
+DEFAULT_BASE_MODEL doesn't matter for cache. Keep order adapter then base? README env. Fine.
+
+Functions:
+
+```
+def _truthy_env(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in {"1", "true", "yes", "on"}
+
+def _offline_mode() -> bool:
+    return _truthy_env("HF_HUB_OFFLINE") or _truthy_env("TRANSFORMERS_OFFLINE") or _truthy_env("SPECTER2_LOCAL_FILES_ONLY")
+```
+
+`_repo_cache_dir`:
+```
+def _repo_cache_dir(repo_id: str, hub_root: str | Path) -> Path | None:
+    if not repo_id or "/" not in repo_id:
+        return None
+    org, _, name = repo_id.partition("/")
+    if not org or not name or name.startswith(".") or "/" in name:
+        return None
+    return Path(hub_root) / f"models--{org}--{name}"
+```
+Repo names can include `/`? HF repo_id is `org/name` only one slash. Fine. What if adapter_name is absolute path? has many slashes, but path.is_dir check first. If path doesn't exist (bad path), `_repo_cache_dir` constructs weird. We can check `Path(repo_id).is_absolute()` → None.
+
+`_adapter_snapshot_in_cached_hub`:
+```
+def _adapter_snapshot_in_cached_hub(repo_id, hub_root):
+    repo_dir = _repo_cache_dir(repo_id, hub_root)
+    if repo_dir is None: return None
+    snapshots = repo_dir / "snapshots"
+    try:
+        ref = (repo_dir/"refs"/"main").read_text(encoding="utf-8").strip()
+    except OSError:
+        ref = ""
+    candidates = []
+    if ref:
+        p = snapshots/ref
+        if (p/"adapter_config.json").is_file(): candidates.append(p)
+    try:
+        children = list(snapshots.iterdir())
+    except OSError:
+        children = []
+    for p in children:
+        if p in candidates: continue
+        try:
+            if (p/"adapter_config.json").is_file(): candidates.append(p)
+        except OSError: continue
+    if not candidates: return None
+    if len(candidates) > 1:
+        candidates.sort(key=lambda p: p.stat().st_mtime, reverse=True)  # OSError?
+    return candidates[0]
+```
+Avoid complex sort and mtime exceptions; use `p.name` maybe. Deterministic sorted by name, but ref first. Simpler:
+```
+    if not candidates: return None
+    if ref and (snapshots/ref) in candidates: return snapshots/ref
+    return sorted(candidates, key=lambda p: p.name)[-1]
+```
+But snapshot hash sorted isn't meaningful. refs/main is authoritative. If no ref, pick newest mtime with fallback. Let's do try/except.
+
+```
+    def _mtime(p):
+        try: return p.stat().st_mtime
+        except OSError: return 0.0
+    return max(candidates, key=_mtime)
+```
+If ref candidate exists, return it directly. Good.
+
+Wait: `p in candidates` uses Path equality, fine.
+
+`_local_hub_roots`:
+```
+def _local_hub_roots() -> list[Path]:
+    roots: list[Path] = []
+    explicit = os.environ.get("HF_HUB_CACHE")
+    if explicit:
+        roots.append(Path(explicit).expanduser())
+    hf_home = os.environ.get("HF_HOME")
+    if hf_home:
+        roots.append(Path(hf_home).expanduser()/"hub")
+    roots.extend([PROJECT_HF_HUB, Path.home()/".cache"/"huggingface"/"hub"])
+    unique=[]
+    seen=set()
+    for r in roots:
+        key = str(r)
+        if key not in seen:
+            seen.add(key); unique.append(r)
+    return unique
+```
+If HF_HOME is project, PROJECT_HF_HUB duplicate. Good.
+
+`_configure_hf_cache`:
+
+```
+def _configure_hf_cache() -> None:
+    default_home = Path.home() / ".cache" / "huggingface"
+    requested = os.environ.get("HF_HOME")
+    home = Path(requested).expanduser() if requested else default_home
+    explicit_hub = os.environ.get("HF_HUB_CACHE")
+    selected_hub = Path(explicit_hub).expanduser() if explicit_hub else home/"hub"
+
+    project_has_adapter = _adapter_snapshot_in_cached_hub(DEFAULT_ADAPTER, PROJECT_HF_HUB) is not None
+    selected_has_adapter = _adapter_snapshot_in_cached_hub(DEFAULT_ADAPTER, selected_hub) is not None
+
+    # A user-provided cache wins when usable; otherwise prefer the repo cache
+    # when it is the only place the adapter exists, then any writable cache.
+    if (requested or explicit_hub) and _writable_cache(home) and (selected_has_adapter or not project_has_adapter):
+        chosen = home
+    elif project_has_adapter and _writable_cache(PROJECT_HF_HOME):
+        chosen = PROJECT_HF_HOME
+    elif _writable_cache(home):
+        chosen = home
+    else:
+        chosen = PROJECT_HF_HOME
+    ...
+```
+
+Hmm, if requested HF_HOME writable but lacks adapter and project has adapter: condition `(selected_has_adapter or not project_has_adapter)` false → falls to project. But I earlier thought respect explicit. Which is better? Requirement says "若默认 HF hub 找不到 adapter，回退到项目 .cache". It doesn't say don't change HF_HOME. Setting project is best for full consistency and mirrors review fix #2. But a user explicitly setting HF_HOME to a different cache might be surprised. However project fallback only when project has adapter and their cache doesn't; that's exactly desired to make it work. And `_resolve_adapter` would find it anyway. I think choosing project is acceptable and more deterministic. But explicit HF_HOME could be a cache with adapter at a *different revision*; then selected_has_adapter true → respect. Good.
+
+Wait if requested HF_HOME is writable, lacks adapter, project has adapter, but network is available: choosing project uses the runner's pinned adapter instead of downloading. Local-first is documented. Fine.
+
+If explicit HF_HOME is read-only but has adapter: condition requires writable home → false; project chosen. If project has adapter, good (read-only home may still work but project better). If project lacks adapter but home read-only has it: project_has false; `_writable_cache(home)` false; else project — that would lose the read-only adapter. Bad. Need handle: if selected_has_adapter even if not writable, perhaps choose home (read-only) since local files can be read; but transformers might need write lock. `snapshot_download(local_files_only=True)` should work read-only. Hmm.
+
+Better selection priority:
+1. If selected hub has adapter and (writable or project lacks adapter) → use home (respect).
+2. elif project has adapter and writable → project
+3. elif writable home → home
+4. else project.
+
+That covers: explicit read-only home with adapter, project lacks adapter → home. If project has adapter, prefer project (writable). Good.
+
+But for default home writable with adapter → home. For default home writable without adapter, project has adapter → project. For default home read-only with adapter, project has adapter → project. Fine.
+
+Then `default` answer.
+
+Setting env:
+```
+    os.environ["HF_HOME"] = str(chosen)
+    os.environ["HF_HUB_CACHE"] = str(chosen / "hub")
+    tf = os.environ.get("TRANSFORMERS_CACHE")
+    if tf and Path(tf).expanduser() != chosen:
+        os.environ["TRANSFORMERS_CACHE"] = str(chosen)
+```
+But if chosen == home and explicit HF_HUB_CACHE was set to a custom dir, we'd overwrite it with home/hub. That's bad. Respect explicit HF_HUB_CACHE when chosen home:
+```
+    if explicit_hub and chosen == home:
+        os.environ["HF_HUB_CACHE"] = str(selected_hub)  # leave as is
+    else:
+        os.environ["HF_HUB_CACHE"] = str(chosen/"hub")
+```
+Also `TRANSFORMERS_CACHE` may intentionally point elsewhere; but if chosen != tf path, update. Given it's deprecated and parent env sets it, updating is needed. If user explicitly set both HF_HOME and TRANSFORMERS_CACHE differently, we override TRANSFORMERS_CACHE to chosen. That's reasonable consistency.
+
+Should we always set `HF_HOME` if env unset? Yes. This changes default from implicit to explicit project, but only when project has adapter.
+
+Add module-level log? `logger` has no handler; use `logging.getLogger(__name__).debug` not necessary.
+
+One more thought: `_writable_cache(PROJECT_HF_HOME)` — directory exists in repo. Fine.
+
+Now, current `_hf_home` block lines 47-55 remove and replace with `_configure_hf_cache()` call.
+
+Also `DEFAULT_BASE_MODEL` path is hardcoded to /data/yangzs home which is read-only but exists. Fine.
+
+Let's apply edits.
+
+dsh: reasoning:
+Now update `_resolve_adapter` and `load_encoder`.
+
+dsh: reasoning:
+Now load_encoder docstring and local_files_only normalization.
+
+dsh: reasoning:
+Now verify syntax and run tests. First, plain offline command. It should pass (in this env home read-only). Then simulate review env with writable fake HF_HOME missing adapter: `HF_HOME=/tmp/emptyhf...` with offline. Also fake HOME writable: create /tmp/fakehome/.cache/huggingface, set HOME, unset HF_HOME. Need note `Path.home()` uses HOME env? Python's Path.home uses os.path.expanduser("~") which uses HOME. Yes.
+
+Test:
+1. `env -u HF_HOME HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python encoder.py --smoke`
+2. `env -u HF_HOME -u TRANSFORMERS_CACHE HOME=/tmp/fakehome HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ...` after mkdir /tmp/fakehome/.cache/huggingface writable. But base default path uses /data/yangzs home absolute, exists. Project adapter found.
+3. Explicit `HF_HOME=/tmp/emptyhf` writable missing adapter offline → `_resolve_adapter` fallback. But note `_configure_hf_cache` might choose project because project has adapter even though explicit. It will set HF_HOME=project. That's fine. To test `_resolve_adapter` directly, call with `os.environ` after import: `encoder._resolve_adapter(..., local_files_only=True)` and env HF_HOME=/tmp/emptyhf then import will reconfigure to project. Hmm. We can test by temporarily setting `encoder.PROJECT_HF_HUB` to empty? Or call `_adapter_snapshot_in_cached_hub` on a temp hub. Not needed.
+
+Better test fallback in `_resolve_adapter` isolated: monkeypatch `encoder._configure_hf_cache` already ran. Set `os.environ["HF_HOME"]="/tmp/emptyhf"; os.environ["HF_HUB_CACHE"]="/tmp/emptyhf/hub"` *after* import, then call `_resolve_adapter(local_files_only=True)`. It should search local roots: /tmp/emptyhf/hub, project, home and find project. That validates step 3.
+
+4. Verify adapter activated: output metadata and feature_shape.
+5. Run S19 check from review_checks. The script may run all checks if main; but there might be a way to select scenario? Inspect CLI options. It only has --rerun-dir, --json-out; main runs all. Could import and call s19 function. `python -c "import briefs.review_checks"`? It's not a package. Run via runpy or add path. `sys.path.insert(0,'briefs'); import review_checks; print(review_checks.s19_default_offline_load())`. It may need decorators registering. Should be fine. But importing review_checks may import heavy modules? It imports encoder inside functions. Let's check top.
+
+dsh: reasoning:
+Test1 passes. Now run simulation of writable home and explicit HF_HOME. Also direct adapter fallback.
+
+For fake HOME, base path is absolute /data/yangzs so fine. TORCH_HOME set to project. Let's run.
+
+Note `env -u HF_HOME -u TRANSFORMERS_CACHE HOME=/tmp/fakehome ...`. The code's `_configure_hf_cache`: default_home=/tmp/fakehome/.cache/huggingface, create writable. home_has_adapter false, project true → chosen project. Then `Path.home()` inside `_local_hub_roots` uses /tmp/fakehome. Fine.
+
+Also verify env values by printing.
+
+dsh: reasoning:
+All pass. But wait test B: explicit HF_HOME writable no adapter → `_configure_hf_cache` chooses project because project has adapter. That's fine. But if user explicitly set HF_HOME to somewhere and project has adapter, we override; okay.
+
+Now test true "default home writable with adapter in home"? We can simulate: HOME=/tmp/dsh-fakehome but put a symlink/copy of adapter in fake home hub. Then home_has_adapter true and writable → chosen home; resolution from home. This preserves default. Let's test quickly. Use symlink models--allenai--specter2_classification. Snapshot_download should follow.
+
+dsh: reasoning:
+Good. Now README changes. Update §2 bullet list to explain local-first and default offline command. Also §9 add offline smoke. Also line 64. Let's edit precisely.
+
+Current:
+```
+- Base 优先从上述本地 snapshot 离线加载。
+- Classification adapter 首次会下载并缓存。若 `$HOME` 只读，`encoder.py` 自动把 `HF_HOME` / `TORCH_HOME` 落到项目 `.cache/`（已 gitignore）。
+- 也可以手动下载：`HF_ENDPOINT=https://huggingface.co hf download allenai/specter2_classification`。
+```
+
+New:
+```
+- Base 优先从上述本地 snapshot 离线加载。
+- Classification adapter 解析顺序（本地优先）：显式路径 → 当前 HF cache → 仓库内 `.cache/huggingface` → 联网下载。只要仓库内缓存存在，`HF_HOME` 不设置也能离线加载。
+- `encoder.py` 启动时自动选择可用的 HF cache：当前 cache 没有 adapter 时优先使用仓库 `.cache/huggingface`（已 gitignore），并把 `HF_HOME` / `HF_HUB_CACHE` / `TRANSFORMERS_CACHE` 对齐；`$HOME` 只读时同样落到该目录。
+- 默认离线冒烟（无需手工 `HF_HOME`）：
+```bash
+env -u HF_HOME HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python encoder.py --smoke
+```
+- 需要覆盖时：`HF_HOME=/abs/cache`、`SPECTER2_ADAPTER=/abs/snapshot`、`SPECTER2_LOCAL_FILES_ONLY=1`（强制只用本地文件）。
+- 首次联网缓存：`HF_ENDPOINT=https://huggingface.co hf download allenai/specter2_classification`。
+```
+
+Careful markdown nested code blocks in edit string. Fine.
+
+Also §9:
+```
+# 2. 编码器加载 + 特征形状（离线，默认缓存）
+env -u HF_HOME HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python encoder.py --smoke
+```
+Replace existing `# 2. 编码器加载 + 特征形状` line.
+
+Let's apply.
+
+dsh: reasoning:
+Need full read of README first (policy requires read; I used sed, not read). Read it.
+
+dsh: reasoning:
+Now run the S19 scenario via importing review_checks. Need to be careful: importing may run argument parse? Only main under __main__. Let's run:
+
+```
+.venv/bin/python - <<'PY'
+import sys; sys.path.insert(0,'briefs')
+import review_checks
+print(review_checks.s19_default_offline_load())
+PY
+```
+
+But S19 uses `sys.executable` and env excluding HF_HOME. Good. It doesn't exclude TRANSFORMERS_CACHE, but our code aligns it. Run.
+
+Also full review_checks might be required for acceptance? Task says optional S19. But review's re-dispatch acceptance says 18/18. Could run full with --rerun-dir /tmp/omp-review-train, but that directory may not exist. Check. The full checker may take long (retrain cached 4.7s; encoder load; live API? S11 separately). Let's first run S19.
+
+Also run predict.py sample offline to ensure predict path works. That loads model and encoder, ~ maybe 30s. Could run to meet "predict/api can start". Let's do S19 first.
+
+dsh: reasoning:
+S19 PASS. Now test predict.py offline and API health maybe. Requirement 4 only encoder smoke; review acceptance also API. Let's run predict sample with env offline no HF_HOME. This will load model encoder. Could take ~1 min CPU. Then API start on port 8124 with rc, curl health, kill. Use background job or one command with `timeout`. Since approval policy ask and network localhost? Probably allowed. Let's do predict first.
+
+Also check git diff of encoder to ensure no accidental changes. No commits, so `git diff` won't show untracked. Use `git diff --no-index` impossible. Just inspect lines.
+
+Run predict smoke.
+
+dsh: reasoning:
+Predict works. Now API start. Use background with a shell command maybe `(.venv/bin/uvicorn ... &) ; sleep...` but need kill. Better run in bash one-liner with `timeout 180` in background and poll curl. We can use `run_in_background` job. But background jobs require collecting. Alternatively one command:
+
+```
+env ... .venv/bin/uvicorn api:app --port 8124 --workers 1 > /tmp/api.log 2>&1 &
+pid=$!
+for i in $(seq 1 120); do curl -sf ... && break; sleep 1; done
+curl...
+kill $pid; wait
+```
+
+This is fine within one bash call. Ensure kill uses pid variable; no delete/move. Let's run with timeout 300s.
+
+Note: the API has /health status 200 even unavailable (P2 issue, out of scope). We just verify status ok.
+
+Also run full review_checks? It may take some time and S16 needs rerun dir. Without --rerun-dir, S16 maybe SKIP. But acceptance says 18/18 with rerun dir. We could create rerun dir by running cached train.py into /tmp/omp-review-train, which is quick (~5s) per review. But train.py with --artifacts /tmp/... and existing feature cache? It might reencode if cache path is in artifacts/features? Let's inspect train.py args/behavior. The review says cached retrain reproduces in 4.7s. Running `train.py --artifacts /tmp/omp-review-train` might encode 974 docs (39 min) unless it picks global cache. Let's inspect.
+
+dsh: reasoning:
+We can pass `--cache-dir artifacts/features` to reuse the existing cache, and `--artifacts /tmp/omp-review-train`. Then S16 rerun dir. But run full checker later. First API.
+
+Run API test.
+
+dsh: reasoning:
+API works. Now optional full review_checks. Let's create rerun dir using cache. Command:
+
+```
+env -u HF_HOME HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python train.py --artifacts /tmp/omp-review-train --cache-dir artifacts/features
+```
+
+Will it write model.joblib etc into /tmp. Good. Maybe takes ~10s. Then run full checker `--rerun-dir /tmp/omp-review-train`. The checker's S16 may compare metrics with delivered; since same cache and seed, should match. But be careful: our change to encoder cache config should not affect features. Training uses encoder only if cache miss. It loads cache. Good. Run train.
+
+dsh: reasoning:
+Run full review_checks offline with rerun dir. It will run 18 scenarios, may take a couple minutes. Do it.
+
+dsh: reasoning:
+S16 failed because /tmp/omp-review-train/metrics.json disappeared? We just created it. Wait, the checker might clean or the path? Let's check ls. It was there at 20:36. The checker started at 20:36:35; maybe S16's `train.py` subprocess removes/recreates directory? Let's inspect S16.
+
+dsh: reasoning:
+/tmp/omp-review-train vanished and log vanished! That suggests /tmp is ephemeral per command? Each bash tool call may run in a fresh container/namespace with private /tmp. Indeed earlier /tmp/dsh-api-8124.log may be gone now. The `ls` in same command after train worked. Across calls /tmp resets. So I need to use a workspace path for rerun artifacts, e.g. `artifacts/review-rerun` or `.tmp/...` under workspace, then pass to checker in same command or persist. The workspace is persistent. Let's create `/data/.../.tmp-review-train` under workspace, run train and checker in one bash call or separate (workspace persists). Then delete afterward? We can delete with verified path. But `.gitignore` may not include it; clean up.
+
+Also note full checker created `/tmp/dsh-review-checks.json` etc gone. Fine.
+
+Let's run train to workspace dir `artifacts/_review_rerun` (gitignored? `.gitignore` includes artifacts/*.joblib and features maybe not whole artifacts). Better use `/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/.review-rerun` and remove after. But no need to remove if hidden? Better remove after tests. Verify path absolute before rm.
+
+Run train and checker in one command to avoid separate /tmp issue but workspace persists anyway.
+
+```
+D=$PWD/.review-rerun
+rm -rf "$D"
+train --artifacts "$D" --cache-dir "$PWD/artifacts/features" > log
+checker --rerun-dir "$D" --json-out "$D/checks.json"
+rc=$?
+...
+```
+S16 should pass. But note full checker S10 prints "PDF not found" but passes.
+
+Let's run.
+
+dsh: reasoning:
+18/18 PASS. Need to clean `.review-rerun`. Verify absolute target. Also check README diff and encoder for style. Then write done report.
+
+Before cleanup, note S19 appears twice because imported checker earlier? No, in this run only once, but output shows twice: likely first from stderr? Wait grep showed two S19 lines. Why? The check log might contain the S19 line twice due to `s19_default_offline_load()` being called twice? In main, s19 called once. But `@scenario` might print and return? Let's inspect decorator. It might print on completion and main also prints? Not important. Could be because log contains two lines from something. Let's check tail.
+
+dsh: reasoning:
+The duplicate S19 in grep was likely because S19 line appeared in log one time (grep -c says 1). Earlier combined output printed it twice due to `tee`/tail? Whatever, 18 PASS.
+
+Now consider a subtle bug in `_configure_hf_cache`: `home_has_adapter` checks `selected_hub`, but `_writable_cache(home)` checks HF_HOME dir. If HF_HOME set but HF_HUB_CACHE explicit elsewhere with adapter, chosen = home, then we keep explicit hub (chosen==home branch). Good.
+
+If HF_HOME not set but HF_HUB_CACHE explicit with adapter, home=default home, home_has_adapter true; chosen=home if writable → keep explicit hub. Good.
+
+If HF_HOME set to project and project has adapter: home_has true, home writable true → chosen home(project). Good.
+
+One concern: `_configure_hf_cache` ignores `TRANSFORMERS_CACHE` as a candidate. In review env, `TRANSFORMERS_CACHE=/home/...` (writable) and `HF_HOME` unset. If home cache had adapter under TRANSFORMERS_CACHE but not under HF_HOME? They coincide. Fine. Could add it but unnecessary.
+
+Another concern: `_adapter_snapshot_in_cached_hub` uses `refs/main` read_text; refs/main in project exists. Good.
+
+Another: `Path(repo_id).is_absolute()` for "allenai/specter2_classification" false. But on Windows? no.
+
+Another: adapter_name may contain a local relative path like `./adapter`; path.is_dir catches if exists. If not exists, `_repo_cache_dir` gives org "." name "adapter"? Path("./adapter").is_absolute false, contains "/", org=".", name="adapter", constructs models--.--adapter. Harmless.
+
+Potential issue with `snapshot_download(local_files_only=True)` and HF_HUB_OFFLINE=1: works. Confirmed.
+
+Now review the rest of encoder after line 180 to ensure no leftover `_hf_home` references.
+
+dsh: reasoning:
+Style: `local_files_only = (...)` can be one line; not an issue. `_offline_mode` already includes SPECTER2_LOCAL_FILES_ONLY, so redundant `or _truthy_env` in `_resolve_adapter`. Remove redundancy for cleanliness. Also `_configure_hf_cache()` placement before DEFAULT_MAX_CHARS is a bit awkward; move it right after function definition, which it is. Fine.
+
+Potential issue: `_configure_hf_cache` when home read-only but selected_hub has adapter and project lacks adapter: chosen = home even if not writable. Then sets `HF_HOME` to read-only home, `TRANSFORMERS_CACHE` to read-only home. Is that okay? `snapshot_download(local_files_only=True)` reads, shouldn't need write. `AutoTokenizer` from absolute path no write. This is fine, and preserves accessibility. Could log a warning? Not necessary.
+
+Potential issue: `_writable_cache` uses `os.access`; in this container /home read-only returns False. Good.
+
+Now remove redundant.
+
+dsh: reasoning:
+Now cleanup `.review-rerun`. Verify resolved absolute. Then maybe run a final acceptance smoke after cleanup. Also run `python -m py_compile` and maybe a quick style check not configured.
+
+Need to write `briefs/dsh-fix-p0-done.md`. Before that, perhaps update EVIDENCE? Task says optional review checks confirm PASS; the deliverable is done doc. Don't modify review evidence (reviewer-owned). Maybe not.
+
+Check .gitignore includes `.cache/`; yes. `.review-rerun` untracked and would show in git status. Remove.
+
+Also note `/tmp` ephemeral; no cleanup there needed.
+
+Let's remove `.review-rerun` after verifying with realpath.
+
+dsh: reasoning:
+Now write done report. Include:
+- Root cause.
+- Changes with line references.
+- Resolution order.
+- Verification commands and outputs (S19 PASS, 18/18, predict, API health, feature shape).
+- Compatibility/no business changes.
+- Env behavior matrix.
+- Files touched.
+
+Also mention one caveat: in this runtime /home is read-only, so the original code already fell back; the fix specifically covers writable `$HOME`/explicit HF_HOME cases, validated with HOME=/tmp/... and HF_HOME=/tmp/... simulations.
+
+Need exact line numbers post-edit. Let's get grep line numbers for functions and README section.
+
+dsh: reasoning:
+Now write briefs/dsh-fix-p0-done.md. Must include commands and verified outputs. Note S19 output after import returned None because decorator wrapper returns None; but it printed PASS. In report show the printed line. Also 18/18 full run.
+
+Need to be precise about "did not rerun full encoding": we reused artifacts/features cache. The train re-run wrote to workspace temp and used existing cache; removed. No thresholds changed.
+
+Mention no changes to train/predict/api/artifacts.
+
+Also mention known warning `There are adapters available but none are activated for the forward pass` appears during load but active setup is Stack[[CLF]] and S05 proves adapter in forward path (cos 0.7681). Not new.
+
+Include environment matrix:
+| condition | cache chosen | result |
+- HF_HOME unset, $HOME read-only (this container) → project cache, PASS
+- HF_HOME unset, $HOME writable but empty (simulated HOME=/tmp/dsh-fakehome) → project cache, PASS
+- HF_HOME explicit writable without adapter (/tmp/dsh-emptyhf) → project cache / `_resolve_adapter` fallback, PASS
+- HF_HOME set, selected cache has adapter → selected cache, PASS (simulated fakehome with symlinked adapter)
+
+Validation commands:
+1. acceptance smoke.
+2. S19 standalone.
+3. full checker 18/18.
+4. predict sample.
+5. API health.
+6. py_compile.
+
+Include exact health JSON fields maybe.
+
+Write doc.
+
+dsh: reasoning:
+Need final verification that line refs in report accurate: `_repo_cache_dir` at 69, `_adapter_snapshot` 79, `_local_hub_roots` 124, `_configure_hf_cache` 146, invoke 188, `_resolve_adapter` 322, load_encoder 380. Confirmed from grep. But after removing redundant lines, line numbers may shift by -2? We ran grep after removal? Yes grep was after removal? Sequence: removed redundant, then grep line numbers. Yes.
+
+Need double check README line refs. Confirmed.
+
+Now final acceptance command one more time and maybe run `git status`. Also perhaps check `README.md` rendering around edits. Read section.
+
+dsh: reasoning:
+Done. But let me consider whether `_configure_hf_cache` could break a scenario where `HF_HOME` explicit contains adapter but `HF_HUB_CACHE` explicit also set elsewhere. Minor.
+
+Also consider requirement "does not change business thresholds/feature cache format". We didn't. But we imported encoder in review checks; no artifacts changed. Check mtimes? Not needed.
+
+One thing: the done report says "The second row is the exact review failure mode ... previous code selected `$HOME` and failed offline." We simulated with `HOME=/tmp/dsh-fakehome` which is writable and empty. Correct.
+
+Potential hidden issue: `Path.home()` when HOME unset uses passwd home `/home/yangzs`; not relevant.
+
+Another: `_configure_hf_cache` sets `HF_HOME` at import time, which mutates env seen by child processes? No, only current process.
+
+Would the fix still work if `HF_HOME` set to a path whose *hub* has adapter but path isn't writable? We choose home if home_has_adapter and (writable or project lacks). If project has adapter and home not writable, choose project. Good.
+
+Could `_adapter_snapshot_in_cached_hub` accidentally accept a snapshot where adapter_config.json is a broken symlink? `is_file()` follows and returns False if broken. Good.
+
+Could `refs/main` contain a malicious path with `..`? HF cache trusted. Not issue.
+
+One more check: `review_checks.py` S19 uses `env` from current process excluding HF_HOME, but retains `TRANSFORMERS_CACHE` (home, read-only here). Our code updates it to project because chosen project. In review env, home writable empty, chosen project because project has adapter, updates. Good.
+
+Now should we update `briefs/EVIDENCE.md` S19 from FAIL to PASS? It's reviewer-owned; the task says optional rerun check, write done doc. Better not modify reviewer evidence. The done doc notes that.
+
+One more possible issue: the task explicitly says "若默认 HF hub 找不到 adapter，回退到项目 `.cache/huggingface`（或文档化并默认使用该路径）". Our `_configure_hf_cache` chooses project before even trying selected hub? It probes selected hub; if no adapter, chooses project. `_resolve_adapter` tries selected hub first then project. Good.
+
+Now maybe run a unit-ish test of `_resolve_adapter` when project adapter absent and offline to ensure it doesn't attempt network and returns name (then load fails with clear error). Not necessary.
+
+Check formatting/lint not configured. Lines under 120? Some docstring lines maybe 100. Fine.
+
+Final answer in Chinese, concise, with changed files, verification results, and note 18/18. Mention the done report path. No need to commit (repo has no commits; user didn't ask).
+
+Let's craft final with sections: 修复内容, 验收结果, 变更文件, 备注. Include exact command. Mention no business changes/re-encode. Mention `_configure_hf_cache` behavior.
+
+Need not include huge detail, but enough evidence. Use markdown.
+
+EXIT:0

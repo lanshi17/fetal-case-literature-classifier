@@ -1,0 +1,45 @@
+{
+  "name": "best_dora_chunk_rules",
+  "description": "Fair chunk-pool DoRA + gold-49 R≥0.95 threshold + hard-negative rule layer",
+  "backend": "dora_chunk",
+  "created_from": {
+    "train_script": "scripts/finetune_chunk_fair.py --method dora",
+    "checkpoint": "artifacts/finetune_fair/dora/checkpoint/model.pt",
+    "threshold_source": "artifacts/finetune_fair/dora/threshold.json",
+    "rules": "rule_layer.py",
+    "gold": "data/gold_standard.csv (n=49)"
+  },
+  "encoder": {
+    "model_id": "NeuML/pubmedbert-base-embeddings",
+    "chunk_tokens": 480,
+    "max_chunks": 12,
+    "keep_first": 2,
+    "feature": "L2(mean_all) || L2(mean_first_2) -> 1536-d"
+  },
+  "adapter": {
+    "type": "DoRA",
+    "r": 16,
+    "alpha": 32,
+    "target_modules": ["query", "value"]
+  },
+  "threshold": 0.7619357705116272,
+  "review_margin": 0.15,
+  "use_rules": true,
+  "paths": {
+    "checkpoint_dir": "artifacts/finetune_fair/dora/checkpoint",
+    "threshold_json": "artifacts/finetune_fair/dora/threshold.json",
+    "train_metrics": "artifacts/finetune_fair/dora/metrics.json",
+    "recal_report": "artifacts/finetune_fair/dora/THRESHOLD_RECAL.md",
+    "rules_report": "artifacts/rule_layer/REPORT.md",
+    "ablation_report": "artifacts/ablation_abcd/REPORT.md"
+  },
+  "frozen_metrics": {
+    "test_pipeline_model": {"recall": 1.0, "precision": 0.774, "f1": 0.872},
+    "test_pipeline_rules": {"recall": 0.977, "precision": 0.83, "f1": 0.898},
+    "test_hard_neg_spec_model": 0.37,
+    "test_hard_neg_spec_rules": 0.815,
+    "gold49_pipeline_rules": {"recall": 1.0, "precision": 0.581, "f1": 0.735},
+    "gold49_ap_dora": 0.762,
+    "note": "Pipeline = relevant|review counted positive. Numbers from artifacts/rule_layer + gold recal."
+  }
+}

@@ -1,0 +1,441 @@
+{
+  "generated_at": "2026-11-02T11:48:02.002867+00:00",
+  "data": {
+    "path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/data/labeled_papers.csv",
+    "n_rows": 974,
+    "n_default_subset": 883,
+    "n_full_text": 974,
+    "n_abstract_only": 0,
+    "label_counts": {
+      "0": 275,
+      "1": 699
+    }
+  },
+  "split": {
+    "method": "GroupShuffleSplit (group_id=PMID), 64/16/20",
+    "seed": 42,
+    "sizes": {
+      "all": {
+        "train": 623,
+        "val": 156,
+        "test": 195
+      },
+      "default": {
+        "train": 566,
+        "val": 140,
+        "test": 177
+      }
+    },
+    "positives": {
+      "all": {
+        "train": 451,
+        "val": 112,
+        "test": 136
+      },
+      "default": {
+        "train": 439,
+        "val": 109,
+        "test": 130
+      }
+    }
+  },
+  "primary": {
+    "feature_mode": "C",
+    "train_subset": "default (weak=False, label_source!=model)",
+    "threshold": 0.1525784656405449,
+    "val": {
+      "n": 140,
+      "positives": 109,
+      "negatives": 31,
+      "threshold": 0.1525784656405449,
+      "recall": 0.963302752293578,
+      "precision": 0.8898305084745762,
+      "f1": 0.9251101321585903,
+      "f2": 0.9476534296028881,
+      "ap": 0.9625146568286743,
+      "roc_auc": 0.8866528558745191,
+      "confusion_matrix": {
+        "tn": 18,
+        "fp": 13,
+        "fn": 4,
+        "tp": 105
+      },
+      "predicted_positive": 118,
+      "mean_score_positive": 0.8800142190970242,
+      "mean_score_negative": 0.3622419376558661
+    },
+    "test": {
+      "n": 177,
+      "positives": 130,
+      "negatives": 47,
+      "threshold": 0.1525784656405449,
+      "recall": 0.9230769230769231,
+      "precision": 0.8,
+      "f1": 0.8571428571428571,
+      "f2": 0.8955223880597015,
+      "ap": 0.9314845362025383,
+      "roc_auc": 0.8279869067103109,
+      "confusion_matrix": {
+        "tn": 17,
+        "fp": 30,
+        "fn": 10,
+        "tp": 120
+      },
+      "predicted_positive": 150,
+      "mean_score_positive": 0.8783457193783342,
+      "mean_score_negative": 0.49412290037707673
+    },
+    "test_by_full_text": {
+      "full_text_available": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.1525784656405449,
+        "recall": 0.9230769230769231,
+        "precision": 0.8,
+        "f1": 0.8571428571428571,
+        "f2": 0.8955223880597015,
+        "ap": 0.9314845362025383,
+        "roc_auc": 0.8279869067103109,
+        "confusion_matrix": {
+          "tn": 17,
+          "fp": 30,
+          "fn": 10,
+          "tp": 120
+        },
+        "predicted_positive": 150,
+        "mean_score_positive": 0.8783457193783342,
+        "mean_score_negative": 0.49412290037707673
+      },
+      "abstract_only": {
+        "n": 0,
+        "note": "empty stratum"
+      }
+    }
+  },
+  "ablations": {
+    "A": {
+      "description": "title+abstract only",
+      "feature_dim": 768,
+      "fit_seconds": 0.13,
+      "threshold": 0.03733264468610287,
+      "val": {
+        "n": 140,
+        "positives": 109,
+        "negatives": 31,
+        "threshold": 0.03733264468610287,
+        "recall": 0.9541284403669725,
+        "precision": 0.832,
+        "f1": 0.8888888888888888,
+        "f2": 0.9269162210338681,
+        "ap": 0.9376298545449997,
+        "roc_auc": 0.8061556673572063,
+        "confusion_matrix": {
+          "tn": 10,
+          "fp": 21,
+          "fn": 5,
+          "tp": 104
+        },
+        "predicted_positive": 125,
+        "mean_score_positive": 0.8313291134852973,
+        "mean_score_negative": 0.489069628426622
+      },
+      "test": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.03733264468610287,
+        "recall": 0.9692307692307692,
+        "precision": 0.782608695652174,
+        "f1": 0.865979381443299,
+        "f2": 0.9251101321585903,
+        "ap": 0.8997580360860424,
+        "roc_auc": 0.7636661211129298,
+        "confusion_matrix": {
+          "tn": 12,
+          "fp": 35,
+          "fn": 4,
+          "tp": 126
+        },
+        "predicted_positive": 161,
+        "mean_score_positive": 0.8451001943053248,
+        "mean_score_negative": 0.5111080472899139
+      },
+      "test_by_full_text": {
+        "full_text_available": {
+          "n": 177,
+          "positives": 130,
+          "negatives": 47,
+          "threshold": 0.03733264468610287,
+          "recall": 0.9692307692307692,
+          "precision": 0.782608695652174,
+          "f1": 0.865979381443299,
+          "f2": 0.9251101321585903,
+          "ap": 0.8997580360860424,
+          "roc_auc": 0.7636661211129298,
+          "confusion_matrix": {
+            "tn": 12,
+            "fp": 35,
+            "fn": 4,
+            "tp": 126
+          },
+          "predicted_positive": 161,
+          "mean_score_positive": 0.8451001943053248,
+          "mean_score_negative": 0.5111080472899139
+        },
+        "abstract_only": {
+          "n": 0,
+          "note": "empty stratum"
+        }
+      }
+    },
+    "B": {
+      "description": "title+abstract + full-text mean/max",
+      "feature_dim": 2304,
+      "fit_seconds": 2.0,
+      "threshold": 0.24250368773937225,
+      "val": {
+        "n": 140,
+        "positives": 109,
+        "negatives": 31,
+        "threshold": 0.24250368773937225,
+        "recall": 0.9541284403669725,
+        "precision": 0.896551724137931,
+        "f1": 0.9244444444444444,
+        "f2": 0.9420289855072463,
+        "ap": 0.9617615013756422,
+        "roc_auc": 0.8851731281444215,
+        "confusion_matrix": {
+          "tn": 19,
+          "fp": 12,
+          "fn": 5,
+          "tp": 104
+        },
+        "predicted_positive": 116,
+        "mean_score_positive": 0.8799372906433504,
+        "mean_score_negative": 0.3599031195068139
+      },
+      "test": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.24250368773937225,
+        "recall": 0.9076923076923077,
+        "precision": 0.8137931034482758,
+        "f1": 0.8581818181818182,
+        "f2": 0.8872180451127819,
+        "ap": 0.930806893730866,
+        "roc_auc": 0.8265139116202946,
+        "confusion_matrix": {
+          "tn": 20,
+          "fp": 27,
+          "fn": 12,
+          "tp": 118
+        },
+        "predicted_positive": 145,
+        "mean_score_positive": 0.8775967582603559,
+        "mean_score_negative": 0.49894216098633054
+      },
+      "test_by_full_text": {
+        "full_text_available": {
+          "n": 177,
+          "positives": 130,
+          "negatives": 47,
+          "threshold": 0.24250368773937225,
+          "recall": 0.9076923076923077,
+          "precision": 0.8137931034482758,
+          "f1": 0.8581818181818182,
+          "f2": 0.8872180451127819,
+          "ap": 0.930806893730866,
+          "roc_auc": 0.8265139116202946,
+          "confusion_matrix": {
+            "tn": 20,
+            "fp": 27,
+            "fn": 12,
+            "tp": 118
+          },
+          "predicted_positive": 145,
+          "mean_score_positive": 0.8775967582603559,
+          "mean_score_negative": 0.49894216098633054
+        },
+        "abstract_only": {
+          "n": 0,
+          "note": "empty stratum"
+        }
+      }
+    },
+    "C": {
+      "description": "B + 2 lexical auxiliary features",
+      "feature_dim": 2306,
+      "fit_seconds": 2.04,
+      "threshold": 0.1525784656405449,
+      "val": {
+        "n": 140,
+        "positives": 109,
+        "negatives": 31,
+        "threshold": 0.1525784656405449,
+        "recall": 0.963302752293578,
+        "precision": 0.8898305084745762,
+        "f1": 0.9251101321585903,
+        "f2": 0.9476534296028881,
+        "ap": 0.9625146568286743,
+        "roc_auc": 0.8866528558745191,
+        "confusion_matrix": {
+          "tn": 18,
+          "fp": 13,
+          "fn": 4,
+          "tp": 105
+        },
+        "predicted_positive": 118,
+        "mean_score_positive": 0.8800142190970242,
+        "mean_score_negative": 0.3622419376558661
+      },
+      "test": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.1525784656405449,
+        "recall": 0.9230769230769231,
+        "precision": 0.8,
+        "f1": 0.8571428571428571,
+        "f2": 0.8955223880597015,
+        "ap": 0.9314845362025383,
+        "roc_auc": 0.8279869067103109,
+        "confusion_matrix": {
+          "tn": 17,
+          "fp": 30,
+          "fn": 10,
+          "tp": 120
+        },
+        "predicted_positive": 150,
+        "mean_score_positive": 0.8783457193783342,
+        "mean_score_negative": 0.49412290037707673
+      },
+      "test_by_full_text": {
+        "full_text_available": {
+          "n": 177,
+          "positives": 130,
+          "negatives": 47,
+          "threshold": 0.1525784656405449,
+          "recall": 0.9230769230769231,
+          "precision": 0.8,
+          "f1": 0.8571428571428571,
+          "f2": 0.8955223880597015,
+          "ap": 0.9314845362025383,
+          "roc_auc": 0.8279869067103109,
+          "confusion_matrix": {
+            "tn": 17,
+            "fp": 30,
+            "fn": 10,
+            "tp": 120
+          },
+          "predicted_positive": 150,
+          "mean_score_positive": 0.8783457193783342,
+          "mean_score_negative": 0.49412290037707673
+        },
+        "abstract_only": {
+          "n": 0,
+          "note": "empty stratum"
+        }
+      }
+    }
+  },
+  "full_label_control": {
+    "train_subset": "all",
+    "feature_mode": "C",
+    "threshold": 0.101656973361969,
+    "val": {
+      "n": 156,
+      "positives": 112,
+      "negatives": 44,
+      "threshold": 0.101656973361969,
+      "recall": 0.9642857142857143,
+      "precision": 0.8780487804878049,
+      "f1": 0.9191489361702128,
+      "f2": 0.9457092819614711,
+      "ap": 0.958758633853622,
+      "roc_auc": 0.908887987012987,
+      "confusion_matrix": {
+        "tn": 29,
+        "fp": 15,
+        "fn": 4,
+        "tp": 108
+      },
+      "predicted_positive": 123,
+      "mean_score_positive": 0.8917337017961212,
+      "mean_score_negative": 0.3027302158169437
+    },
+    "test": {
+      "n": 195,
+      "positives": 136,
+      "negatives": 59,
+      "threshold": 0.101656973361969,
+      "recall": 0.9338235294117647,
+      "precision": 0.7888198757763976,
+      "f1": 0.8552188552188552,
+      "f2": 0.900709219858156,
+      "ap": 0.9318886067748795,
+      "roc_auc": 0.8546859421734796,
+      "confusion_matrix": {
+        "tn": 25,
+        "fp": 34,
+        "fn": 9,
+        "tp": 127
+      },
+      "predicted_positive": 161,
+      "mean_score_positive": 0.8779775127627277,
+      "mean_score_negative": 0.4143552461789954
+    },
+    "test_by_full_text": {
+      "full_text_available": {
+        "n": 195,
+        "positives": 136,
+        "negatives": 59,
+        "threshold": 0.101656973361969,
+        "recall": 0.9338235294117647,
+        "precision": 0.7888198757763976,
+        "f1": 0.8552188552188552,
+        "f2": 0.900709219858156,
+        "ap": 0.9318886067748795,
+        "roc_auc": 0.8546859421734796,
+        "confusion_matrix": {
+          "tn": 25,
+          "fp": 34,
+          "fn": 9,
+          "tp": 127
+        },
+        "predicted_positive": 161,
+        "mean_score_positive": 0.8779775127627277,
+        "mean_score_negative": 0.4143552461789954
+      },
+      "abstract_only": {
+        "n": 0,
+        "note": "empty stratum"
+      }
+    }
+  },
+  "encoder_runtime": {
+    "base_path": "/data/yangzs/.cache/huggingface/hub/models--allenai--specter2_base/snapshots/3447645e1def9117997203454fa4495937bfbd83",
+    "adapter_name": "allenai/specter2_classification",
+    "device": "cpu",
+    "max_length": 512,
+    "normalize": true,
+    "adapter_loaded": true,
+    "adapter_error": "",
+    "active_adapter_setup": "Stack[[CLF]]",
+    "torch_version": "2.15.0+cu132",
+    "cuda_available": false,
+    "device_name": "cpu"
+  },
+  "encoding": {
+    "seconds": 2366.8,
+    "docs_per_second": 0.41,
+    "mean_chunks_per_doc": 11.58
+  },
+  "notes": [
+    "No SPECTER2 fine-tuning; base weights and adapter are frozen.",
+    "Threshold selected on validation at target recall 0.95.",
+    "AP/ROC-AUC are threshold-free; F2 weights recall higher than precision.",
+    "GroupShuffleSplit over PMID groups; group_id equals PMID in this dataset."
+  ]
+}

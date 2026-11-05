@@ -1,0 +1,64 @@
+{
+  "model_path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model.joblib",
+  "model_all_path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model_all.joblib",
+  "encoder_family": "pubmedbert",
+  "threshold": 0.0951138474047184,
+  "review_lower_bound": -0.054886152595281595,
+  "feature_mode": "B",
+  "feature_dim": 1536,
+  "feature_layout": [
+    "mean(all chunks) 768 L2",
+    "mean(first 2 chunks) 768 L2"
+  ],
+  "encoder": {
+    "model_path": "/home/yangzs/.cache/huggingface/hub/models--NeuML--pubmedbert-base-embeddings/snapshots/b79526d6ef3645e0df4530322e266f24c829f5ef",
+    "max_length": 512,
+    "normalize": true,
+    "chunk_tokens": 480,
+    "max_chunks": 12,
+    "keep_first": 2,
+    "pooling": "concat[mean(all), mean(first 2)] L2-normed -> 1536"
+  },
+  "encoder_runtime": {
+    "model_path": "/home/yangzs/.cache/huggingface/hub/models--NeuML--pubmedbert-base-embeddings/snapshots/b79526d6ef3645e0df4530322e266f24c829f5ef",
+    "imported": true
+  },
+  "train_subset": "default (weak=False, label_source!=model)",
+  "n_train": 566,
+  "n_val": 140,
+  "n_test": 177,
+  "n_total": 974,
+  "split": {
+    "method": "GroupShuffleSplit (group_id=PMID), 64/16/20",
+    "seed": 42,
+    "sizes": {
+      "all": {
+        "train": 623,
+        "val": 156,
+        "test": 195
+      },
+      "default": {
+        "train": 566,
+        "val": 140,
+        "test": 177
+      }
+    },
+    "positives": {
+      "all": {
+        "train": 451,
+        "val": 112,
+        "test": 136
+      },
+      "default": {
+        "train": 439,
+        "val": 109,
+        "test": 130
+      }
+    }
+  },
+  "target_recall": 0.95,
+  "C": 1.0,
+  "class_weight": "balanced",
+  "seed": 42,
+  "feature_cache": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/features/pubmedbert_mc12_ct480_n974_a9ccfb8d4b.npz"
+}

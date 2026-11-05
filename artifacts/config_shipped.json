@@ -1,0 +1,62 @@
+{
+  "model_path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model_shipped.joblib",
+  "encoder_family": "pubmedbert",
+  "threshold": 0.28335033861225156,
+  "threshold_shipped_default": 0.5,
+  "review_lower_bound": 0.13335033861225157,
+  "feature_mode": "B",
+  "feature_dim": 1536,
+  "encoder": {
+    "model_path": "/home/yangzs/.cache/huggingface/hub/models--NeuML--pubmedbert-base-embeddings/snapshots/b79526d6ef3645e0df4530322e266f24c829f5ef",
+    "max_length": 512,
+    "normalize": true,
+    "chunk_tokens": 480,
+    "max_chunks": 12,
+    "keep_first": 2,
+    "pooling": "concat[mean(all chunks) , mean(first 2 chunks)], each L2-normalised -> 1536 dims",
+    "source_weights": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/pubmedbert/weights",
+    "head_name": "casefilter-head-v3"
+  },
+  "test_thr_r95": {
+    "n": 177,
+    "positives": 130,
+    "negatives": 47,
+    "threshold": 0.28335033861225156,
+    "recall": 0.9846153846153847,
+    "precision": 0.8707482993197279,
+    "f1": 0.924187725631769,
+    "f2": 0.95952023988006,
+    "ap": 0.9658341106805912,
+    "roc_auc": 0.9158756137479541,
+    "confusion_matrix": {
+      "tn": 28,
+      "fp": 19,
+      "fn": 2,
+      "tp": 128
+    },
+    "predicted_positive": 147,
+    "mean_score_positive": 0.7369817209445034,
+    "mean_score_negative": 0.30066388008540385
+  },
+  "test_thr0.5": {
+    "n": 177,
+    "positives": 130,
+    "negatives": 47,
+    "threshold": 0.5,
+    "recall": 0.9,
+    "precision": 0.9140625,
+    "f1": 0.9069767441860465,
+    "f2": 0.9027777777777778,
+    "ap": 0.9658341106805912,
+    "roc_auc": 0.9158756137479541,
+    "confusion_matrix": {
+      "tn": 36,
+      "fp": 11,
+      "fn": 13,
+      "tp": 117
+    },
+    "predicted_positive": 128,
+    "mean_score_positive": 0.7369817209445034,
+    "mean_score_negative": 0.30066388008540385
+  }
+}

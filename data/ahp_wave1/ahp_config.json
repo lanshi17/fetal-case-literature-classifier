@@ -1,0 +1,110 @@
+{
+  "note": "uniform_experts_insufficient_gold_overlap",
+  "criterion_names": [
+    "FETAL",
+    "PHENO_US",
+    "GENETIC_TEST",
+    "CASE_PRIMARY"
+  ],
+  "criterion_pairwise": [
+    [
+      1,
+      0.5,
+      0.3333333333333333,
+      2
+    ],
+    [
+      2,
+      1,
+      1,
+      3
+    ],
+    [
+      3,
+      1,
+      1,
+      3
+    ],
+    [
+      0.5,
+      0.3333333333333333,
+      0.3333333333333333,
+      1
+    ]
+  ],
+  "criterion_weights": {
+    "FETAL": 0.16823928200954263,
+    "PHENO_US": 0.34161763304239473,
+    "GENETIC_TEST": 0.38320112211223817,
+    "CASE_PRIMARY": 0.10694196283582431
+  },
+  "criterion_lambda_max": 4.0458192845012055,
+  "criterion_CR": 0.016970105370816866,
+  "experts": [
+    "claude",
+    "gpt",
+    "gemini"
+  ],
+  "expert_models": {
+    "claude": {
+      "default_model": "claude-haiku-5-5",
+      "env_model": "AHP_CLAUDE_MODEL"
+    },
+    "gpt": {
+      "default_model": "gpt-6-luna",
+      "env_model": "AHP_GPT_MODEL"
+    },
+    "gemini": {
+      "default_model": "gemini-3.8-flash",
+      "env_model": "AHP_GEMINI_MODEL"
+    }
+  },
+  "expert_pairwise": [
+    [
+      1.0,
+      1.0,
+      1.0
+    ],
+    [
+      1.0,
+      1.0,
+      1.0
+    ],
+    [
+      1.0,
+      1.0,
+      1.0
+    ]
+  ],
+  "expert_weights": {
+    "claude": 0.3333333333333333,
+    "gpt": 0.3333333333333333,
+    "gemini": 0.3333333333333333
+  },
+  "expert_lambda_max": 3.0,
+  "expert_CR": 0.0,
+  "expert_seed_metrics": {
+    "claude": {
+      "n": 0.0,
+      "accuracy": 0.5,
+      "macro_f1": 0.5,
+      "score": 0.5
+    },
+    "gpt": {
+      "n": 0.0,
+      "accuracy": 0.5,
+      "macro_f1": 0.5,
+      "score": 0.5
+    },
+    "gemini": {
+      "n": 0.0,
+      "accuracy": 0.5,
+      "macro_f1": 0.5,
+      "score": 0.5
+    }
+  },
+  "hard_label": {
+    "hi": 0.55,
+    "lo": 0.45
+  }
+}

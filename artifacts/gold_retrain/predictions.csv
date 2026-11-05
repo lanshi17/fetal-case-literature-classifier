@@ -1,0 +1,210 @@
+doc_id,title,label,gold_override,score,threshold,decision,split
+19016622,Zygosity and chorionicity in the prognosis of triplet pregnancies: contribution of microsatellites.,0,False,0.5570129156112671,0.08491619676351547,relevant,test
+21975797,Clinical utility of chromosomal microarray analysis in invasive prenatal diagnosis.,1,False,0.014402275905013084,0.08491619676351547,review,test
+22471583,Clinical utility of noninvasive fetal trisomy (NIFTY) test--early experience.,0,False,2.454752120684134e-06,0.08491619676351547,review,test
+22747519,"Achondroplasia with 47, XXY karyotype: a case report of the neonatal diagnosis of an extremely unusual association.",0,False,0.9997580647468567,0.08491619676351547,relevant,test
+23047142,"Prenatal diagnosis of a case of partial monosomy/monosomy 13 mosaicism: 46,XX,r(13)(p11q33)/45,XX,-13 suspected by nuchal fold translucency increasing.",1,False,0.9989504814147949,0.08491619676351547,relevant,test
+23056970,Prenatal diagnosis of down syndrome associated with right aortic arch and dilated septum cavi pellucidi.,1,False,0.208282470703125,0.08491619676351547,relevant,test
+23198897,Noninvasive Fetal Trisomy (NIFTY) test: an advanced noninvasive prenatal diagnosis methodology for fetal autosomal and sex chromosomal aneuploidies.,0,False,3.191423456883058e-05,0.08491619676351547,review,test
+23330029,[Prenatal diagnosis of trisomy 21 by fluorescence in situ hybridization (FISH): about the first tests in Morocco].,1,False,0.02348972298204899,0.08491619676351547,review,test
+23968558,Multicentric paraspinal neuroglial heterotopia with Müllerian and renal agenesis: a variant of Mayer-Rokitansky-Küster-Hauser syndrome?,1,False,0.20274107158184052,0.08491619676351547,relevant,test
+25388684,Retrospective cohort of trisomy 18 (Edwards syndrome) in southern Brazil.,1,False,0.9992552399635315,0.08491619676351547,relevant,test
+25884925,Prenatal screening of cytogenetic anomalies - a Western Indian experience.,1,False,0.34315770864486694,0.08491619676351547,relevant,test
+26743561,"What results to disclose, when, and who decides? Healthcare professionals' views on prenatal chromosomal microarray analysis.",0,False,1.1983659620184994e-09,0.08491619676351547,review,test
+26862157,Genetic spectrum of Saudi Arabian patients with antenatal cystic kidney disease and ciliopathy phenotypes using a targeted renal gene panel.,1,False,0.9995631575584412,0.08491619676351547,relevant,test
+27322245,Next Generation Sequencing Approach in a Prenatal Case of Cardio-Facio-Cutaneus Syndrome.,1,False,0.9988841414451599,0.08491619676351547,relevant,test
+27433940,Non-Invasive Prenatal Diagnosis of Lethal Skeletal Dysplasia by Targeted Capture Sequencing of Maternal Plasma.,1,False,0.03678029403090477,0.08491619676351547,review,test
+27684831,Length to width ratio of the ductus venosus in simple screening for fetal congenital heart diseases in the second trimester.,1,False,0.5425575971603394,0.08491619676351547,relevant,test
+28056489,Use of high-frequency ultrasound to study the prenatal development of cranial neural tube defects and hydrocephalus in Gldc-deficient mice.,0,False,0.9999814033508301,0.08491619676351547,relevant,test
+28322033,Prenatal diagnosis of aberrant right subclavian artery in an unselected population.,1,False,0.997484564781189,0.08491619676351547,relevant,test
+28440418,Two novel mutations in ERCC6 cause Cockayne syndrome B in a Chinese family.,0,False,0.005111233331263065,0.08491619676351547,review,test
+29160607,Targeted cell-free DNA analysis with microarray quantitation for assessment of fetal sex and sex chromosome aneuploidy risk.,0,False,3.081671457039192e-05,0.08491619676351547,review,test
+29299063,Haploinsufficiency of <i>BMP4</i> and <i>OTX2</i> in the Foetus with an abnormal facial profile detected in the first trimester of pregnancy.,1,False,0.9999635219573975,0.08491619676351547,relevant,test
+29695406,A novel association of campomelic dysplasia and hydrocephalus with an unbalanced chromosomal translocation upstream of <i>SOX9</i>.,1,False,0.9999929666519165,0.08491619676351547,relevant,test
+29769050,Why do patients decline amniocentesis? Analysis of factors influencing the decision to refuse invasive prenatal testing.,0,False,1.1371887609357145e-07,0.08491619676351547,review,test
+30187503,Unexpected finding of uniparental disomy mosaicism in term placentas: Is it a common feature in trisomic placentas?,0,False,0.7549004554748535,0.08491619676351547,relevant,test
+30706702,Prenatal cell-free DNA screening for fetal aneuploidy in pregnant women at average or high risk: Results from a large US clinical laboratory.,0,False,0.00014522625133395195,0.08491619676351547,review,test
+31040167,Prenatal ultrasound findings of rasopathies in a cohort of 424 fetuses: update on genetic testing in the NGS era.,1,False,0.9999964237213135,0.08491619676351547,relevant,test
+31115529,Possibility of early diagnosis in a fetus affected by Prader‑Willi syndrome with maternal hetero‑UPD15: A lesson to be learned.,1,False,0.9624990820884705,0.08491619676351547,relevant,test
+31222985,"Clinical Validation of Non-Invasive Prenatal Testing for Fetal Common Aneuploidies in 1,055 Korean Pregnant Women: a Single Center Experience.",0,False,0.0469784215092659,0.08491619676351547,review,test
+31297990,A rare mosaic 22q11.2 microdeletion identified in a Chinese family with recurrent fetal conotruncal defects.,1,False,0.8642877340316772,0.08491619676351547,relevant,test
+31391865,Submicroscopic aberrations of chromosome 16 in prenatal diagnosis.,1,False,0.9999827146530151,0.08491619676351547,relevant,test
+31493343,Mosaic complete tetrasomy 21 in a fetus with complete atrioventricular septal defect and minor morphological variations.,1,False,0.017179518938064575,0.08491619676351547,review,test
+31929729,Split Hand Foot Malformation Syndrome: A Novel Heterozygous FGFR1 Mutation Detected by Next Generation Sequencing.,1,False,0.9961142539978027,0.08491619676351547,relevant,test
+32185046,Second-trimester prenatal diagnosis of Nager syndrome with a deletion including <i>SF3B4</i> detected by chromosomal microarray.,1,False,0.9997430443763733,0.08491619676351547,relevant,test
+32342531,Analysis of copy number variation by sequencing in fetuses with nuchal translucency thickening.,1,False,0.9943513870239258,0.08491619676351547,relevant,test
+32386509,Dental anomalies as a possible clue of 1p36 deletion syndrome due to germline mosaicism: a case report.,0,False,0.005343192722648382,0.08491619676351547,review,test
+32500674,Clinical and molecular characterization of 12 prenatal cases of Cri-du-chat syndrome.,1,False,0.9998993873596191,0.08491619676351547,relevant,test
+32503639,"Clinical performance of non-invasive prenatal served as a first-tier screening test for trisomy 21, 18, 13 and sex chromosome aneuploidy in a pilot city in China.",0,False,0.0015621418133378029,0.08491619676351547,review,test
+32643293,Fetus of 8q22.2q24.3 duplication and 13q33.2q34 deletion derived from a maternal balanced translocation.,1,False,0.999990701675415,0.08491619676351547,relevant,test
+32934329,Copy number variations in ultrasonically abnormal late pregnancy fetuses with normal karyotypes.,1,False,0.9999998807907104,0.08491619676351547,relevant,test
+33067800,Outcomes following the detection of fetal edema in early pregnancy prior to non-invasive prenatal testing.,1,False,0.9998100399971008,0.08491619676351547,relevant,test
+33198662,Application of chromosome microarray analysis in prenatal diagnosis.,1,False,0.9987208247184753,0.08491619676351547,relevant,test
+33456614,Cytogenetics and Molecular Investigations detect a Mosaic Variant of Turner Syndrome only Suspected by Non-Invasive Prenatal Testing: Two Case Reports with Negative Ultrasound Examinations.,0,False,0.018715834245085716,0.08491619676351547,review,test
+33615614,Prenatal diagnosis of 913 fetuses samples using copy number variation sequencing.,1,False,0.7779783606529236,0.08491619676351547,relevant,test
+33632221,"Integrated CNV-seq, karyotyping and SNP-array analyses for effective prenatal diagnosis of chromosomal mosaicism.",1,False,0.9414010047912598,0.08491619676351547,relevant,test
+33671041,Prenatal Sonographic Features of CHARGE Syndrome.,1,False,0.9502498507499695,0.08491619676351547,relevant,test
+33713577,De novo c.2455C>T mutation of NPR2 gene in a fetus with shortened long bones and a ventricular septal defect conceived by a mother with a fragile site at 16q22.1 and a father with a rare heterochromatic variant of chromosome 4 from Vietnam.,1,False,0.9999996423721313,0.08491619676351547,relevant,test
+33717247,Prenatal diagnosis of a pure 15q distal trisomy derived from a maternal pericentric inversion: A case report.,1,False,0.9999998807907104,0.08491619676351547,relevant,test
+33724704,Novel compound heterozygous frameshift variants in WDR81 associated with congenital hydrocephalus 3 with brain anomalies: First Chinese prenatal case confirms WDR81 involvement.,1,False,0.999983549118042,0.08491619676351547,relevant,test
+33817732,Case report of a novel phenotype in 18q deletion syndrome.,1,False,0.9992777705192566,0.08491619676351547,relevant,test
+33868367,Application of Copy Number Variation Detection to Fetal Diagnosis of Echogenic Intracardiac Focus During Pregnancy.,1,False,0.9999792575836182,0.08491619676351547,relevant,test
+34011095,Diagnostic accuracy and value of chromosomal microarray analysis for chromosomal abnormalities in prenatal detection: A prospective clinical study.,1,False,0.9616143107414246,0.08491619676351547,relevant,test
+34084776,Clinical Utility and the Yield of Single Nucleotide Polymorphism Array in Prenatal Diagnosis of Fetal Central Nervous System Abnormalities.,1,False,0.9999984502792358,0.08491619676351547,relevant,test
+34090308,Performance of a targeted cell-free DNA prenatal test for 22q11.2 deletion in a large clinical cohort.,0,False,0.0017695095157250762,0.08491619676351547,review,test
+34238233,Investigation on combined copy number variation sequencing and cytogenetic karyotyping for prenatal diagnosis.,1,False,0.9495897889137268,0.08491619676351547,relevant,test
+34393503,Application of Single Nucleotide Polymorphism Microarray in Prenatal Diagnosis of Fetuses with Central Nervous System Abnormalities.,1,False,0.9998999834060669,0.08491619676351547,relevant,test
+34405543,Prenatal diagnosis of Pallister-Killian syndrome and literature review.,1,False,0.9999958276748657,0.08491619676351547,relevant,test
+34411415,Fetal exome sequencing for isolated increased nuchal translucency: should we be doing it?,1,False,0.9995207786560059,0.08491619676351547,relevant,test
+34548956,Cyclopia: The Face Predicts the Future.,0,False,0.9867483377456665,0.08491619676351547,relevant,test
+34611884,Prenatal exome sequencing: A useful tool for the fetal neurologist.,1,False,0.9999258518218994,0.08491619676351547,relevant,test
+34630509,Case Report: Candidate Genes Associated With Prenatal Ultrasound Anomalies in a Fetus With Prenatally Detected 1q23.3q31.2 Deletion.,1,False,0.9999513626098633,0.08491619676351547,relevant,test
+34733861,Isolated Increased Nuchal Translucency in First Trimester Ultrasound Scan: Diagnostic Yield of Prenatal Microarray and Outcome of Pregnancy.,1,False,0.9999966621398926,0.08491619676351547,relevant,test
+34764685,"Comprehensive Assessment of Fetal Bilateral Ventriculomegaly Based on Genetic Disorders, Cytomegalovirus Infection, Extra Prenatal Imaging and Pregnancy Outcomes in a Tertiary Referral Center.",1,False,0.9999995231628418,0.08491619676351547,relevant,test
+34853893,Prenatal exome sequencing and chromosomal microarray analysis in fetal structural anomalies in a highly consanguineous population reveals a propensity of ciliopathy genes causing multisystem phenotypes.,1,False,0.9999905824661255,0.08491619676351547,relevant,test
+34904224,Fetal central nervous system anomalies according to RT-PCR and trimester of maternal infection with Zika virus: A prospective cohort study.,0,False,0.9199506044387817,0.08491619676351547,relevant,test
+35027977,Prenatal features of mandibulofacial dysostosis Guion-Almeida Type.,1,False,0.7278565764427185,0.08491619676351547,relevant,test
+35045821,Prenatal detection of chromosomal abnormalities and copy number variants in fetuses with congenital gastrointestinal obstruction.,1,False,0.9999998807907104,0.08491619676351547,relevant,test
+35047609,Prenatal ultrasonographic findings in Klippel-Trenaunay syndrome: A case report.,1,False,0.9999715089797974,0.08491619676351547,relevant,test
+35071484,Study on the application of ultrasonography in the diagnosis of fetal cardiac structural abnormalities and the relationship between fetal cardiac structural abnormalities with chromosome abnormalities in early pregnancy.,1,False,0.8382185697555542,0.08491619676351547,relevant,test
+35207307,The Value of Fetal Heart Evaluation in Fetuses with Rare Congenital Lymphangiomas: A Cohort Study from a Single Tertiary Center across Two Decades (Years 1999-2020).,1,False,0.9997852444648743,0.08491619676351547,relevant,test
+35338537,Prenatal diagnosis of Walker-Warburg syndrome due to compound mutations in the B3GALNT2 gene.,1,False,1.0,0.08491619676351547,relevant,test
+35354480,Evaluation of genetic variants using chromosomal microarray analysis for fetuses with polyhydramnios.,1,False,0.9997983574867249,0.08491619676351547,relevant,test
+35506821,Prenatal chromosomal microarray analysis in foetuses with isolated absent or hypoplastic nasal bone.,1,False,0.9999523162841797,0.08491619676351547,relevant,test
+35627109,Implementation of Exome Sequencing in Prenatal Diagnosis and Impact on Genetic Counseling: The Polish Experience.,1,False,0.9962223768234253,0.08491619676351547,relevant,test
+35656167,Ocular manifestations of Chinese patients with copy number variants in the <i>NDP</i> gene.,0,False,0.5678927302360535,0.08491619676351547,relevant,test
+35804426,Clinical evaluation of non-invasive prenatal screening for the detection of fetal genome-wide copy number variants.,0,False,0.3402586579322815,0.08491619676351547,relevant,test
+35806909,Prenatal Diagnosis Using Chromosomal Microarray Analysis in High-Risk Pregnancies.,1,False,0.9702662825584412,0.08491619676351547,relevant,test
+36011653,Cardiovascular Anomalies among 1005 Fetuses Referred to Invasive Prenatal Testing-A Comprehensive Cohort Study of Associated Chromosomal Aberrations.,1,False,0.9994237422943115,0.08491619676351547,relevant,test
+36046039,Case report: Fetal cervical immature teratoma and copy number variations.,1,False,0.6176482439041138,0.08491619676351547,relevant,test
+36092864,Case Report: Novel compound heterozygous variants in <i>CHRNA1</i> gene leading to lethal multiple pterygium syndrome: A case report.,1,False,0.9998456239700317,0.08491619676351547,relevant,test
+36099538,Prevalence of chromosomal disorders in cases with congenital heart defect: registry-based study from Denmark between 2008 and 2018.,1,False,0.3610583245754242,0.08491619676351547,relevant,test
+36151134,Genetic abnormalities in fetal congenital heart disease with aberrant right subclavian artery.,1,False,0.9999678134918213,0.08491619676351547,relevant,test
+36186462,"Non-invasive prenatal testing for the detection of trisomy 13, 18, and 21 and sex chromosome aneuploidies in 68,763 cases.",0,False,0.001019179355353117,0.08491619676351547,review,test
+36307859,Application of exome sequencing for prenatal diagnosis of fetal structural anomalies: clinical experience and lessons learned from a cohort of 1618 fetuses.,1,False,0.9999879598617554,0.08491619676351547,relevant,test
+36396840,"Efficiency of expanded noninvasive prenatal testing in the detection of fetal subchromosomal microdeletion and microduplication in a cohort of 31,256 single pregnancies.",0,False,0.998504638671875,0.08491619676351547,relevant,test
+36397455,Identification of a rare missense mutation in GJB1 and prenatal diagnosis in a Chinese family with CMT: A case report.,0,False,0.8196611404418945,0.08491619676351547,relevant,test
+36553497,An Investigation of the Etiologies of Non-Immune Hydrops Fetalis in the Era of Next-Generation Sequence-A Single Center Experience.,1,False,0.4493221938610077,0.08491619676351547,relevant,test
+36725972,Comparison of the combined use of CNV-seq and karyotyping or QF-PCR in prenatal diagnosis: a retrospective study.,1,False,0.9920597076416016,0.08491619676351547,relevant,test
+36734119,Mutation of FLNA attenuating the migration of abdominal muscles contributed to Melnick-Needles syndrome (MNS) in a family with recurrent miscarriage.,1,False,0.9999512434005737,0.08491619676351547,relevant,test
+36873643,Increased nuchal translucency in children with congenital heart defects and normal karyotype-is there a correlation with mortality?,0,False,0.00033326318953186274,0.08491619676351547,review,test
+36909308,Association between aberrant amino acid metabolism and nonchromosomal modifications fetal structural anomalies: A cohort study.,0,False,0.973588764667511,0.08491619676351547,relevant,test
+36961397,Array Comparative Genomic Hybridization Analysis of Products of Conception in Recurrent Pregnancy Loss for specific anomalies detected by USG.,1,False,0.9991766810417175,0.08491619676351547,relevant,test
+37497277,Experience in prenatal ultrasound diagnosis of fetal microtia and associated abnormalities.,1,False,0.9841563105583191,0.08491619676351547,relevant,test
+37535131,Spectrum of congenital anomalies of the kidney and urinary tract (CAKUT) including renal parenchymal malformations during fetal life and the implementation of prenatal exome sequencing (WES).,1,False,0.9994494318962097,0.08491619676351547,relevant,test
+37592254,Prenatal diagnosis to identify compound heterozygous variants in PKDCC that causes rhizomelic limb shortening with dysmorphic features in a fetus from China.,1,False,0.9999998807907104,0.08491619676351547,relevant,test
+37795247,Pregnancy outcomes and genetic analysis for fetal ventriculomegaly.,1,False,0.9999185800552368,0.08491619676351547,relevant,test
+37823350,The challenges in the interpretation of genetic variants detected by genomics techniques in patients with congenital anomalies.,1,False,0.9948711395263672,0.08491619676351547,relevant,test
+37875969,"Genetic testing and diagnostic strategies of fetal skeletal dysplasia: a preliminary study in Wuhan, China.",1,False,0.9992780089378357,0.08491619676351547,relevant,test
+37928238,<i>CEP55</i>-associated lethal fetal syndrome: a case report of a Chinese family.,1,False,0.9998780488967896,0.08491619676351547,relevant,test
+38027951,"Prenatal diagnosis of fetal digestive system malformations and pregnancy outcomes at a tertiary referral center in Fujian, China: A retrospective study.",1,False,1.0,0.08491619676351547,relevant,test
+38028032,External fetus in fetu presenting in the second trimester: A case report and literature review.,1,False,0.9825276732444763,0.08491619676351547,relevant,test
+38172840,"Intrauterine ultrasound phenotyping, molecular characteristics, and postnatal follow-up of fetuses with the 15q11.2 BP1-BP2 microdeletion syndrome: a single-center, retrospective clinical study.",1,False,0.9963984489440918,0.08491619676351547,relevant,test
+38255008,Sodium Channel Gene Variants in Fetuses with Abnormal Sonographic Findings: Expanding the Prenatal Phenotypic Spectrum of Sodium Channelopathies.,1,False,0.999529242515564,0.08491619676351547,relevant,test
+38259626,Small supernumerary marker chromosomes in prenatal diagnosis-molecular characterization and clinical outcomes.,0,False,0.8408007025718689,0.08491619676351547,relevant,test
+38284444,"A genetic variant in the MAST1 gene is associated with mega-corpus-callosum syndrome with hypoplastic cerebellar vermis, in a fetus.",1,False,0.9973174929618835,0.08491619676351547,relevant,test
+38369506,Polyhydramnios associated with rare genetic syndromes: two case reports.,1,False,0.9997840523719788,0.08491619676351547,relevant,test
+38457559,Chromosome balanced translocation in newborn fetus founded during prenatal diagnosis: Three cases reports.,0,False,0.6626638174057007,0.08491619676351547,relevant,test
+38849481,Genetic analysis of congenital unilateral renal agenesis in children based on next-generation sequencing.,1,False,0.9988847374916077,0.08491619676351547,relevant,test
+38987582,Chromosomal abnormalities detected by chromosomal microarray analysis and pregnancy outcomes of 4211 fetuses with high-risk prenatal indications.,1,False,0.9986419081687927,0.08491619676351547,relevant,test
+39200946,Prenatal Diagnosis of Cleft Lip and Palate: A Retrospective Study.,1,False,0.9862116575241089,0.08491619676351547,relevant,test
+39239799,Detection of genomic variants by genome sequencing in foetuses with central nervous system abnormalities.,1,False,0.9999511241912842,0.08491619676351547,relevant,test
+39268228,A <i>De novo</i> Mutation in the <i>COL1A1</i> Gene Leading to Severe Osteogenesis Imperfecta: Case Report and Review of the Literature.,1,False,0.99989914894104,0.08491619676351547,relevant,test
+39350129,Identification of a novel intronic variant in COL4A2 gene associated with fetal severe cerebral encephalomalacia and subdural hemorrhage.,1,False,0.999395489692688,0.08491619676351547,relevant,test
+39356042,The efficacy of expanded non-invasive prenatal testing (NIPT) in a high-risk twin pregnancies cohort.,1,False,0.028155583888292313,0.08491619676351547,review,test
+39425694,Aberrant Fetal Brain Sulcus Formation: A Clue to the Diagnosis of Sotos Syndrome.,1,False,0.9996868371963501,0.08491619676351547,relevant,test
+39516223,Genetic correlation between fetal nuchal translucency thickening and cystic hygroma and exploration of pregnancy outcome.,1,False,0.9999980926513672,0.08491619676351547,relevant,test
+39572407,Implementation of a National Prenatal Exome Sequencing Service in England: Cost-Effectiveness Analysis.,0,False,0.00023923981643747538,0.08491619676351547,review,test
+39596664,Inherited Unbalanced Reciprocal Translocation with 18p11.32p11.21 Tetrasomy and 9q34.3 Trisomy in a Fetus Revealed by Cell-Free Fetal DNA (cffDNA) Testing: Cytogenetic and Cytogenomic Characterization in Prenatal Diagnosis.,1,False,0.1863427609205246,0.08491619676351547,relevant,test
+39624702,Prenatal ultrasound assisted diagnosis of de-novo terminal 7q deletion syndrome: A case report with literature review.,1,False,0.9994664788246155,0.08491619676351547,relevant,test
+39707235,Role of copy number variation analysis in prenatally diagnosed Blake's pouch cyst.,1,False,0.999977707862854,0.08491619676351547,relevant,test
+39991384,Renal Tubular Dysgenesis: Broadening the Discussion of the Etiological Spectrum.,0,False,0.0010811924003064632,0.08491619676351547,review,test
+40041231,Challenges in genetic counseling for congenital anomalies of the kidneys and urinary tract (CAKUT) spectrum.,1,False,0.9999510049819946,0.08491619676351547,relevant,test
+40041233,Prenatal diagnosis of ectrodactyly-ectodermal dysplasia clefting syndrome ‒ a case report with literature review.,1,False,0.15050111711025238,0.08491619676351547,relevant,test
+40129811,Arachnoid cyst found in fetal ultrasound: A case report.,1,False,0.8631109595298767,0.08491619676351547,relevant,test
+40143423,Cesarean Delivery in Fetal Triploidy: Clinical Considerations and Case Study Insights.,0,False,0.08234484493732452,0.08491619676351547,review,test
+40150114,Comprehensive Analysis of the Aberrant Right Subclavian Artery: A Perspective from a Single Institute.,1,False,0.99864262342453,0.08491619676351547,relevant,test
+40195522,Perinatal genetic diagnostic yield in a population of fetuses with the phenotype arthrogryposis multiplex congenita: a cohort study 2007-2021.,1,False,0.8025930523872375,0.08491619676351547,relevant,test
+40229386,Retrospective study on NIPT or NIPT plus combined with ultrasound in screening fetal chromosomal abnormalities.,1,False,0.1277598738670349,0.08491619676351547,relevant,test
+40241902,"Pregnancy outcomes of 4,200 fetuses with increased nuchal translucency in Henan, China.",1,False,0.9996428489685059,0.08491619676351547,relevant,test
+40524352,"Occipital Cephalocele, Polymicrogyria, Ocular Anomaly and Vermian Dysplasia: Prenatal Markers for Knobloch Syndrome.",1,False,0.9999998807907104,0.08491619676351547,relevant,test
+40528522,"Chorionic Villus Sampling for Rapid Confirmation of High-Risk NIPT Results for Trisomy 21, 18, and 13.",1,False,0.34758737683296204,0.08491619676351547,relevant,test
+40531760,A cut-off value for nuchal translucency in the prediction of composite adverse outcome in cystic hygroma cases.,1,False,0.001241646590642631,0.08491619676351547,review,test
+40684108,Prenatal diagnosis and genetic assessment of fetuses with single umbilical artery using chromosomal microarray analysis: a seven-year single-center retrospective study.,1,False,0.9999997615814209,0.08491619676351547,relevant,test
+40703902,"Tiny Lungs, Big Challenges: Navigating Fetal Pleural Effusion Outcomes, Long Term Follow-up and Implications for Future Pregnancies.",1,False,0.016153857111930847,0.08491619676351547,review,test
+40709701,Global Delivery of Foetal Sequencing: Do We Need Some Standardisation?,0,False,0.0010030320845544338,0.08491619676351547,review,test
+40797307,A retrospective analysis of 6942 amniocentesis cases.,1,False,0.894821286201477,0.08491619676351547,relevant,test
+40824895,"Clinical experience of genome-wide non-invasive prenatal testing as a first-tier screening test in a cohort of 59,771 pregnancies.",0,False,0.0074318330734968185,0.08491619676351547,review,test
+40832109,Application of family whole-exome sequencing for prenatal diagnosis-an analysis of 357 cases.,1,False,0.9706937074661255,0.08491619676351547,relevant,test
+40844101,Exome sequencing uncovers promising candidate genes for foetal structural malformations.,1,False,0.9999984502792358,0.08491619676351547,relevant,test
+40941617,The Diagnostic Utility of Prenatal Microarray in High-Risk Pregnancies: A Single-Center Experience in Enhancing Reproductive Care and Risk Stratification.,1,False,0.9590199589729309,0.08491619676351547,relevant,test
+41108211,Prenatal Exome Sequencing Analysis in Fetuses With Structural Anomalies: A Multicenter Prospective Cohort Study With Practical Implications.,1,False,0.9999991655349731,0.08491619676351547,relevant,test
+41186686,Can cell-free fetal DNA screening be utilized for the assessment of chromosomal abnormalities in fetuses with mildly increased nuchal translucency?,1,False,0.8067354559898376,0.08491619676351547,relevant,test
+41216289,Identification and functional analysis of a novel &lt;i&gt;CSNK2A1&lt;/i&gt; frameshift variant in stillbirth.,1,False,0.9628832340240479,0.08491619676351547,relevant,test
+41239616,A novel DCC truncating mutation leads to rare congenital mirror movements and corpus callosum agenesis: A case report.,1,False,0.9999483823776245,0.08491619676351547,relevant,test
+41398988,Prenatal diagnosis and perinatal outcomes of fetuses with congenital duodenal obstruction: A nine-year retrospective study from China.,1,False,0.9999998807907104,0.08491619676351547,relevant,test
+41461890,"Evaluating the effectiveness of routine noninvasive prenatal screening for CNVs in 22q11.2 region in a cohort of 38,495 pregnancies.",1,False,0.3077881932258606,0.08491619676351547,relevant,test
+41462830,Associations Between Fetal Symptoms During Pregnancy and Neonatal Clinical Complications with Cytomegalovirus Infection.,0,False,0.11934332549571991,0.08491619676351547,relevant,test
+41521034,Moderate Diagnostic Yield of Exome Sequencing in Fetal Growth Restriction: Retrospective Insights.,1,False,0.9995927214622498,0.08491619676351547,relevant,test
+41555925,Integration of chromosomal microarray analysis and whole-exome sequencing for prenatal diagnosis of fetuses with cardiac ultrasound anomalies.,1,False,0.9999997615814209,0.08491619676351547,relevant,test
+41584385,Situs Inversus Totalis: A Case Report and Literature Review.,1,False,0.04311351478099823,0.08491619676351547,review,test
+41620759,Molecular diagnosis of rare biallelic CDC45 gene variants causing Meier-Gorlin syndrome-7 using whole exome sequencing.,1,False,0.9997923970222473,0.08491619676351547,relevant,test
+41710465,Phenotypic Spectrum and Chromosomal Discordance in Alobar Holoprosencephaly: A Comparative Case Series from a Tertiary Referral Center.,1,False,0.9999996423721313,0.08491619676351547,relevant,test
+41723443,"Diagnostic value of karyotyping, CMA/CNV-seq, and WES in fetuses with thickened nuchal translucency: perinatal and two-year follow-up outcomes.",1,False,0.9999994039535522,0.08491619676351547,relevant,test
+41738333,Prenatal 2D/3D Ultrasound in Fetal Dural Sinus Malformations: Case Series and Prognostic Insights.,1,False,0.9998657703399658,0.08491619676351547,relevant,test
+41761011,CUL3-Related Neurodevelopmental Disorder: Expanding the Prenatal Phenotype.,1,False,1.0,0.08491619676351547,relevant,test
+41848878,Residual risk of clinically significant copy number variations in fetuses with ultrasonographic soft markers following exclusion of non-invasive prenatal screening-detectable findings.,1,False,0.9956388473510742,0.08491619676351547,relevant,test
+41858965,Meckel-Gruber syndrome: a rare and fatal congenital disorder (case report).,0,False,0.665502667427063,0.08491619676351547,relevant,test
+41859717,Application of High-Throughput Sequencing Technology in Fetal Growth Restriction and Analysis of Pregnancy Outcomes.,1,False,0.9983322024345398,0.08491619676351547,relevant,test
+41943072,New insight about early miscarriage: a prenatal data-based study.,0,False,0.9453232884407043,0.08491619676351547,relevant,test
+41947371,"Prenatal Exome Diagnostic Yield, Syndromic Landscape and Secondary Findings.",1,False,0.02971690520644188,0.08491619676351547,review,test
+41965835,Discrepant findings of prenatal diagnostics in a case of fetal partial trisomy 21 and fetoplacental mosaicism.,1,False,0.9673586487770081,0.08491619676351547,relevant,test
+42035033,Prenatal diagnosis and molecular cytogenetic analysis of Xp22.31 microdeletions and microduplications in Chinese populations.,1,False,0.9996355772018433,0.08491619676351547,relevant,test
+42116066,A new 308 A-G substitution in HBG2 in an acyanotic newborn: case report.,0,False,5.46342707821168e-05,0.08491619676351547,review,test
+42137573,The role of targeted next-generation sequencing and ultrasound in diagnosing fetal cytomegalovirus infection: a case report.,1,False,0.8319261074066162,0.08491619676351547,relevant,test
+42205458,Genetic etiology and phenotypic characteristics of fetuses with 11q deletion syndrome (11q23.3-q25).,1,False,0.998984158039093,0.08491619676351547,relevant,test
+42394496,[Prenatal ultrasound and genetic characteristics of 60 fetuses with 16p11.2 microdeletion].,1,False,1.4922818991180975e-05,0.08491619676351547,review,test
+42561194,"Congenital pulmonary airway malformations: prenatal markers, perinatal outcomes, and long-term follow-up experience.",1,False,0.9017073512077332,0.08491619676351547,relevant,test
+42566411,Molecular genetic and pregnancy outcomes of fetuses with increased Nuchal Translucency.,1,False,0.9999998807907104,0.08491619676351547,relevant,test
+42713383,Prenatal ultrasound diagnosis of sirenomelia: A case report.,0,False,0.14229892194271088,0.08491619676351547,relevant,test
+42751320,Expanding prenatal diagnosis: clinical utility of prenatal whole-exome sequencing in a Romanian case series with fetal anomalies.,1,False,0.9970391988754272,0.08491619676351547,relevant,test
+14726642,Prenatal sonographic diagnosis of focal musculoskeletal anomalies.,0,True,0.02375693805515766,0.08491619676351547,review,gold_in_train
+17171632,First-trimester combined screening for trisomy 21 in a predominantly Chinese population.,0,True,0.003330428618937731,0.08491619676351547,review,gold_in_train
+25075585,Comorbidity between Klinefelter syndrome and diaphragmatic hernia. A case report.,1,True,0.9639526605606079,0.08491619676351547,relevant,gold_in_train
+25923652,Fetal calcifications are associated with chromosomal abnormalities.,0,True,0.009125434793531895,0.08491619676351547,review,gold_in_train
+28154732,[Meckel Gruber syndrome: about a rare case].,0,True,0.01018055435270071,0.08491619676351547,review,gold_in_train
+28565842,"Detection of trisomies 13, 18 and 21 using non-invasive prenatal testing.",0,True,0.00010249631304759532,0.08491619676351547,review,gold_in_train
+29496978,Practice guideline: joint CCMG-SOGC recommendations for the use of chromosomal microarray analysis for prenatal diagnosis and assessment of fetal loss in Canada.,0,True,0.0028215753845870495,0.08491619676351547,review,gold_in_train
+30231296,Diagnosis of Atelosteogenesis Type I suggested by Fetal Ultrasonography and Atypical Paternal Phenotype with Mosaicism.,1,True,0.9996328353881836,0.08491619676351547,relevant,gold_in_train
+31334199,Prenatal diagnosis of single umbilical artery complicated by intrauterine growth retardation and preterm labor: Case report.,1,True,0.9875715970993042,0.08491619676351547,relevant,gold_in_train
+31523615,A Systematic Clinical Review of Prenatally Diagnosed Tetrasomy 9p.,0,True,0.012990210205316544,0.08491619676351547,review,gold_in_train
+31638247,Novel compound heterozygous PKHD1 mutations cause autosomal recessive polycystic kidney disease in a Han Chinese family.,1,True,0.9881558418273926,0.08491619676351547,relevant,gold_in_train
+31864361,"Karyotyping and prenatal diagnosis of 47,XX,+ 8[67]/46,XX [13] Mosaicism: case report and literature review.",1,True,0.9314072728157043,0.08491619676351547,relevant,gold_in_train
+31944387,X-linked ichthyosis: Molecular findings in four pedigrees with inconspicuous clinical manifestations.,1,True,0.9604862928390503,0.08491619676351547,relevant,gold_in_train
+32149439,Neurodevelopmental outcome at 2 years of corrected age in fetuses with increased nuchal translucency thickness and normal karyotype compared with matched controls.,0,True,0.010418441146612167,0.08491619676351547,review,gold_in_train
+32864771,The difference between karyotype analysis and chromosome microarray for mosaicism of aneuploid chromosomes in prenatal diagnosis.,0,True,0.0017897153738886118,0.08491619676351547,review,gold_in_train
+33785045,"Performance of cell-free DNA sequencing-based non-invasive prenatal testing: experience on 36,456 singleton and multiple pregnancies.",0,True,0.00692217331379652,0.08491619676351547,review,gold_in_train
+34914080,L1 Syndrome Prenatal Diagnosis Supplemented by Functional Analysis of One L1CAM Gene Missense Variant.,1,True,0.9884238839149475,0.08491619676351547,relevant,gold_in_train
+35195919,Combined diagnosis of QF-PCR and CNV-Seq in fetal chromosomal abnormalities: A new perspective on prenatal diagnosis.,0,True,0.010844550095498562,0.08491619676351547,review,gold_in_train
+35791503,Analysis of L1CAM gene mutation and imaging appearance in three Chinese families with L1 syndrome: Three case reports.,1,True,0.9992290735244751,0.08491619676351547,relevant,gold_in_train
+35902388,Application of the prenatal BACs-on-Beads™ assay for rapid prenatal detection of sex chromosome mosaicism.,0,True,0.03349146246910095,0.08491619676351547,review,gold_in_train
+35984138,Analysis of the impact of noninvasive prenatal testing for trisomies 21 and 18 in twin pregnancies undergoing artificial reproductive technology.,0,True,0.0008780139614827931,0.08491619676351547,review,gold_in_train
+36636555,Assessment of Combined Karyotype Analysis and Chromosome Microarray Analysis in Prenatal Diagnosis: A Cohort Study of 3710 Pregnancies.,0,True,0.027425095438957214,0.08491619676351547,review,gold_in_train
+36687456,Case report: Umbilical vessel aneurysm thrombosis and factor V Leiden mutation leading to fetal demise.,1,True,0.9925481677055359,0.08491619676351547,relevant,gold_in_train
+36859260,Failure to diagnose hypochondroplasia by prenatal diagnosis: a case report.,1,True,0.9965493679046631,0.08491619676351547,relevant,gold_in_train
+37422672,Clear cell endometrial carcinoma with high microsatellite instability in a complicated pregnancy: a case report.,1,True,0.9886309504508972,0.08491619676351547,relevant,gold_in_train
+38284447,Clinical value of positive CNVs results by NIPT without fetal ultrasonography-identified structural anomalies.,0,True,0.012735418975353241,0.08491619676351547,review,gold_in_train
+38687434,ZAP70: A Key Gene Identified by Differential Expression Analysis for Early Diagnosis of Fetuses with Emanuel Syndrome.,0,True,0.008667881600558758,0.08491619676351547,review,gold_in_train
+39198908,MRI in the prenatal genetic diagnosis and intrauterine treatment of fetal congenital cystic adenoma of the lung.,0,True,0.011300389654934406,0.08491619676351547,review,gold_in_train
+39350038,"Association between rare, genetic variants linked to autism and ultrasonography fetal anomalies in children with autism spectrum disorder.",0,True,0.017166882753372192,0.08491619676351547,review,gold_in_train
+39444647,Fetal Brain MRI Findings in Myotonic Dystrophy and Considerations for Prenatal Genetic Testing.,1,True,0.9886150360107422,0.08491619676351547,relevant,gold_in_train
+39630792,Bilateral ulnar longitudinal deficiency with oligodactyly in newborn.,1,True,0.9719014763832092,0.08491619676351547,relevant,gold_in_train
+40392900,"Karyotyping with amniotic fluid in 6,572 pregnant women and pregnancy outcomes--A single-center retrospective study.",0,True,0.036737408488988876,0.08491619676351547,review,gold_in_train
+40992929,Residual Risks of Fetal Chromosome Aberrations When Cell-Free DNA Prenatal Screening Is Normal: A Retrospective Study.,0,True,2.7929108910029754e-05,0.08491619676351547,review,gold_in_train
+41111707,Diagnosis of Lissencephaly in a Neonate After Antenatal Polyhydramnios and Suspicion of Fetal Esophageal Atresia: A Case Report.,1,True,0.997215747833252,0.08491619676351547,relevant,gold_in_train
+41225980,Renal Hypoplasia and Oligomeganephronia in a Fetus with Wolf-Hirschhorn Syndrome.,1,True,0.993648111820221,0.08491619676351547,relevant,gold_in_train
+41727820,Cyclopia: Facial deformity indicating severe holoprosencephaly with imaging findings of brain: A case report.,1,True,0.9992628693580627,0.08491619676351547,relevant,gold_in_train
+41749371,Identification of DNA methylation biomarkers in amniotic fluid for prenatal detection of congenital heart disease (CHD).,0,True,8.533478649042081e-06,0.08491619676351547,review,gold_in_train
+41939616,"Near-Comparable Frequency of rob(21;21) and rob(14;21) Translocations in Trisomy 21: A Retrospective Cytogenetic Analysis of 9,313 Cases From an Indian Referral Cohort.",0,True,0.0022265955340117216,0.08491619676351547,review,gold_in_train
+42016332,Second Prenatal Diagnosis of Bosch-Boonstra-Schaaf Optic Atrophy Syndrome in a Fetus With a 5q14.3q15 Deletion: A Case Report and Review of the Literature.,1,True,0.9999982118606567,0.08491619676351547,relevant,gold_in_train
+42682406,Case Report: unmasking pseudo-homozygosity in &lt;i&gt;CYP21A2&lt;/i&gt;: intergenerational gene conversion expansion and the necessity of multimodal genetic testing.,1,True,0.9993246793746948,0.08491619676351547,relevant,gold_in_train

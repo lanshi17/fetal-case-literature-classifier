@@ -1,0 +1,2973 @@
+dsh: all_proxy names a SOCKS proxy, which is not supported; connecting directly for that scheme — set an http:// or https:// proxy URL instead
+Sequential Thinking MCP Server running on stdio
+Knowledge Graph MCP Server running on stdio
+[CodeGraph] v1.6.2 is available (this server is running v1.6.0). Update with `codegraph upgrade`.
+[CodeGraph MCP] No .codegraph/ at or above /data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening: no default project, live sync disabled.
+Context7 Documentation MCP Server v4.4.4 running on stdio
+dsh: reasoning:
+Let me explore existing data and briefs.
+
+dsh: reasoning:
+Interesting: nvidia-smi fails. Need to check GPU. Also Python 3.14.4 — torch may not support 3.14. Need to find python versions. Let me check.
+
+Also read the briefs/dsh-implement.md and dsh-run.err.
+
+dsh: reasoning:
+The nvidia driver modules are loaded but /dev/nvidia* not accessible — might be in a container without GPU passthrough. We should try `torch.cuda.is_available()` after installing. But likely CPU-only. Task says GPU but environment may lack it. We'll handle gracefully with CPU fallback.
+
+Python 3.14.4 is too new for torch perhaps. Let's check if uv can install python 3.12. uv available. Check network access and uv python list.
+
+Also check fulltext tar listing. Let's start decompression in background (233MB).
+
+Plan:
+1. Extract tar.
+2. Inspect data.
+3. Create venv with python 3.12 via uv (download may need network). Check `uv python list`.
+4. Install deps.
+5. Write code.
+6. Run build_dataset, encoder smoke, train full, predict, API smoke.
+
+Let me do extraction and environment checks in parallel.
+
+dsh: reasoning:
+Extraction succeeded. uv cache read-only because home is read-only? Actually /home/yangzs likely read-only in sandbox. We can set UV_CACHE_DIR inside workspace. uv python install may need network.
+
+Let's inspect the data and manifest. Then set up venv. Python 3.14 is likely problematic for torch (torch wheels for 3.14 maybe exist by now? torch 2.9+ supports 3.14 possibly). Better to use uv to install python 3.12 into project dir. Set UV_PYTHON_INSTALL_DIR and UV_CACHE_DIR within workspace.
+
+Let's inspect data columns.
+
+dsh: reasoning:
+Good. 768 txt, 768 xml, 206 pdf. Total unique 974 likely (768+206). Plan says 929 have TXT/XML, 45 only PDF — but actual 768 with TXT/XML? Let me compute overlap. Anyway, code handles.
+
+Now environment. Need Python 3.12. Use uv with cache dirs in workspace. Let's try:
+
+export UV_CACHE_DIR=$PWD/.uv-cache; export UV_PYTHON_INSTALL_DIR=$PWD/.uv-python; uv venv --python 3.12 .venv
+
+This downloads Python. Network available. Then install torch. GPU: /dev/nvidia* missing so CUDA likely unavailable. However, "GPU version torch" can still be installed (cu124 wheels) and fall back to CPU. But installing CUDA torch is huge (~2.5GB). Check if driver accessible via torch later. Given no /dev/nvidia*, impossible. But task explicitly asks GPU torch. We can install default torch from PyPI which now bundles CUDA for linux? PyPI torch default includes CUDA 12.x libs for linux (large). That fulfills "GPU 版 torch" while cuda unavailable. Let's install torch from PyPI default. Might be 900MB+ download. Alternative use cu121 index.
+
+Let me first set up venv and check python 3.12 availability.
+
+dsh: reasoning:
+Now install torch. Check pip index. Use uv pip install torch. GPU version: PyPI torch 2.x linux wheels are CUDA-enabled by default? Since torch 2.6, PyPI default wheel for linux is CUDA 12.4. Let's just install torch and verify. This is big; run in background? Let's run with 600s timeout.
+
+Also install transformers, adapters, scikit-learn, pandas, numpy, joblib, pymupdf, fastapi, uvicorn[standard], python-multipart. Maybe huggingface_hub, safetensors.
+
+Let me run installation in background while writing code.
+
+dsh: reasoning:
+While install runs, inspect manifest, labels, XML abstract structure. Let's compute join stats with system python.
+
+Also check XML files have JATS abstract.
+
+dsh: reasoning:
+Great: exactly matches plan (929 txt/xml, 45 pdf only, 974 overlap).
+
+Now design code carefully.
+
+Architecture:
+
+build_dataset.py:
+- Args: paths, output.
+- Read labels utf-8-sig, manifest utf-8-sig.
+- Normalize PMID str (strip .0).
+- Resolve manifest paths robustly: TXT_file, PDF_file, XML_file relative to package root. Note manifest may include path. Use column first.
+- Abstract extraction: parse XML with lxml? Not installed. Use stdlib xml.etree.ElementTree, JATS abstract. Need handle namespaces. Extract all <abstract> elements, join text. Prefer abstract-type? Could skip graphical. Implement `extract_jats_abstract(path)` using ElementTree with iterparse / regex fallback. Handle malformed XML: use regex `<abstract...>...</abstract>` then strip tags.
+- Title: from labels title (fallback manifest Title).
+- text: TXT preferred, strip? Keep full text. If no TXT, PDF via fitz (PyMuPDF), if no -> empty, full_text_available false.
+- full_text_available = bool(text.strip()).
+- abstract_available.
+- output CSV. Columns: doc_id, group_id, pmid, title, year, label, label_source, confidence, weak, design, label_reason, abstract, text, full_text_available, abstract_available, text_source, manifest_pmcid, n_chars. Also tests/methods? Spec says retain specified. Could retain extra.
+- Stats print JSON and save data/build_stats.json maybe.
+- Important CSV size: full texts maybe ~50MB. Check txt 23M, so fine.
+
+Potential issue PDF extraction for 45 PDFs may take seconds each. Fine.
+
+encoder.py:
+- Constants BASE_MODEL_PATH, ADAPTER_NAME default; env overrides.
+- `load_encoder(device=None, base_path=None, adapter_name=...)`:
+  - from transformers import AutoTokenizer, AutoModel
+  - from adapters import AutoAdapterModel
+  - AutoAdapterModel.from_pretrained(base) then load_adapter(adapter_name, set_active=True) - per SPECTER2 usage.
+  - tokenizer = AutoTokenizer.from_pretrained(base)
+  - model.to(device).eval()
+  - Return a wrapper class `SpecterEncoder` with tokenizer, model, device, encode_texts.
+  Note adapters package import name `adapters`. `AutoAdapterModel` from adapters.
+  SPECTER2 model requires `model.load_adapter("allenai/specter2_classification", source="hf", set_active=True)`.
+  Offline base path; adapter download needs network. Set HF_HOME? Home read-only maybe. HF cache is at /data/yangzs/.cache/huggingface (writable presumably). Test.
+- encode_texts(texts, batch_size=16, max_length=512, normalize? SPECTER2 recommended: CLS embedding, maybe L2 normalize). SPECTER2 uses [CLS] token; `model(**inputs).last_hidden_state[:,0,:]`. Use torch.no_grad, fp16 if cuda.
+- chunk_text(text, max_chars=3000, overlap_chars=400, max_chunks=24): paragraph/sentence split. Need "尽量覆盖前中后". Strategy: build chunks via sliding window on paragraph boundaries? Simpler robust approach:
+  - normalize whitespace, remove references? Could strip references section (optional, good). But don't overcomplicate.
+  - Split into paragraphs by blank lines; if paragraphs too long split by sentence boundaries.
+  - Accumulate into chunks up to max_chars with overlap by retaining tail sentences/paragraphs ~overlap_chars.
+  - If > max_chunks, choose evenly spaced indices across all chunks to cover beginning/middle/end (np.linspace unique).
+  - Return list.
+- document_features(title, abstract, text, encoder=None, include_aux=False, aux_features=True):
+  - title+abstract -> one vector (title + "\n" + abstract).
+  - chunks -> embeddings mean, max.
+  - if no text: zeros.
+  - concat 2304.
+  - aux two features: case-word hit count/rate? "病例词、变异/检测词命中". Define lists. Cheap features: normalized counts of case terms and variant/test terms in title+abstract+first N chars text. 2 dims. We must ensure predict/train consistency.
+  - Return np.ndarray (2304 or 2306), plus meta dict maybe. Better `document_features` returns dict? Spec says encode_texts / document_features. Design:
+    `document_features(title, abstract, text, encoder, include_fulltext=True, include_aux=False) -> np.ndarray`
+    and `document_features_batch(records, encoder, ...)`.
+  - For no text and include_fulltext=True, zeros.
+- CLI smoke: `python encoder.py --smoke` or main loads encoder and encodes sample.
+- Caching done in train.py.
+
+train.py:
+- Read data/labeled_papers.csv.
+- Subset: default weak==False & label_source != 'model'. Count 883 - model weak overlap? compute.
+- Encode all 974 once with full features incl aux? Cache per config to artifacts/features/features.npz and metadata csv. To support ablations, cache base vectors: title_abs (N,768), body_mean (N,768), body_max (N,768), aux (N,2); then construct feature matrices for A/B/C. Cache keyed by model name and max_chunks / max_chars in filename, plus doc_ids hash. Use np.savez_compressed. Also store per-row encoding text hash to validate.
+- Encoding 974 docs × ~24 chunks = 23k chunks; on GPU 4060 fast (~2-4 min). On CPU with BERT-base 23k×512 maybe 30-60 min. Since no GPU available, might be slow. Need optimize:
+  - max_chunks=24, batch 16, seq 512. CPU throughput maybe 2-5 chunks/s => 1.5-3 hours. Too slow. Could use max_chunks=8? Spec says max_chunks=24 default. For full run on CPU, maybe reduce max_length 256? Token 512 standard. Hmm.
+  - We can attempt full with CUDA, but /dev/nvidia absent. Then fallback maybe use CPU with torch threads. Let's benchmark. 974 docs * avg maybe 10 chunks = 10k. BERT base CPU ~15 chunks/s on many cores? Let's see CPU count. Could be 32 cores. Might be feasible ~15-30 min.
+  - We can run encoding in background and continue.
+- Split: GroupShuffleSplit 64/16/20. Since group_id = PMID and each group single sample, GroupShuffleSplit is effectively stratified random. But requirement "保证各组两类尽量都有" — implement deterministic stratified group split using StratifiedShuffleSplit on group-level labels (each group one row), or GroupShuffleSplit with random state then check. Use StratifiedShuffleSplit for train/val/test with 20% test, then 20% of remaining val (16% overall). This honors ~64/16/20 and class balance. Name function `split_groups` using StratifiedShuffleSplit; document that group_id=PMID (one doc/group) so group-aware. Could also implement GroupShuffleSplit explicitly per spec. To satisfy "GroupShuffleSplit", use sklearn.model_selection.GroupShuffleSplit? But then stratification not guaranteed. Requirement says "GroupShuffleSplit：约 64/16/20（train/val/test），保证各组两类尽量都有". We can use StratifiedGroupKFold-ish custom. Simpler: attempt GroupShuffleSplit with random seeds until class counts positive in all splits; but with 974 and 28% positive, always positive. Yet "尽量" fine. Use `GroupShuffleSplit(n_splits=1, train_size=0.64, random_state=seed)` on first split; then GroupShuffleSplit on remaining for val/test (val 0.16/0.36=0.444, test 0.556). This is exactly 64/16/20. Class balance likely. We'll verify. We can include both group-aware and stratified label counts in metrics. I'll use GroupShuffleSplit to meet spec.
+- Standardize? Features are embeddings; logistic regression. Use StandardScaler(with_mean=True) then LR. But 2304 dims with 600 samples; okay. Mean/max vectors may dominate. Could L2 normalize embeddings per block then concat. For baseline, StandardScaler is fine. Save scaler + model in joblib bundle.
+- select_threshold: choose threshold on val to achieve recall >= target (0.95) with max precision. Sweep unique scores descending. If impossible, pick lowest threshold.
+- Metrics: recall, precision, f1, f2, average_precision, confusion matrix, ROC AUC maybe, n.
+- Ablations: A title_abs only (768); B + fulltext mean/max (2304); C + aux (2306). Train each, evaluate on same test. Select threshold per config on val.
+- Main model: C if aux implemented, else B. Save artifacts/model.joblib containing dict: model, scaler, feature_mode, threshold, feature_dim, config, aux config, encoder settings, version.
+- config.json incl threshold, feature_dim, model_path, train subset, counts, device, seed, ablation settings.
+- metrics.json: primary metrics, val, test, stratified by full_text_available, ablations, full-data comparison.
+- "另跑或另存「全量对照」指标": train on all data (weak included etc.) with same splits? Better evaluate full-data model using same split but subset all. Run a second experiment "all" with all rows, same split seed, and report test metrics alongside; save metrics["full_data_control"]. Optionally save artifacts/model_all.joblib. Requirement says "另跑或另存全量对照指标". Do it by training a fourth model on all rows and evaluating test. But note test includes weak/model rows. Fine. Maybe save `artifacts/model_all.joblib` too.
+- Also stratified report by full_text_available (True/False) on test.
+- Feature cache: `artifacts/features/{tag}.npz` plus `.json` metadata. Compute missing only? Simpler if exists and doc_id hash matches, load; else encode all. Provide --force-reencode, --limit for smoke, --max-chunks.
+- Smoke quick: `--limit 64 --max-chunks 4` writes artifacts_smoke? But acceptance requires artifacts. We plan full run. If slow, run smoke first to `artifacts/smoke/`? Then final full overwrite artifacts. Need status.
+- CLI args: --data, --artifacts, --limit, --max-chunks, --batch-size, --device, --target-recall, --no-aux, --seed, --smoke.
+- Print JSON summary.
+
+predict.py:
+- Load bundle artifacts/model.joblib, encoder lazily (only if text needs encoding; but always since features). 
+- Inputs:
+  - `--pdf path --title ...` (PDF path)
+  - `--json file` or `--json '{"title":...}'`? Support JSON/CSV records: `--input file.json|file.csv`, `--pdf`.
+  - `--text` maybe.
+- For PDF: extract text with fitz; abstract empty; full_text_available true. Metadata title from arg or PDF metadata.
+- CSV with columns title,abstract,text,pdf_path.
+- Scores: model.predict_proba(features)[:,1]; decision thresholds.
+- Output JSON with decision, relevance_score, threshold, full_text_available, review_threshold.
+- Batch writes list.
+- CLI `python predict.py --pdf data/fulltext_package/pdfs/xxx.pdf --title "..."`.
+- Also select sample from labeled_papers.csv for demo; `--sample N` maybe. Implement `--record-json`.
+- Reuse encoder.document_features.
+
+api.py:
+- FastAPI app, lifespan loads model+encoder once.
+- GET /health -> status, model_loaded, threshold, device, feature_dim, model path.
+- POST /predict: Form fields title, abstract, year, pmid?, pdf UploadFile optional. Using python-multipart. Accept JSON too? Spec says accepts metadata + optional PDF upload; use `Form`. Could support both via Request content-type but complexity. Implement `async def predict(title: str = Form(""), abstract: str = Form(""), year: str|None = Form(None), pmid: str|None = Form(None), pdf: UploadFile|None = File(None))`. Validate at least title/abstract/pdf. Read PDF bytes to temp or fitz.open(stream=bytes, filetype='pdf'). Extract text; then features. Run in threadpool to avoid blocking? `await run_in_threadpool`.
+- Return decision etc.
+- Also support JSON via `Request` if application/json: parse body. Nice: define endpoint with Request and Form? FastAPI can't easily combine. Simpler add second endpoint `/predict_json`? Spec only requires /predict. But accepting JSON is nice. Implement `/predict` with `Request`, manually parse form or json:
+  ```
+  @app.post("/predict")
+  async def predict(request: Request):
+      ct = request.headers.get("content-type","")
+      if "application/json" in ct: payload=await request.json()
+      else: form=await request.form(); pdf=form.get("pdf")...
+  ```
+  But UploadFile in form works via request.form(). This avoids python-multipart schema but still uses it. Return.
+- README curl examples both.
+- Model load at import/lifespan; single worker.
+
+requirements.txt pinned-ish (>=). Include torch, transformers, adapters, scikit-learn, pandas, numpy, joblib, pymupdf, fastapi, uvicorn[standard], python-multipart, huggingface_hub, safetensors. Note GPU torch install command.
+- README Chinese/English? User Chinese. Write Chinese README with commands, architecture, data schema, metrics summary, limitations, API examples.
+
+.gitignore:
+.venv/, .uv-cache/, .uv-python/, data/fulltext_package/, artifacts/features/, artifacts/*.joblib maybe. Requirement: don't commit large feature cache/model. But artifacts metrics/config can be committed. Ignore `artifacts/features/`, `artifacts/*.joblib`, `*.npz`, `__pycache__`, `.env`.
+- data/labeled_papers.csv: it's ~? 40MB maybe; should it be committed? Required delivery file. Include it (not forbidden). But git repo no commits yet; we won't commit. Leave unignored per requirement.
+- `data/fulltext_package/`.
+
+Also consider `data/build_stats.json`.
+
+Now inspect install job.
+
+dsh: reasoning:
+28 CPUs, 31GB RAM. CPU BERT encoding full 974 likely feasible in ~20-40 min. Let's benchmark once installed.
+
+Check job.
+
+dsh: reasoning:
+While installing, write code. First build_dataset.py. Need to be careful with PDFs and XML.
+
+Let me inspect XML variants (abstract with namespace, multiple abstracts). Write robust parser:
+
+```python
+def _localname(tag): return tag.rsplit('}',1)[-1].lower()
+def parse_jats_abstract(path):
+    try:
+        root = ET.parse(path).getroot()
+    except ET.ParseError:
+        return _regex_abstract(path)
+    abs_nodes = [e for e in root.iter() if _localname(e.tag)=='abstract']
+    if not abs_nodes: fallback regex
+    texts=[]
+    for a in abs_nodes:
+        # skip graphical
+        if a.attrib.get('abstract-type') in ('graphical','teaser'): continue
+        # prefer text via itertext but avoid title? include
+        chunks=[t.strip() for t in a.itertext() if t.strip()]
+        texts.append(' '.join(chunks))
+    return ' '.join(texts).strip()
+```
+itertext includes title labels "ABSTRACT" and section headings. Clean leading "ABSTRACT"/"Abstract". Fine; not critical. Could remove node tags title? better extract paragraphs only:
+- Collect elements whose localname in {'p','title'}? We want content. Use itertext on abstract excluding nested `<title>`? Abstract title often "ABSTRACT" or "Summary". Section titles like "CONTEXT:" are informative but noise. Keep paragraphs only if present, else all text.
+```
+paras=[' '.join(e.itertext()) for e in a.iter() if localname(e.tag)=='p']
+body=' '.join(paras) if paras else ' '.join(a.itertext())
+```
+Good.
+
+Regex fallback:
+```
+raw=open(...).read()
+m=re.findall(r'<abstract\b[^>]*>(.*?)</abstract>', raw, re.S|re.I)
+strip tags, unescape, normalize.
+```
+
+XML path resolution: manifest XML_file value e.g. `xml/111...xml`. package_root / rel. If blank but XML == Y, glob `xml/{pmid}_*.xml`.
+Same TXT/PDF.
+
+Text extraction:
+- read txt utf-8 errors ignore. Normalize nulls.
+- If txt missing or tiny (<100 chars) and PDF available, try fitz. Requirement "优先 TXT；否则 PyMuPDF 抽 PDF". Only fallback if no TXT, not if tiny? Use if no/near-empty.
+- Strip common boilerplate? no.
+
+Title: labels title (strip). If empty, manifest Title.
+year.
+
+Labels: weak parse robust: `str.lower() in ('true','1','yes')`; confidence float or empty.
+abstract fallback: if XML missing, empty (per spec "无则空字符串"). Do not use PubMed abstract.
+CSV writing with csv module, utf-8 (no BOM) perhaps utf-8-sig? Use utf-8. Text may contain newlines; csv handles.
+
+Stats: rows, abstract count, fulltext count, text_source counts, label counts, join counts, PDF extraction failures, total chars, per full_text availability labels. Print JSON. Save data/build_stats.json.
+
+Use `--package`, `--labels`, `--output`, `--limit`, `--no-pdf` maybe.
+
+Also produce parquet? CSV sufficient.
+
+Let's write.
+
+dsh: reasoning:
+Run build dataset now with system Python (no deps needed except fitz optional; not installed system). It will skip PDFs because fitz missing, marking 45 no fulltext incorrectly. Install deps still running. Wait until venv ready then run with .venv. But we can test --limit with system (fitz missing → pdf errors). Better wait.
+
+Meanwhile write encoder.py. Need to know adapters API. Let's recall SPECTER2 usage:
+
+```python
+from transformers import AutoTokenizer
+from adapters import AutoAdapterModel
+tokenizer = AutoTokenizer.from_pretrained('allenai/specter2_base')
+model = AutoAdapterModel.from_pretrained('allenai/specter2_base')
+model.load_adapter("allenai/specter2_classification", source="hf", set_active=True)
+```
+`model.load_adapter` from adapters. `model.to(device); model.eval()`.
+`model(**inputs)` returns SequenceClassifierOutput? With classification adapter, `AutoAdapterModel` with head? Actually `load_adapter` with `set_active=True` loads adapter weights; the classification adapter includes a classification head? The `AutoAdapterModel` outputs `last_hidden_state`; classification adapter trained with a classification head but for embedding use CLS. SPECTER2 docs:
+```python
+model = AutoAdapterModel.from_pretrained("allenai/specter2_base")
+model.load_adapter("allenai/specter2", source="hf", load_as="specter2", set_active=True)
+```
+For classification adapter, they use `model.load_adapter("allenai/specter2_classification", source="hf", set_active=True)` and then `model(**inputs).last_hidden_state[:, 0, :]`.
+I recall the adapter repo includes `adapter_config.json` and weights, and may include a classification head ("adapter_heads"). `AutoAdapterModel` can load head? `load_adapter` may warn about head weights. Fine.
+
+Potential issue: adapters package requires `transformers<5`? We'll see.
+
+Implement:
+
+```python
+BASE_MODEL_PATH = os.environ.get("SPECTER2_BASE_PATH", default)
+ADAPTER_NAME = os.environ.get("SPECTER2_ADAPTER", "allenai/specter2_classification")
+
+class SpecterEncoder:
+    def __init__(...):
+    @property device
+    def encode_texts(texts, batch_size=16, max_length=512, normalize=False, show_progress=False)
+```
+
+Batch ordering; tokenizer(..., padding=True, truncation=True, max_length, return_tensors='pt'). Move to device. autocast if cuda. Last hidden state CLS. Optionally L2 normalize (SPECTER2 recommended for retrieval; for LR, normalization may help). Spec doesn't require normalize. Use raw CLS? SPECTER2 embeddings typically L2 normalized for similarity. For classifier, either. I'll add `normalize=True` default for title+abstract and chunks? If all vectors normalized, mean/max values bounded. StandardScaler follows. Hmm, "标题+摘要向量 (768)" no normalization specified. Use L2 normalization by default? It could improve stability. But must be explicit. I'll set `normalize=True` in document_features for each embedding (title-abs and each chunk) — makes cosine geometry. Document it. But max over normalized chunks still meaningful. Ablation unaffected.
+
+Actually classification adapter was trained with CLS and likely classification head; embeddings maybe not normalized. For logistic regression, scaling handles. To keep raw semantics, default normalize=False in encode_texts, and document_features passes normalize=True? Simpler: `encode_texts(..., normalize=True)` default; config records. I'll choose normalize=True and note.
+
+Chunking:
+```python
+def chunk_text(text, max_chars=3000, overlap_chars=400, max_chunks=24):
+```
+Need ~300-500 tokens ≈ 1200-2000 chars; but spec says max_chars≈3000 baseline. Use 3000.
+Algorithm:
+1. clean; optionally remove references: split at `\nReferences\n` case-insensitively near end? Risk removing content. Implement `strip_references` optional default True? Not required, skip to avoid surprises.
+2. Build sentence-ish units by splitting paragraphs then sentences. Preserve paragraphs.
+Simpler char-based with boundary search:
+- Normalize paragraphs. Create units: split by `\n\n`; each para split into sentences via regex `(?<=[.!?])\s+`; units <= max_chars.
+- Greedy pack units into chunks until max_chars. For overlap, after finishing a chunk, start next chunk with trailing units totaling >= overlap_chars (but not all). Ensure progress.
+- If a single unit > max_chars, hard split with overlap.
+- max_chunks selection: if len(chunks) > max_chunks, indices = np.linspace(0, len-1, max_chunks).astype(int); unique; plus ensure first/last included. This covers beginning/middle/end.
+Potential huge paragraphs. Handle.
+
+Aux features:
+- CASE_TERMS: case report, case series, proband, patient, fetus, prenatal, family, pedigree, clinical, phenotype, etc.
+- VARIANT_TERMS: variant, mutation, pathogenic, likely pathogenic, VUS, CNV, karyotype, exome, genome, sequencing, microarray, PCR, qfPCR, panel, deletion, duplication, trisomy, aneuploidy, etc.
+- Two features: counts per 1000 chars? Use `log1p(count)`; and maybe ratio. Spec "2 个廉价辅助特征（病例词、变异/检测词命中）". Compute hit count in title+abstract+first 20k chars text, scaled log1p. But variation in text length confounds. Use rate per 1000 words plus log count? Need exactly 2. Feature 1: case-term hits per 1000 tokens; feature 2: variant/test hits per 1000 tokens. But short abstract-only could wildly vary. Use `log1p(hits)` for each? Then full text always larger. For full-text docs, hit count scales with length, which may correlate with full text availability (leakage-ish). Better rates per 1000 words. I'll do density per 1000 words (min denominator 50). Document.
+- Word tokenization regex.
+
+But v1: aux features may cause model to learn fulltext availability. Ablation C only reports. Fine.
+
+`document_features`:
+```python
+def build_features(title, abstract, text, encoder, include_fulltext=True, include_aux=False, ...):
+    ta = (title + "\n\n" + abstract).strip() or title or abstract
+    ta_vec = encoder.encode_texts([ta])[0]
+    if include_fulltext and text.strip():
+        chunks=chunk_text(...)
+        if chunks:
+            embs=encoder.encode_texts(chunks)
+            mean=embs.mean(0); max=embs.max(0)
+        ...
+    else zeros
+    feats=[ta_vec, mean, max] + aux
+```
+If no text but include_fulltext true → zeros. `full_text_available` computed from text.
+
+Batch function: encode title+abstract in batch and chunk text in batches for efficiency. `document_features_batch(records, encoder, ...)`:
+- Collect ta texts for all, encode in batches; collect all chunks with doc index; encode all chunks once; then aggregate. This is much faster.
+- Return `(features, meta)` meta with n_chunks, full_text_available, aux dims.
+- `records`: iterable dict with title, abstract, text.
+
+Feature layout: [ta 768][mean 768][max 768][aux 2] = 2306. Mode slicing in train:
+A = first 768
+B = first 2304
+C = first 2306 (if aux enabled).
+
+CLI:
+```
+python encoder.py --smoke
+python encoder.py --text "..."
+```
+Print device, dim, sample norms. `--smoke` loads encoder, encodes tiny texts and chunk stats. Also `--base`, `--adapter`, `--device`.
+
+Need handle adapter download offline/online. `load_encoder` tries adapter name; if fails and fallback flag? Spec requires classification adapter. If download fails, raise clear error. Could fallback to base with warning controlled by `allow_base_fallback=False`.
+
+Let's write encoder.py.
+
+dsh: reasoning:
+Now train.py. Need carefully implement feature cache and metrics.
+
+Data loading: pandas read_csv with keep_default_na=False to avoid NaN in text. columns.
+
+Feature cache:
+```python
+def doc_fingerprint(df, encoder_params) -> str:
+  sha256 of doc_ids + text lengths + title hash + config
+```
+Cache path artifacts/features/specter2_{split?}_m{max_chunks}_c{max_chars}_{digest[:10]}.npz. Store arrays ta, mean, max, aux, doc_ids, full_text_available. But document_features_batch computes combined; we need separate blocks for ablations. Could split combined: ta = feats[:, :768], mean=feats[:,768:1536], max=... aux=... (if include_aux). Cache combined without aux? Cache `ta`, `mean`, `max`, `aux` separately. Call document_features_batch(include_fulltext=True, include_aux=True) once, then split columns. That computes all.
+
+But for ablation A (title+abstract only), we still encode full text; cache reused. Good. Encoding full text once.
+
+Cache validation: npz with doc_ids; compare list equality and params. Also store `fingerprint` computed from titles/abstract/text lengths and model config. But recomputing fingerprint over text is cheap. Use hash of doc_ids + title hashes + text lengths + max_chars/max_chunks/adapter/base. If mismatch, re-encode.
+
+For limit smoke: cache separate tag e.g. `limit64`. But if later full run, encode all. Fine.
+
+Encoding progress: 974 docs. document_features_batch first encodes all TAs (974) then all chunks (~?). Print progress every batch. This may be long. Add `--max-chunks`, `--batch-size`, `--device`.
+
+Potential memory: all chunks strings maybe 20k * 3KB = 60MB, fine.
+
+Splits:
+```python
+def make_splits(labels, group_ids, seed):
+  gss = GroupShuffleSplit(n_splits=1, train_size=0.64, random_state=seed)
+  train_idx, temp_idx = next(gss.split(X, y, groups))
+  gss2 = GroupShuffleSplit(n_splits=1, train_size=0.16/0.36, random_state=seed+1)
+  val_rel, test_rel = next(gss2.split(temp...))
+```
+But GroupShuffleSplit train_size=0.64 on 883 → 565; temp 318; then val 0.444 → 141, test 177 (20%). Good. Class counts check; if a split lacks a class, retry seeds up to 50. Implement.
+
+"保证各组两类尽量都有": each group one doc; check all splits have both classes. Good.
+
+Ablation configs:
+- mode A: columns 0:768
+- mode B: 0:2304
+- mode C: 0:2306
+But aux columns if included. If `--no-aux`, only A/B, C skipped.
+- Additional "full control": B or C (same as primary) on all 974 using same split seed. But splits differ by row set if recomputed. We should use same split assignment for the full set? The 883 subset indices are a subset of 974; if we train all 974 with a fresh split, comparison is confounded. Better:
+  - Compute split on full 974 once (seed), then subset mask defines train/val/test for default model, and full model uses all rows in same splits. That gives a clean comparison and consistent test sets (the 883 test is subset of 974 test). Nice.
+  - So split all rows first, then default subset masks within each split. But train_size 64% of 974 = 623, default train = 883*? Actually if split all 974 then default train ~562 (64% of 883), val ~141, test ~180. Fine.
+  - "默认训练子集 ... 另跑或另存全量对照指标": use same split, filter weak/model from train/val/test for primary; full control uses all.
+  - Ensure default splits have both classes.
+- StandardScaler fit on train only. LogisticRegression(C=1.0, class_weight='balanced', max_iter=2000, solver='lbfgs' or 'liblinear'). For 2306 dims, lbfgs fine. n=565. Use `class_weight="balanced"` default (configurable). Pipeline scaler+LR.
+- Select threshold: sweep candidate thresholds including 0, 1, and midpoints of sorted unique val probabilities; for each compute recall/precision; choose feasible recall>=target with max precision; tie-break higher threshold? We want recall target. Implementation:
+```
+def select_threshold(y, scores, target_recall=0.95):
+    order = np.unique(scores)
+    candidates = np.concatenate([[0.0], (order[:-1]+order[1:])/2, [1.0]])
+    best=None
+    for t in candidates:
+      pred=scores>=t
+      rec=recall...
+      if rec>=target:
+        prec=...
+        if best is None or prec>best_prec or (prec==... and t>best_t): ...
+    if none: t = min(scores)-eps (recall 1)
+```
+Use sklearn metrics precision_recall_fscore_support.
+- Metrics function: recall, precision, f1, f2, average_precision (average_precision_score), roc_auc, confusion_matrix, n, positives, threshold, tn/fp/fn/tp. `zero_division=0`.
+- Evaluate at selected threshold. Also report AP threshold-free and best-F1 maybe.
+- Stratified by full_text_available on test: compute metrics if both classes present; report n/pos and metrics or note "single_class".
+- Ablations: train each, get test metrics at its val threshold. Also perhaps AP.
+- Metrics JSON structure:
+```
+{
+ "generated_at":..., "dataset":..., "split": {...counts...},
+ "primary": {"subset":"default","feature_mode":"C","threshold":..., "val":..., "test":..., "by_full_text": {...}},
+ "ablations": {"A": {...}, "B": {...}, "C": {...}},
+ "full_data_control": {"subset":"all", mode, ...},
+ "encoder": {...}, "config": {...}
+}
+```
+- Save artifacts/model.joblib bundle:
+```
+{"model": lr, "scaler": scaler, "threshold": t, "feature_mode": "C", "feature_dim": 2306, "include_fulltext": True, "include_aux": True, "aux_dim": 2, "encoder": {"base_path":..., "adapter_name":..., "max_chars":..., "max_chunks":..., "normalize":..., "max_length":512}, "train_subset":"default", "seed":...}
+```
+Use joblib.dump.
+- config.json similar.
+- model_all.joblib maybe.
+
+- Feature cache also save `doc_ids`, `full_text_available`, maybe labels. Store compressed.
+
+CLI smoke: `--limit 64 --max-chunks 4 --artifacts artifacts/smoke`? But acceptance wants artifacts. We can run full. Still support `--limit`.
+
+Dependencies check in train: pandas, sklearn, numpy, joblib. Encoder import lazily only if cache missing; important so metrics re-run without torch? Fine.
+
+Potential issue `pandas.read_csv` huge text; fine. Use `keep_default_na=False, dtype={"pmid":str})`.
+
+Compute counts:
+```
+df["weak_bool"] = df["weak"].map(as_bool)
+default_mask = (~weak) & (label_source != "model") & label in {0,1}
+```
+Weak in CSV written "True"/"False" via csv writer from bool → True/False. read as string due to keep_default_na=False.
+
+Feature encoding includes all rows regardless of subset, including weak/model. That's fine; full control needs them.
+
+But 974 full encoding expensive. Required for full control. Do it.
+
+Training speed trivial.
+
+Full data control with same splits: the test contains weak/model rows. Report.
+
+Also save predictions? Optional `artifacts/test_predictions.csv` for audit. Include doc_id, label, score, decision, full_text_available, subset. Useful.
+
+Stratified report by full_text_available for primary test.
+
+Threshold selection target recall 0.95. Note if val has few negatives, precision may be low.
+
+Class weight balanced may inflate. Fine.
+
+Ablation C with aux requires aux cache. Always compute aux even if `--no-aux`? If no-aux, skip C. Cache aux anyway cheap.
+
+Implement `--force-reencode`, `--cache-dir`, `--artifacts`, `--target-recall`, `--seed`, `--limit`, `--max-chunks`, `--max-chars`, `--batch-size`, `--device`, `--no-aux`, `--C`.
+
+Also cache metadata JSON with fingerprint and encoder info.
+
+For progress: encoder encode_texts prints only if show_progress. Good.
+
+Potential issue full encoding on CPU takes long. We can add `--dtype`? No.
+
+Let me write train.py.
+
+dsh: reasoning:
+Bug: `X = feature_matrix(arrays, mode)` for mode A returns view; fine. But `fit_and_evaluate` signature X, y, df; in call I passed X, y, df; yes. `_public_result` doesn't include model. Good.
+
+Potential issue in `make_splits`: GroupShuffleSplit on `np.zeros(len(temp_idx))`, groups=groups[temp_idx] yes. Then `next(gss.split(np.zeros(n), y, groups))`. Fine.
+
+`df.iloc[test_sub]` positional index matches array order (df reset index). yes.
+
+`full_control` `_public_result(full_control)` includes threshold etc.
+
+Now predict.py.
+
+Loading bundle. Need to handle joblib model from sklearn. `load_bundle(path)`. Model path default artifacts/model.joblib. Encoder loaded only when needed; but always needed for features. `Predictor` class:
+
+```python
+class Predictor:
+  def __init__(artifacts, device=None):
+    bundle=joblib.load
+    self.encoder=load_encoder(base, adapter, device, max_length, normalize)
+  def predict_record(title, abstract, text) -> dict
+  def predict_pdf(path, title=None)
+```
+
+Features:
+- Use bundle's encoder config max_chars etc.
+- document_features(include_fulltext=True, include_aux=bundle["include_aux"])
+- Then select columns by feature_mode via `feature_matrix`? predict must avoid importing train (pulls pandas etc). Implement slice:
+  A [:768], B [:2304], C [:2306].
+- scaler.transform, predict_proba.
+- decision logic exactly score >= t relevant; t-0.15 <= score < t review; else irrelevant.
+- `full_text_available` based on text non-empty.
+- Return record.
+
+Input handling:
+- `--pdf PATH`, `--title`, `--abstract`, `--text`, `--input FILE` (JSON or CSV), `--json STRING` maybe.
+- If JSON file: list of dicts or dict with "records". CSV: rows.
+- Each record may have pdf_path/pdf field. Load PDF if text missing.
+- `--sample N` from labeled_papers to test. Actually `--input data/labeled_papers.csv --limit 1` works: CSV has text + abstract. Need `--limit`.
+- Default output JSON to stdout, `--output` file.
+- `--quiet`? Output one JSON per record? For batch output list.
+
+PDF extraction:
+```
+def extract_pdf_text(source: str|Path|bytes):
+  import fitz
+  doc = fitz.open(stream=data, filetype='pdf') if bytes else fitz.open(path)
+  text...
+  metadata title
+```
+- For PDF-only record, abstract empty. Title from `--title` or PDF metadata title or filename stem.
+
+API uses Predictor too. Avoid circular.
+
+Implement `format_decision(score, threshold)`.
+
+Also `predict.py --smoke` maybe uses first record from labeled_papers. But acceptance says sample output. We'll run with sample record.
+
+CLI example in README.
+
+Potential issue model feature mode C dim 2306; scaler expects exact. Good.
+
+Write.
+
+dsh: reasoning:
+Now api.py. Use lifespan. Need handle form JSON. Predictor loads encoder at startup; if model missing, health reports. We want API to start even without model? Better fail fast? For acceptance, model exists. Implement state with try/except and health status.
+
+```python
+@asynccontextmanager
+async def lifespan(app):
+  try: app.state.predictor=Predictor()
+  except Exception as e: app.state.error=...
+  yield
+```
+POST /predict:
+- content-type JSON: payload dict; pdf_b64 optional? Add `pdf_base64` support (nice).
+- multipart: `form = await request.form()`, get title etc, `pdf = form.get("pdf")`, read bytes. `UploadFile`.
+- For form fields, values may be str.
+- If pdf bytes: text, meta = extract_pdf_text(bytes); title fallback.
+- record with text/abstract.
+- run in threadpool `run_in_threadpool(predictor.predict_record, record)`.
+- response.
+- Validation: if no title/abstract/text/pdf, 422.
+- Limit PDF size maybe 25MB (config).
+- /health: model_loaded, device, threshold, feature_mode, feature_dim, model_path, error.
+- root maybe.
+
+Base64 PDF support: in JSON `pdf_base64`.
+- Use `base64.b64decode`.
+- Return `pdf_used`.
+
+Make sure FastAPI request form parsing requires python-multipart installed.
+
+Use Pydantic model for JSON? Not necessary.
+
+Write.
+
+dsh: reasoning:
+Now requirements, gitignore. Then check install.
+
+requirements versions: find installed after job. Use flexible:
+```
+torch>=2.4
+transformers>=4.40,<5
+adapters>=1.0
+scikit-learn>=1.4
+pandas>=2.0
+numpy>=1.26
+joblib>=1.3
+pymupdf>=1.24
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+huggingface_hub>=0.23
+safetensors>=0.4
+```
+But torch 2.6+ with transformers 5 maybe adapters incompat. We'll see actual installed.
+
+.gitignore:
+```
+.venv/
+.uv-cache/
+.uv-python/
+__pycache__/
+*.pyc
+data/fulltext_package/
+artifacts/features/
+artifacts/*.joblib
+artifacts/*.npz
+*.log
+.pytest_cache/
+```
+Keep metrics/config.
+
+Check install job.
+
+dsh: reasoning:
+Install still running. Let's wait a bit and inspect log.
+
+dsh: reasoning:
+No process? Maybe job finished but output not collected. Check job.
+
+dsh: reasoning:
+Weird: no process but job running? Maybe uv is downloading silently and process name different. `ps aux | grep uv`.
+
+dsh: reasoning:
+No process and site-packages empty; job status wrong? Maybe uv is stuck acquiring lock? The earlier uv error "Could not acquire lock ... Read-only file system at /home/yangzs/.cache/uv". We set UV_CACHE_DIR only in the command; but perhaps uv still tries lock elsewhere. The background job's shell maybe exited? Job status running though. Check job output with wait true short.
+
+Maybe uv is waiting on a lock file in .uv-cache held by another process? No process. Let's inspect `.uv-cache` for locks and files. And `job_list`.
+
+dsh: reasoning:
+Files being written, uv process not shown due to ps filtering? Maybe process is `uv` but hidden in different namespace. Anyway install progressing (1.3GB cache, cudnn). torch installs CUDA libs (GPU version). Good. Tail -30 buffers output until completion.
+
+Wait for completion. Meanwhile, test build_dataset with system python lacks fitz, but can test logic on txt/xml (PDF-only will fail with import error caught). Actually `read_pdf` catches import error and records pdf_errors. Good for quick structural test with --limit 20. But then output would be overwritten after full build. Let's test with venv once deps ready; no need now.
+
+Let's think about adapters compatibility. `adapters` latest 1.2? transformers 4.x. With torch 2.9? uv resolves latest.
+
+Potential issue `AutoAdapterModel.from_pretrained(base_path, local_files_only=...)` with local snapshot symlinks; config `model_type` bert. Fine.
+
+Potential issue `model.load_adapter(..., local_files_only=...)` signature may not accept local_files_only. Let's check adapters API when installed. If TypeError, fall back call without. We can make robust:
+```python
+try:
+  model.load_adapter(adapter_name, source="hf", set_active=True, local_files_only=local_files_only)
+except TypeError:
+  model.load_adapter(adapter_name, source="hf", set_active=True)
+```
+But if local_files_only param unsupported, first call may fail after partial. Add.
+
+Also adapters may need `model.add_adapter`/`set_active_adapter`? `load_adapter(... set_active=True)` okay.
+
+Potential issue adapter name "allenai/specter2_classification" is an adapter repo; `load_adapter` requires `source="hf"`. good.
+
+Could test small.
+
+Also tokenizer: base snapshot has tokenizer.json & vocab. fine.
+
+Now think feature quality: title+abstract vector for docs without abstract becomes title only. That's intended. Abstract-only docs: mean/max zeros. Good.
+
+Check `document_features_batch` when all chunks empty: `chunk_vecs` zeros shape; aggregate loop okay.
+
+Check `chunk_text` overlap logic. Bug potential: when current chunk flushed and tail retained, then adding unit; if `current_len + extra > max_chars` after tail? We don't re-check after flush; tail is <= overlap_chars typically 400 plus unit up to 3000 could exceed 3000. Could produce chunk > max_chars slightly. Not critical. But infinite loop? No. Could improve but fine.
+
+Potential issue `_units`: sentence split requires capital after punctuation; fine.
+
+`document_features` includes title+abstract even if both empty -> " " embedding. okay.
+
+Now, `train.py` primary feature matrix mode: `feature_matrix(arrays, "C")` uses aux cache computed even if args.no_aux. Fine.
+
+Important bug: `fit_and_evaluate` gets `X` and uses `X[train_idx]`, but in ablation loop `X = feature_matrix(...)` returns a view/concatenated. Good.
+
+Bug: `_public_result` called on full_control after adding threshold etc. fine.
+
+Bug: `split_info` computed before subset masks; good.
+
+Potential issue `make_splits` uses `GroupShuffleSplit` with `train_size=0.64`; for second split, `train_size=val_share` and `test_size=None`; sklearn interprets remaining as test. yes.
+
+Potential issue labels are numpy ints; fine.
+
+Now API content type for multipart `request.form()` requires python-multipart. Fine.
+
+Need maybe add `/predict` JSON with `pdf_path` for server-local file; security risk but useful? We include pdf_path field, and `predict_record` will read local path if text empty. API shouldn't allow arbitrary file read. This is a security issue. We should remove pdf_path from API inputs or ignore. In `api.py` `_payload_from_form` includes "pdf_path". Better drop pdf_path from API to avoid local file read. Use only upload/base64. Let me patch later.
+
+Also in `predict.py`, `predict_input_file` with CSV `pdf_path` is intended CLI.
+
+Now wait install.
+
+dsh: reasoning:
+Still installing. Torch CUDA libs large. Wait more.
+
+dsh: reasoning:
+The sleep command went background? Weird but irrelevant. Check install job and venv.
+
+dsh: reasoning:
+uv process not visible, cache still growing. Check job status.
+
+dsh: reasoning:
+uv is extracting wheels into temp dirs. Wait. Could avoid CUDA bloat by CPU torch, but task asks GPU torch. 2GB+ okay disk 218GB.
+
+Wait for job completion. Meanwhile review code for bugs using compileall (system python).
+
+dsh: reasoning:
+Need to test build_dataset now with system python except fitz. We can run --no-pdf to test text/xml path, but final build will be with venv after install. Let's wait.
+
+Check install again after 60s.
+
+dsh: reasoning:
+Still. Is uv hung? Cache grows slowly. Maybe downloading CUDA wheels sequentially each 100-200MB. Let's check network throughput or recently modified.
+
+dsh: reasoning:
+It's unpacking torch + CUDA 13 libs. Fine. Wait.
+
+Meanwhile add adapter TypeError fallback and API security patch.
+
+dsh: reasoning:
+Now wait for install.
+
+dsh: reasoning:
+The shell sleep keeps going background due to timeout? Strange, the default timeout maybe 60s. Not important. Check venv.
+
+dsh: reasoning:
+Still 10 temp dirs, none removed. Maybe uv unpacks all packages into temp then installs. 2.5GB. Torch 2.10 + CUDA 13 is ~3GB. Wait more.
+
+Could check uv process via /proc? `pgrep -af uv` returned nothing earlier maybe because process is in another PID namespace? But job runs. Cache writes. Let's use `fuser` or lsof. Not needed.
+
+Let's test build_dataset with system python --no-pdf now to validate XML/TXT path and text stats. Output to /tmp to avoid overwrite.
+
+dsh: reasoning:
+Works. But stats: 24 with abstract = same as txt count, suspicious. Some XMLs may lack abstract? Let's inspect. For first 40, 24 txt and all have abstract? Could be. Let me check abstract extraction on all rows with system python, count. Use direct script over manifest? Or later full build. Also check a row with empty abstract but XML present.
+
+dsh: reasoning:
+Ah 1536 XML files because macOS AppleDouble `._` files. 772 empty includes ~768 `._` files. So actual XML 768, and only 4 actual empty? 772-768=4. Let's filter. Also TXT dir may have `._` files; `ls txt | wc -l` 768 includes? It said 768 earlier, but XML 1536. TXT 768 likely no AppleDouble? Let's check.
+
+dsh: reasoning:
+Important: AppleDouble files `._` double the counts. Manifest refers actual files, so resolve works. But glob fallback `f"{pmid}_*"` will match `._pmid_*` first (sorted, `._` before digits) and attempt parse, possibly yielding empty. Need filter out names starting with `._` in glob. Also PDFs counts actual 206. Update resolve_member glob to exclude `._`. Also when manifest path points actual, fine. But for any missing, fallback could pick AppleDouble. Patch.
+
+Also build_dataset text extraction from actual files. For 40 rows, 24 txt and all 24 abstracts; plausible 16 are PDF-only (no XML) so no abstract. Good.
+
+Patch glob.
+
+dsh: reasoning:
+Also `read_txt` may read `._` if manifest path weird. Not likely.
+
+Now inspect install.
+
+dsh: reasoning:
+Still. 10 temp dirs, maybe all extraction done and uv installing? site-packages 2 only. Something might be hung. Let's inspect `.uv-cache` architecture. uv stores unpacked wheels in archive-v0 and installs via hardlinks. Temp dirs could be from downloads not yet moved. It might be waiting on network for large torch wheel? But size 2.6GB cache; torch wheel ~900MB, nvidia libs ~2GB.
+
+Check open network connections / process in /proc. `ls /proc/*/cmdline` grep uv. Earlier ps showed none. Maybe the background job is running in a separate container/namespace (harness sandbox), so ps can't see. Cache writes visible though. It's progressing.
+
+Could be uv is blocked downloading a specific file with slow network. Check recently modified files count again and mtimes.
+
+dsh: reasoning:
+It is writing. Torch is CUDA 13 (torch 2.10?). Fine. Wait.
+
+Let's inspect package versions once done. Could maybe kill and install CPU torch to save time, but 2.6GB already downloaded. Let it finish.
+
+Meanwhile, review build_dataset / stats and improve. One issue: output CSV may contain very large fields; csv default field size limit applies to reading, not writing. pandas read okay.
+
+AppleDouble: `manifest_rows` 974 but actual file lists include `._`; stats no issue.
+
+Potential abstract: for PDF-only docs, abstract empty per spec. Good.
+
+Mean text chars 9671 for first 40; total text ~9MB. Fine.
+
+Now, `train.py` encoding time estimate. BERT base CPU, 974 docs, mean chunks maybe 10-20 → ~15k chunks. With 28 cores, torch intra-op parallelism. Batch 16 seq 512: maybe ~1-2 sec/batch => 1000 batches = 15-30 min. Plus TA 61 batches. Acceptable. Could increase batch size 32; memory fine. Default 16. During run we can pass --batch-size 32.
+
+GPU unavailable. Need note. Maybe CUDA device appears after torch install? /dev/nvidia absent, no.
+
+Now check job output after some time.
+
+dsh: reasoning:
+site-packages now 3 — install started. Wait.
+
+dsh: reasoning:
+Install linking packages one by one. Wait until job complete. Use job_output wait true maybe blocks until finish. Let's wait with timeout 300s.
+
+dsh: reasoning:
+Wait returned after 300s? It says running. Check venv.
+
+dsh: reasoning:
+Cache grew 1.6GB more; temp dirs reduced. It seems uv is still extracting/hardlinking. 4.5GB cache is huge (CUDA 13 libs). Fine.
+
+Wait more.
+
+dsh: reasoning:
+Again sleep goes background at 60s (tool timeout?). Fine.
+
+Check status.
+
+dsh: reasoning:
+4.8GB cache, 3 temp dirs. Torch CUDA 13 package set is enormous. Soon.
+
+Wait 60.
+
+dsh: reasoning:
+Still 3 temp dirs. Cache 5.1GB. Maybe downloading additional packages. Let's see temp dir names/sizes and recent files.
+
+dsh: reasoning:
+These are torch, cudnn, cublas dirs, total 1.9GB. Why still temp? uv may verify/hardlink after all. Wait.
+
+Potential concern: CUDA 13 wheels target driver 580+; host driver maybe older. But no GPU anyway. We'll note.
+
+Could instead install CPU torch to save hours, but task demands GPU torch; we're almost done. Wait.
+
+dsh: reasoning:
+2 temp dirs left, cache 5.4GB. Wait.
+
+dsh: reasoning:
+Install completing; 133 packages. Check job.
+
+dsh: reasoning:
+Installed torch 2.15, transformers 4.57.6, adapters? not shown in tail, likely installed. Check versions and CUDA.
+
+dsh: reasoning:
+Torch CUDA 13.2 built but no GPU. Good enough "GPU 版 torch" but environment lacks driver/device. We'll document.
+
+Warning: pandas 3.1.0, numpy 2.5.4 (future versions maybe weird but okay). PyMuPDF 2.0 uses `import pymupdf`; `fitz` deprecated but works. Our code uses fitz; works with warning. Could switch to pymupdf import with fallback:
+```
+try: import pymupdf as fitz
+except ImportError: import fitz
+```
+PyMuPDF 2.0's `fitz` compatibility still works. Better update to `import pymupdf as fitz` to avoid deprecation. But pymupdf 2.0 may be a weird future version. Test both APIs: `fitz.open`, page.get_text. likely.
+
+Let's run build_dataset full now with venv. This may take a few minutes for PDFs.
+
+dsh: reasoning:
+Full build successful: 974, 764 abstracts, 974 fulltext (768 txt + 206 pdf). Wait plan said 929 txt/xml and 45 pdf-only, but actual manifest shows 768 txt and 206 pdf; 45 pdf-only. Because 929 XML (with 768 txt? no, both txt and xml 929?) Earlier counts with AppleDouble: TXT Y 929, XML Y 929, PDF 206, pdf only 45. But actual txt files 768 (1536 incl AppleDouble). Hmm manifest says 929 TXT Y but only 768 actual txt files. Let's investigate: 929 rows claim TXT, but files only 768. Maybe 161 rows have both TXT and PDF but TXT missing from package? Wait pdf+txt = 161. 929 - 768 = 161. So manifest marks TXT for 929 but actual txt files only 768? That contradicts. Let's check: actual txt 768 files; 929 manifest TXT Y. 161 missing TXT files. Those 161 also have PDF Y, and code falls back to PDF. So text_source pdf = 206 = 45 pdf-only + 161 missing txt. That means 161 docs that should use TXT had to use PDF. Full-text still available. But build stats text_source says pdf 206. Good. Need verify `resolve_member` for TXT falls back to `package / p.name` then glob; if not found returns None. Then PDF. Yes.
+
+But why manifest has TXT Y for missing files? Maybe excluded deliberately to keep package size; only 768 txt included while 929 XML? Actual xml 768 too. So 161 missing both. The plan said 929 have TXT/XML, 45 only PDF. But actual archive lacks 161 of those. Let's verify with manifest rows and file existence. Could be AppleDouble counts and actual file names mismatch? 768 actual txt. Yes.
+
+Wait maybe tar extraction is incomplete? The tar may contain 929 txt but extraction truncated due to earlier output/exit? It said EXTRACT_OK. Let's check tar listing count.
+
+dsh: reasoning:
+So 161 manifest TXT/XML missing, but PDF available. Our fallback handles it. Note in README/limitations: manifest flags overstate actual txt/xml by 161; all 974 full text available via PDF fallback; 764 abstracts (210 PDF-only have no XML/abstract). Wait abstract count 764, XML actual 768. 4 XMLs empty abstract. Fine.
+
+Need confirm 974 fulltext all extracted. Yes.
+
+Now remove AppleDouble noise or ignore. Fine.
+
+Next encoder smoke. Loading base + adapter. Need network to download adapter. It may use HF cache at /data/yangzs/.cache/huggingface (writable). Try. This may fail due to SSL/proxy. Run with timeout.
+
+dsh: reasoning:
+Two issues:
+1. adapters uses torch cache dir `/home/yangzs/.cache/torch` read-only. Set TORCH_HOME in project (e.g. `.cache/torch`) via env in code? We can set default os.environ.setdefault("TORCH_HOME", str(ROOT/".cache"/"torch")) and HF_HOME perhaps. Or document. Better set in encoder at import:
+```
+os.environ.setdefault("TORCH_HOME", str(ROOT/".cache"/"torch"))
+os.environ.setdefault("HF_HOME", "/data/yangzs/.cache/huggingface")? 
+```
+But HF home may have different path. Setting HF_HOME globally could override user; don't. Set TORCH_HOME if default path not writable. Detect:
+```
+def _ensure_writable_cache(env, default):
+  if env not in os.environ:
+     p=Path.home()/...
+```
+Simplest set `os.environ.setdefault("TORCH_HOME", str(ROOT/".cache"/"torch"))` at top of encoder before loading. That's project-local and ignored by git. Add `.cache/` to gitignore.
+
+2. Adapter loading failed because network? It tried download but cache dir error; after fixing TORCH_HOME, retry. Could also manually `huggingface-cli download allenai/specter2_classification` using HF_HOME writable. Let's test network with huggingface_hub.
+
+Inspect the actual error earlier may be because adapter index download failed due to proxy/SSL. Let's try direct download to local dir. Use `HF_HOME=/data/yangzs/.cache/huggingface` (which is writable). Perhaps home read-only is sandbox but /data/yangzs is writable. The error only torch cache. Fix and retry.
+
+Add TORCH_HOME at top of encoder and maybe `HF_HOME` fallback if `/home/yangzs/.cache/huggingface` not writable. The base model is already local, adapter download uses HF cache. Default HF_HOME=/home/yangzs/.cache/huggingface may be read-only. Set `HF_HOME` project-local? That would force re-download base tokenizer? Base loaded from explicit local path so no. Adapter download to project `.cache/huggingface` works. But user may want global; we can detect writability:
+
+```python
+def _default_cache_dir(name):
+    home = Path(os.environ.get("HF_HOME", Path.home()/".cache"/"huggingface"))
+    try: home.mkdir(...); test write
+    except: use ROOT/".cache"/"huggingface"
+```
+Careful not to change env after imports. At module import, set TORCH_HOME to project `.cache/torch` always; set HF_HOME only if not explicitly set and default is not writable:
+```
+if "HF_HOME" not in os.environ:
+   try write ~/.cache/huggingface
+   except: os.environ["HF_HOME"]=str(ROOT/".cache"/"huggingface")
+```
+But `~/.cache/huggingface` exists and may be readable but not writable. Test creating subdir. Simpler: if `os.access(path, os.W_OK)` false. If path doesn't exist, check parent. Use project cache default. This is environment-specific but robust.
+
+Also `ADAPTER_HUB_INDEX_FILE` maybe global; adapters 1.3 uses `ADAPTER_CACHE`? Need inspect source around load. Let's read adapters/utils resolve path and loader.
+
+dsh: reasoning:
+`ADAPTER_CACHE` computed at import from TORCH_HOME. So set TORCH_HOME before importing adapters. In encoder module, set at top before load function import. Add:
+
+```python
+_CACHE_ROOT = ROOT/".cache"
+if not os.environ.get("TORCH_HOME"):
+    os.environ["TORCH_HOME"] = str(_CACHE_ROOT/"torch")
+if not os.environ.get("HF_HOME"):
+    # If default HF cache is unwritable, use project-local
+    ...
+```
+Setting HF_HOME after transformers imported? encoder imports transformers only inside load_encoder, so top-level okay. But train imports encoder at top then may import transformers later. Good.
+
+Test writability:
+```python
+def _writable(path):
+  p=Path(path)
+  probe=p
+  while not probe.exists(): probe=probe.parent
+  return os.access(probe, os.W_OK)
+```
+If home HF cache not writable, set project `.cache/huggingface`.
+
+Also `HF_HUB_DISABLE_TELEMETRY=1`.
+
+Add `.cache/` to gitignore.
+
+Then retry adapter.
+
+dsh: reasoning:
+Retry encoder smoke.
+
+dsh: reasoning:
+Now error "Distant resource does not have an ETag" from adapters get_from_cache downloading adapter index. This is adapters' own downloader, not HF hub. It uses `http_get` perhaps. The adapter is on HF. We can download the adapter repo manually with huggingface_hub and pass local path to load_adapter. That's more robust. Let's check the repo contents via HF API / hub download.
+
+`huggingface-cli` exists? Use `.venv/bin/hf download allenai/specter2_classification --local-dir .cache/adapters/specter2_classification` or python.
+
+Then `model.load_adapter(local_dir, source="local"?)` — resolve_adapter_path sees isdir and loads. Passing local dir with config/weights works.
+
+Implement in load_encoder: if adapter_name is a local directory exists, use it directly; else try load_adapter; on failure, attempt `huggingface_hub.snapshot_download(repo_id=adapter_name, local_dir=...)`, then load local. But initial failure may leave cache; fine.
+
+Better pre-download now into `models/specter2_classification` or `.cache/adapters/...`. Since not commit. Use HF snapshot cache and resolve path.
+
+Let's test download:
+
+```
+HF_HOME=$PWD/.cache/huggingface .venv/bin/python -c "from huggingface_hub import snapshot_download; print(snapshot_download('allenai/specter2_classification'))"
+```
+
+Network via proxy works? HF HEAD returned 200. Try.
+
+dsh: reasoning:
+Proxy env points to hf-mirror through a proxy that fails. Check env proxies. `curl -sI https://huggingface.co` worked earlier (HTTP/2 200) but probably through proxy. HF_HOME config may set endpoint hf-mirror. Let's inspect env and ~/.cache/huggingface config.
+
+dsh: reasoning:
+Env has HF_ENDPOINT set to hf-mirror likely. `env | sed` hides values. Need see actual (not secret).
+
+dsh: reasoning:
+HF_ENDPOINT is hf-mirror which redirects to huggingface; but proxy 7890 maybe currently failing to reach hf-mirror? curl with proxy succeeded. Python requests error says "Unable to connect to proxy, RemoteDisconnected" on hf-mirror API. Maybe transient or HTTP/2 issue. Try overriding HF_ENDPOINT=https://huggingface.co and `NO_PROXY`? Direct connection might work without proxy? Curl used proxy (HTTP/1.1 Connection established). Let's try requests to both endpoints.
+
+dsh: reasoning:
+Transient. Retry snapshot_download with HF_ENDPOINT huggingface.co.
+
+dsh: reasoning:
+Adapter downloaded. Now load_encoder via adapters still uses its own ADAPTER_CACHE under TORCH_HOME/adapters and downloads adapter index from `ADAPTER_HUB_INDEX_FILE` (adapterhub.ml?) causing ETag issue. Can pass local path. But `adapter_name` is repo id. We can teach load_encoder to resolve local HF snapshot first:
+
+```python
+def resolve_adapter_path(adapter):
+  if Path(adapter).is_dir(): return str
+  try:
+     from huggingface_hub import snapshot_download
+     local = snapshot_download(adapter, allow_patterns=[...], local_files_only=local_files_only? )
+     return local
+  except: return adapter
+```
+But calling snapshot_download each time with local_files_only? If already cached, it works offline with local_files_only=True. We can try local first:
+```
+snapshot_download(adapter, local_files_only=True)
+```
+then if fails and not local_files_only, download. This avoids adapters' hub index path entirely. Then `model.load_adapter(local_path, source="local"? )` — resolve_adapter_path sees isdir and returns. `source` parameter isn't needed. `model.load_adapter(local_path, set_active=True, local_files_only=?)`. It checks isdir. Good.
+
+But the adapter repo is an "adapter" format with `adapter_config.json` and `pytorch_adapter.bin`, which is exactly what load_adapter expects.
+
+Implement:
+```python
+def _resolve_adapter(adapter_name, local_files_only):
+    p=Path(adapter_name)
+    if p.exists(): return str(p)
+    try:
+        from huggingface_hub import snapshot_download
+        return snapshot_download(adapter_name, local_files_only=True)
+    except Exception:
+        if local_files_only: raise
+        return snapshot_download(adapter_name, allow_patterns=[...], ignore_patterns=[".gitattributes"])
+```
+Then load_adapter(resolved, set_active=True). This makes behavior deterministic. If adapter_name is a hub id but download fails, fallback to load_adapter(adapter_name) maybe.
+
+Also base path `local_files_only` only applies to base; okay.
+
+Set env HF_ENDPOINT? Don't override globally; the environment's hf-mirror sometimes fails but snapshot download to huggingface worked. We could leave. For reproducibility, user can set. Our test set env. But default code should work with hf-mirror too (retry). If download fails due to proxy, no. We can attempt both endpoints? Not appropriate. But we can do: if HF_ENDPOINT is hf-mirror and download fails, retry with huggingface.co? That is helpful but modifies behavior. Maybe not.
+
+Since adapter is already cached in project `.cache/huggingface`, default `HF_HOME` handling in encoder: `/home/yangzs/.cache/huggingface` is not writable? Let's test os.access. If it's writable, code won't set project HF_HOME and won't see cached adapter. We need to check. Earlier attempt wrote `.cache/huggingface` only because env HF_HOME set? In encoder, `HF_HOME` already set to /home/yangzs/.cache/huggingface (env), so code did not override! Yet error was TORCH_HOME only. So default HF_HOME remains home. Is it writable? Maybe `/home/yangzs/.cache/huggingface` exists and readable but home read-only. Test `touch`.
+
+dsh: reasoning:
+But encoder's check only runs if `HF_HOME` not in os.environ. Since env sets it, we don't override, even though read-only. Need to check writability regardless and override if unwritable. But then the adapter cached in project `.cache/huggingface` will be used. Good.
+
+Modify:
+```python
+if "HF_HOME" in os.environ:
+   hf_home=Path(...)
+   if not writable: os.environ["HF_HOME"]=str(_CACHE_ROOT/"huggingface")
+else: ...
+```
+But if user explicitly sets HF_HOME to read-only with a preloaded cache (base model path explicit), overriding changes adapter cache only; okay. There is TRANSFORMERS_CACHE env also read-only, which transformers may use over HF_HOME? Transformers 4.57 warns TRANSFORMERS_CACHE deprecated but may use it. Set `TRANSFORMERS_CACHE` to same writable if unwritable. Also `HF_HUB_CACHE` not set. Set `HF_HOME` and maybe `HF_HUB_CACHE=str(hf_home/'hub')`.
+
+Implementation:
+```python
+def _resolve_writable(path):
+  probe=...
+  return os.access(probe, os.W_OK)
+_hf_env=os.environ.get("HF_HOME") or str(Path.home()/".cache"/"huggingface")
+if not writable(_hf_env):
+   _hf_env=str(_CACHE_ROOT/"huggingface")
+   os.environ["HF_HOME"]=_hf_env
+   os.environ["HF_HUB_CACHE"]=str(Path(_hf_env)/"hub")
+   if "TRANSFORMERS_CACHE" in os.environ and not writable(...):
+       os.environ["TRANSFORMERS_CACHE"]=_hf_env
+```
+Set before transformers import. Good.
+
+Also adapter resolution. Patch.
+
+dsh: reasoning:
+Now smoke. The adapter cached under project `.cache/huggingface` due to previous env HF_HOME. Code will override read-only HF_HOME to project `.cache/huggingface` (same). `snapshot_download(local_files_only=True)` should find. Run without env overrides.
+
+dsh: reasoning:
+Encoder works. But warning: "There are adapters available but none are activated for the forward pass." Then `model.load_adapter(... set_active=True)` should activate? It says none activated. Maybe `load_adapter` called with resolved local path and `set_active=True` worked? The warning appears during load before activation perhaps. Need verify adapter active. In adapters API, `model.active_adapters()` returns list. Check. Also `model.load_adapter` might call `set_active` after warning. Let's test:
+
+```
+enc.model.active_adapters()
+enc.model.adapter_names
+```
+
+Also check that adapter weights actually affect output vs base. We can verify by disabling adapter and comparing embeddings. `model.set_active_adapters(None)`? Use `model.set_adapter` context? `with model.disable_adapter():` maybe. Compare.
+
+Let's run quick.
+
+dsh: reasoning:
+The model is `BertAdapterModel`; adapters API has `model.adapters_config.adapters` maybe. Warning "none activated" is concerning. Maybe load_adapter with a local path treats adapter name as path and adapter name becomes directory? Let's inspect model.config.adapters, active_adapters method.
+
+dsh: reasoning:
+Adapter name is `[CLF]` from config. `active_adapters` error due to a bug in adapters 1.3 with transformers 4.57? "Stack object not callable". Hmm.
+
+Warning "There are adapters available but none are activated for the forward pass." likely emitted in `forward` when `self.active_adapters` is empty. If inactive, we're not using classification adapter -> violates requirement.
+
+We need to explicitly activate: `model.set_active_adapters("[CLF]")` or `model.set_adapter("[CLF]")`. Let's inspect API methods.
+
+dsh: reasoning:
+`active_adapters` is a property, not callable. My earlier call caused "'Stack' object is not callable". So active_setup is a Stack object, likely `[CLF]`. The warning "none activated" may be spurious or occurred before set_active. Let's print `enc.model.active_adapters` (property) properly and `active_setup`. Also compare embeddings with disable_adapter context.
+
+`model.disable_adapter()` is a method returning context manager maybe. Test.
+
+dsh: reasoning:
+Active setup is Stack[[CLF]], so active. Warning "none activated" appears at model load before adapter activation and on first forward? It printed once. Could be from base model forward before active? Hmm, `model(**inputs)` in encode should have active. The warning might be logged at load when adapters available but active_setup None; it then activates. Not a concern since active_setup now set. To verify effect, use `m.set_active_adapters(None)` then encode, then restore. Or `with m.disable_adapters():`? Let's inspect methods.
+
+dsh: reasoning:
+Adapter effect confirmed: cos 0.769 vs base. Good. The warning is emitted when active None only; three times: initial? It printed 3 warnings (load, first encode? Actually initial load warning, then v0 encode twice? no). Fine.
+
+But code's `model.load_adapter` with `set_active=True` — active setup confirmed.
+
+Now performance smoke: encode some docs CPU to estimate. Run 8 docs with max_chunks 24 and time. This also warms. Use first 8 with long texts.
+
+dsh: reasoning:
+~1 doc/s, 974 docs → ~16-20 min. Good. With chunks average maybe 12-15, ~3,000 chunks? 54 chunks/8 = 6.75 avg; total ~6500 chunks at 5.7/s = 19 min. Feasible. Batch-size 32 may improve. Run full train in background with batch 32. Before that, quick smoke train on 64 docs with max_chunks 4 to validate code path and artifacts, then full run.
+
+Smoke command:
+```
+.venv/bin/python train.py --limit 64 --max-chunks 4 --artifacts artifacts/smoke --batch-size 32
+```
+It will encode 64 docs ~40s. Run.
+
+dsh: reasoning:
+Smoke worked. But threshold 0.0 for C because val recall target requires all positive; okay small sample. Need inspect top and metrics structure. Also check artifacts files.
+
+dsh: reasoning:
+Smoke reveals threshold selection picks 0.0 because validation only 6 samples (3 pos), and it wants recall 0.95→1.0, so threshold 0.0. That's expected small sample. On full set, val ~141, threshold likely ~0.2.
+
+But notice A test AP 0.854 vs B/C 0.718; full text hurt on tiny sample. Full run will tell.
+
+Now full train. Before that, maybe fix `metrics["data"]["n_abstract_only"]` uses ~full_text; okay.
+
+Run full train in background:
+```
+.venv/bin/python train.py --batch-size 32
+```
+Expected 15-25 min. Run with run_in_background true. Meanwhile write README and dsh-done skeleton, test predict on smoke artifacts, API with smoke model.
+
+Use `artifacts/smoke/model.joblib` for predict smoke.
+
+dsh: reasoning:
+While full training, test predict with smoke bundle on a sample record. Use first row from labeled_papers.csv; text long. `--sample 1 --model artifacts/smoke/model.joblib`. Encoder loads.
+
+dsh: reasoning:
+Predict works; decision relevant due smoke threshold 0. Need later with full model.
+
+But `--sample 1` uses full text; output score 0.15. Fine.
+
+Need test PDF input too. Pick a PDF and run after full model maybe. API test with smoke.
+
+Test API using uvicorn in background on port 8000 or 8011. Use `artifacts/smoke/model.joblib` env MODEL_PATH. Start uvicorn, curl health and predict.
+
+dsh: reasoning:
+No output? Perhaps command backgrounded whole thing due to `&`, or uvicorn startup blocked and sleep? Check log/pid.
+
+dsh: reasoning:
+Server process [3] weird PID 3, maybe sandbox. It is still loading encoder (takes ~10s) or died. `ps` no output because PID file content? Let's cat pid file separately. It may contain 0? No output. Check ports.
+
+dsh: reasoning:
+The background server is likely killed when shell exits (harness kills process group). Need run uvicorn via nohup/setsid? Use `run_in_background: true` for the server command, then curl in separate call. The tool supports background jobs. Start uvicorn as background job.
+
+But note "Started server process [3]" suggests it's running inside a namespace; loading model maybe slow. It got to encoder load but no further. It may have been killed.
+
+Start with run_in_background and wait.
+
+dsh: reasoning:
+Wait a few seconds, then curl.
+
+dsh: reasoning:
+API works. Test multipart PDF upload later with full model. Kill server to free CPU for training? It's small but encoder loaded uses RAM. Keep or kill. Kill job.
+
+dsh: reasoning:
+Check training progress.
+
+dsh: reasoning:
+TA encoding 256/974 in ~1 min. Then chunks ~15-20 min. Fine.
+
+Now write README. Need metrics eventually; can fill placeholders after training. Write comprehensive README in Chinese with:
+- Overview, data, pipeline.
+- Environment setup: Python 3.12, uv or venv, GPU torch install. Mention this machine GPU unavailable (no /dev/nvidia) and CPU fallback, but commands.
+- Model paths & HF cache notes.
+- Restore fulltext package command.
+- Build dataset command and expected stats (974, 764 abstract, 974 fulltext, 768 txt + 206 pdf; 161 manifest TXT missing fallback PDF).
+- Training command, cache, artifacts, splits, threshold.
+- Metrics table (after training).
+- Predict examples (sample, PDF, JSON/CSV).
+- API startup + curl JSON/multipart + response.
+- Design details: chunking, features, ablation, decision band.
+- Limitations: no fine-tune, labels weak/model excluded, abstract missing for PDF-only, no GPU.
+- File layout.
+- Reproducibility commands.
+- Data file format.
+
+Also `README` should state labeled_papers.csv is CSV (not parquet).
+
+Let's wait for some training. Meanwhile draft README with placeholder metrics to update. Better write after metrics.
+
+Test predict with PDF using smoke model to ensure PDF extraction. Pick a PDF-only doc with label maybe. Run concurrently? It uses CPU, slows train. Wait until train done.
+
+Check train progress periodically.
+
+dsh: reasoning:
+TA ~448 in 2 min. Then chunks.
+
+Let's estimate total from earlier benchmark: 1 doc/s. 974 docs ~16 min. TA 974 ~2.5 min; chunks ~13 min.
+
+Write README now with metrics placeholder to fill. Actually can write most. Let's generate after metrics to avoid rewriting. But time. We can write now with TODO markers and edit later.
+
+Need also test `build_dataset.py` with venv produced CSV; check size and row counts, abstract flags, text sources.
+
+dsh: reasoning:
+CSV 27MB. Not too large; fine.
+
+Potential issue full_text_available column read as str "True"/"False"; train handles.
+
+Now check training.
+
+dsh: reasoning:
+Again sleeps background. Check.
+
+dsh: reasoning:
+TA 800/974. Soon chunks. Progress line may overwrite. Wait 5 min.
+
+Meanwhile README structure. Let me draft with actual expected details, leaving metrics table to fill. Use Chinese.
+
+Also need `.gitignore` does not ignore `artifacts/smoke` but ignores features and joblib, fine.
+
+Potential issue user asked `data/labeled_papers.csv` or equivalent. Good.
+
+Potential issue API endpoint should accept optional PDF and metadata. Implemented. But multipart `form.get("pdf")` may return string if no file; handled.
+
+Potential issue predict.py `--input` JSON records with `pdf` key path local; okay CLI.
+
+Potential issue decision band: `score >= t` relevant; `t-0.15 <= score < t` review. Exactly implemented.
+
+Potential issue model bundle feature mode A might `include_aux` false; predict slices. Good.
+
+Potential issue `Predictor._features` uses `bundle["encoder"]` paths; if base path missing, load_encoder falls back to hub id. Good.
+
+Potential issue `train.py` full control: `full_control` trained on all rows including model labels, but feature cache includes all. Good.
+
+Potential issue `train.py` `--no-aux` then primary B, C absent. Fine.
+
+Potential issue train caching: if full run finishes, cache filename `specter2_mc24_ch3000_n974_*.npz`. Predict uses max_chunks 24. Fine.
+
+Now check training logs for errors.
+
+dsh: reasoning:
+11,650 chunks total. At 5.7 chunks/s = 34 min. TA 974 ~2.5 min. Total ~37 min. Slow but okay. Batch-size 32 might be 6-8 chunks/s. At 384 in ~1 min = 6.4/s, 30 min. Fine.
+
+Could optimize by reducing max_chunks to 16, but spec default 24. Keep.
+
+Let's write README while waiting. Need not know metrics yet. Use placeholders `<!-- METRICS -->` and update after.
+
+Draft README (Chinese, clear):
+
+# SPECTER2 遗传变异病例筛选基线
+
+## 1. 目的与范围
+- Input paper metadata/fulltext, output relevant/review/irrelevant for prenatal genetic variant case reports.
+- Frozen SPECTER2 + classification adapter, 2304+2 features, logistic regression. No fine-tune.
+- Data 974 labels 699/275; split.
+
+## 2. 目录与数据
+- files.
+- `data/labeled_papers.csv` schema.
+- fulltext package restore command.
+- build stats.
+
+## 3. 环境安装
+- Python 3.12 (uv).
+- `uv venv --python 3.12 .venv` then `uv pip install -r requirements.txt`
+- GPU torch: `uv pip install torch --index-url https://download.pytorch.org/whl/cu124` (but requirements default installs cu132 on this machine). Note driver absent here; CPU fallback.
+- HF cache: base local path; adapter downloaded to `.cache/huggingface` if home read-only; env overrides `SPECTER2_BASE_PATH`, `SPECTER2_ADAPTER`, `HF_HOME`.
+- Note adapter version; network first time.
+
+## 4. 数据构建
+```
+python build_dataset.py
+```
+stats table actual.
+- 974/974 join; 764 abstract; 974 fulltext (768 TXT, 206 PDF); 161 manifest TXT/XML missing but PDF fallback; 210 no abstract.
+- build_stats.json.
+
+## 5. 训练
+```
+python train.py --batch-size 32
+```
+- cache; first ~35 min CPU, then seconds; `--force-reencode`.
+- splits GroupShuffleSplit 64/16/20.
+- default subset 883; full control 974.
+- threshold recall target 0.95.
+- ablations A/B/C.
+- outputs.
+- metrics table (fill).
+
+## 6. 预测
+- sample, pdf, json, csv.
+- output fields.
+
+## 7. API
+- command; health; JSON; multipart PDF; response.
+
+## 8. 设计细节
+- chunking 3000 chars overlap 400 max 24 evenly sampled.
+- normalize.
+- no text zeros.
+- aux features.
+- decision band.
+- no fine-tune.
+
+## 9. 可复现命令/测试
+- py_compile, smoke.
+
+## 10. 已知限制
+- GPU unavailable here; torch cu132 installed but CUDA false. Classifier adapter has no head (only encoder weights; embeddings).
+- abstract only for 764; 210 empty.
+- 161 txt/xml advertised but missing; PDF fallback.
+- labels include weak/model excluded by default; full control reported.
+- No PDF OCR (scanned PDFs would be empty) — but all 206 extracted >0.
+- Single split; no CV; small n.
+- review band 0.15 fixed, chosen heuristically.
+- API single worker; no auth/rate limit; PDF max 30MB.
+- Data leakage caveat: labels partly model-generated excluded.
+- Not clinical use.
+
+## 11. 文件清单.
+
+Let's write now. Metrics placeholder use `<!-- TRAIN_METRICS -->`. We'll update with actual after.
+
+dsh: reasoning:
+Now training progress.
+
+dsh: reasoning:
+Hmm only 512 at 18:20:43, after starting chunks around 18:19? Slow ~6/s. 11650/6 = 32 min. At 18:20. Completion ~18:50. Okay.
+
+Can we boost throughput by increasing torch threads? Default uses all 28. Check CPU utilization; maybe training process uses ~? `top`. If low, set OMP_NUM_THREADS. But re-running would waste 10 min of encoding. Could optimize by chunking fewer? Max_chunks 24 but average chunks 12; 11650. That's inherent.
+
+Maybe use `torch.set_num_threads(28)`. Default likely 28. Check process CPU via `ps -eo pcpu`.
+
+dsh: reasoning:
+Processes in sandbox namespace, can't see. Progress 544 after ~2.5 min = 3.6/s? 18:18:14 was at 800 TA; chunks started maybe 18:18:30. At 18:20:43 544 → 544/2.2min = 4.1/s. 11650/4.1 = 47 min. Hmm. Batch 32 may not improve because CPU memory bandwidth. Could take ~45 min. Acceptable but long.
+
+Could reduce max_chunks to 16 for full run: 11650*2/3=7767 → 31 min. But spec default 24; we can keep 24. Maybe do 16 for time? Requirement says max_chunks=24, should meet. We have time.
+
+Could encode with longer batch and max_length 256? No, would compromise.
+
+We can use ONNX/quantization but no.
+
+Wait.
+
+Meanwhile, test PDF prediction with smoke model maybe after train to avoid CPU contention. Could kill and do later.
+
+Let's inspect data for potential issue: 210 no abstract, text available. Fine.
+
+Need maybe add `scripts`? Not required.
+
+Potential code quality issue: train.py imports `precision_score` etc; fine.
+
+Potential bug in `binary_metrics`: if all predictions negative, confusion matrix labels [0,1] yields tn,fp,fn,tp fine.
+
+Potential bug in `select_threshold` with scores exactly equal: candidates include unique[-1]+1e-6. Fine.
+
+Potential issue `select_threshold` target 0.95 can choose t=0.0 even when negatives have scores 0? On full val, threshold may be low, producing many false positives. That's by design high recall.
+
+Potential issue full control training uses same `X_primary` and all indices; scaler fit on all. Fine.
+
+Potential issue split: GroupShuffleSplit's train_size=0.64 produces train 623, temp 351; second split val 156/test 195 = 64/16/20. Good.
+
+Potential issue "保证各组两类尽量都有": yes.
+
+Potential issue `metrics["data"]["label_counts"]` keys string sorted. fine.
+
+Potential issue `test_predictions.csv` includes label and decision; good.
+
+Now check progress.
+
+dsh: reasoning:
+1120 at 18:22:51. Started 18:18:30 → 1120/4.35min = 4.3/s. Total ~45 min, done ~19:03. Fine.
+
+We can use this time to inspect code for hidden issues, write tests maybe. Let's run a static review of train/predict/api. Use `ruff`? Not installed. Use pyflakes? not installed. Could `uv pip install ruff` quick but no need. Use `python -m compileall` done.
+
+Check `api.py` form parsing: `request.form()` returns FormData; `form.get("pdf")` may be UploadFile. `upload.file.read()` works. If `UploadFile`, `.size` attribute exists. Good.
+
+But `_payload_from_form` filters values `not hasattr(value, "filename")`; for string values has no filename. Fine. It includes `text`, which can be huge in form. okay.
+
+`api.py` catches `json.JSONDecodeError` but `await request.json()` can raise `ValueError`/`starlette` errors; fine.
+
+`api.py` `from predict import DEFAULT_MODEL, Predictor, extract_pdf_text` imports joblib and encoder only lazily. Good.
+
+`predict.py` imports pandas at module import; API imports predict → pandas loaded. Fine.
+
+`predict.py` `Predictor.predict_record` if `pdf_value` and no text reads local path. For API we removed pdf_path, but record could include `pdf` field from JSON? `_payload_from_json` only whitelists keys, no pdf. Form whitelist no pdf. Good.
+
+`predict.py` `--sample` uses `pd.read_csv(DEFAULT_DATA, dtype=str)`, text is full. Good.
+
+`predict.py` `--input data/labeled_papers.csv` includes `pdf_path`? no, but text exists. Fine.
+
+`predict.py` `--pdf` passes `pdf_path=None` after extracting; good.
+
+`encoder.py` `_resolve_adapter` calls `snapshot_download(local_files_only=True)`; when adapter is cached, works. When not, tries network `allow_patterns`. If network unavailable but local path passed, works. Good.
+
+`encoder.py` `load_encoder` base path check only `Path(base_path).exists()`; if string is hub id e.g. "allenai/specter2_base", Path doesn't exist → logs warning and sets same id; okay.
+
+`encoder.py` `model.requires_grad_` check likely false; then loop params requires_grad false. Good.
+
+`encoder.py` in `encode_texts`, with CPU and `torch.inference_mode`, outputs `last_hidden_state`. Adapter active. Good.
+
+Potential issue `torch.autocast` for CUDA fp16 with BERT might produce NaNs? Usually fine. Could use bfloat16? Not necessary. On GPU, fp16 okay.
+
+Potential issue `normalize=True` makes zero vectors zero. Good.
+
+`document_features_batch`: uses `sum(chunk_counts[:i])` repeatedly O(n^2) for 974, negligible (but 974^2 ~1M). Fine. Could precompute offsets but no need.
+
+`chunk_text`: overlap logic may duplicate units; okay.
+
+`build_dataset.py`: `read_txt` may read AppleDouble only if manifest path starts `._`; no. `resolve_member` fallback ignores AppleDouble now. Good.
+
+`build_dataset.py` `as_bool(man.get("TXT",""))` with value "Y" works.
+
+`build_dataset.py` `label` int conversion `int(float(...))`; okay.
+
+`build_dataset.py` `weak` written bool -> CSV "True"/"False". Good.
+
+`build_dataset.py` if XML missing, abstract empty. 210 PDF-only. Good.
+
+`build_dataset.py` stats `with_abstract` increments only once per row; okay.
+
+`build_dataset.py` `stats["source_none"]` etc. Keys exist because Counter returns 0 if missing. Good.
+
+Potential issue `build_dataset.py` output fields includes `pmcid` from manifest; okay.
+
+One requirement: `abstract` prefer XML; no fallback. done.
+
+One requirement: "按 PMID 对齐（应 974/974）" stats shows overlap 974. good.
+
+One requirement: "可选 2 个廉价辅助特征... train 消融可开关" done.
+
+One requirement: "GroupShuffleSplit：约 64/16/20" done.
+
+One requirement: "按 full_text_available 分层报告" done.
+
+One requirement: "predict 支持 PDF 路径或 JSON/CSV 记录" done.
+
+One requirement: "api POST /predict 接受元数据 + 可选上传 PDF" done.
+
+Need perhaps validate API multipart upload. Later.
+
+Need check `artifacts/model.joblib` gets created after full train. yes.
+
+Potential hidden issue: `train.py` `feature_matrix(arrays, "A")` returns `arrays["ta"]`, then StandardScaler modifies? `fit_transform` returns new array; no mutation. Fine.
+
+Potential hidden issue: `full_control` training uses `X_primary` built from `arrays`, and `y` all. Good.
+
+Potential hidden issue: `ablation` C uses aux measured over first 20k chars; fulltext docs with no text still aux from title/abstract. Fine.
+
+Potential hidden issue: `metrics` `full_label_control` has model/scaler not serialized in JSON because `_public_result` excludes. good.
+
+Potential hidden issue: `config.json` `model_all_path` points absolute? `str(model_all_path)` where artifacts may be relative if CLI relative. Default ROOT/artifacts absolute. Fine.
+
+Potential reproducibility: `train.py` default artifacts absolute? `DEFAULT_ARTIFACTS = ROOT / "artifacts"` absolute. Config model path absolute. Good.
+
+Potential issue README says `artifacts/model_all.joblib` but requirements no `huggingface-cli`; optional.
+
+Now, the "review" band. If t=0.0 from smoke, review threshold -0.15; but full should t>0.15 maybe. If full threshold <0.15, review band partly negative; still logic. Fine.
+
+Maybe improve threshold selection: target recall 0.95 on val; if threshold 0.0, means val positives scores near 0. With full data, likely not.
+
+Now wait. Use 2-3 min checks.
+
+dsh: reasoning:
+2048 at 18:26. Rate ~4.4/s. Remaining 9600 → 36 min, done ~19:02. Fine.
+
+Let's use time to test `predict.py` with a PDF using smoke (will contend a bit). Maybe skip until full.
+
+We need `briefs/dsh-done.md` final with files, command outputs, limitations. Create later.
+
+Need maybe test `build_dataset.py --limit` after final to ensure no regression; full already.
+
+Need check `data/build_stats.json` content.
+
+dsh: reasoning:
+Could add `abstract_available` stats maybe enough.
+
+Need inspect git status and ensure .gitignore works.
+
+dsh: reasoning:
+`artifacts/smoke/model.joblib` not ignored? `artifacts/*.joblib` only top-level, not subdirs. Add `artifacts/**/*.joblib`, `artifacts/**/*.npz`, maybe ignore `artifacts/smoke/` entirely? Smoke artifacts not required delivery. Could keep ignored. Add patterns.
+
+Also `.uv-cache` ignored. `.cache` ignored. Good.
+
+`data` shows untracked whole; `.gitignore` ignores fulltext_package but labeled_papers.csv and final_labels.csv will be tracked. Good.
+
+Update .gitignore:
+```
+artifacts/**/*.joblib
+artifacts/**/*.npz
+artifacts/smoke/
+```
+Maybe keep metrics. Add.
+
+Also `artifacts/train_full.log` ignored by *.log. Good.
+
+Need maybe remove artifacts/smoke at end? Optional; it's ignored. Keep for evidence but not commit. Could remove to reduce clutter; dsh-done can mention smoke. Since git ignores after patch.
+
+Let's patch.
+
+dsh: reasoning:
+Now check training after 3 min.
+
+dsh: reasoning:
+~2944 at 18:29. Rate ~5/s. Remaining 8700 → 29 min, done ~18:58.
+
+We can do useful work: inspect validation of API multipart with a tiny generated PDF? Need PyMuPDF create PDF. But training uses CPU; a tiny request negligible. Start API with smoke again as background, test multipart. Do it later.
+
+Potential concern: `predict.py` PDF path extraction uses `fitz.open` and `doc.close()` in finally. Works.
+
+Potential concern: `extract_pdf_text` with bytes uses `fitz.open(stream=bytes(...), filetype="pdf")`; PyMuPDF 2.0 accepts. Test with an existing PDF through API multipart after server start.
+
+Let's start API with smoke, test PDF upload, kill. Use run_in_background.
+
+dsh: reasoning:
+Wait and test with a PDF that has text. Choose smallest pdf.
+
+dsh: reasoning:
+No output from curl? Maybe server still loading. Check job output.
+
+dsh: reasoning:
+Server ready at 18:29:28, but our sleep 12 was from 18:29:?? maybe health before ready. Curl output empty because connection refused? `-s` hides. Retry now.
+
+dsh: reasoning:
+Multipart works, but `pdf_used` false because we directly extract in API and set text; `predict_record` doesn't know PDF was used. Requirement output includes `full_text_available`, not pdf_used. But for correctness, pass `pdf_used=True` in record? `predict_record` sets pdf_used only if it extracts. We can add record["pdf_used"] = True and use in output. Nice improvement.
+
+In API after extracting PDF: `record["pdf_used"] = True`; in `predict_record`, `pdf_used = bool(record.get("pdf_used", False))` initially, then True if extracted. Also include `pdf_used` in API JSON whitelist? It's internal, no.
+
+Patch later.
+
+Kill server.
+
+dsh: reasoning:
+Patch pdf_used.
+
+dsh: reasoning:
+Now progress.
+
+dsh: reasoning:
+At 3072. Now wait ~25 min. Could use time to install `hf` CLI? Not needed.
+
+Need check if API server kill released memory/CPU; yes.
+
+Potential issue GPU torch 2.15+cu132 requires driver 580+; no GPU. If user has RTX 4060 with older driver, cu132 wheel may fail even with GPU. README notes install cu124. But requirements just `torch>=2.4`; on a GPU machine pip may install latest cu132 requiring new driver. Could pin torch to a version compatible with CUDA 12.x? The task asks GPU torch for RTX 4060. A 4060 typically driver supports CUDA 12.x; cu132 wheels might not load with driver <580. Our environment's torch can't use GPU anyway. For reproducibility, requirements should perhaps pin `torch>=2.4,<2.6`? But Python 3.12 supported. However, on this environment, latest installed. README gives cu124 command. Fine.
+
+Could include `--index-url https://download.pytorch.org/whl/cu124` in README as recommended, and note `requirements.txt` installs default. Good.
+
+Now, one concern: `adapters` 1.3 with transformers 4.57 emits "none activated" but active. Fine.
+
+Potential issue adapter classification head not loaded; "No matching prediction head found" — the adapter repo indeed only has adapter weights, not head. SPECTER2 classification adapter is trained for classification but its head may not be included. We only use CLS embeddings, so okay. Document in limitations.
+
+Now, full training may produce a model but metrics could be poor due to full-text mean/max. We'll see.
+
+Let's monitor at ~5 min intervals.
+
+dsh: reasoning:
+Rate 1150/4min = 4.8/s. Remaining 7400 → 26 min, done ~19:00.
+
+Let's think about threshold/decision semantics. `review` band is t-0.15 to t. If threshold near 0.9, review 0.75-0.9. Fine.
+
+Potential improvement: `select_threshold` uses validation set with maybe few positives; okay.
+
+Potential issue test metrics report `ap` and `roc_auc` None if single class; test has both. Fine.
+
+Potential issue `full_label_control` includes rows with label_source model that may have been used to train? Full model trains on all, test separate. Fine.
+
+Potential issue data split leaks: group_id=PMID unique, so no same paper leak. Good.
+
+Now, need produce `briefs/dsh-done.md` with key command outputs. We should cite exact metrics after training. Also mention full data package extraction, environment, tests, known limitations.
+
+Could create a `Makefile`? Not required.
+
+Need maybe add tests? Not required, but old-coder review will inspect evidence. We can add a `smoke_test.sh`? Not required, but helpful. Maybe not.
+
+Need verify `python -c "from encoder import load_encoder; ..."` acceptance. Already ran `encoder.py --smoke`; could run exact one-liner later.
+
+Need verify `predict.py` with PDF path after full model. We'll do.
+
+Need verify `api.py` with full model and health; do after training.
+
+Potential issue full train will use model bundle with `feature_mode C`; predict `include_aux` from bundle true. Good.
+
+Potential issue feature cache loads `arrays["aux"]` with shape (974,2). Good.
+
+Potential issue `np.load` doc_ids comparison: `list(arrays["doc_ids"].astype(str))` okay. If cache is smoke (mc4) tag differs; no collision.
+
+Potential issue `dataset_fingerprint` uses `str(r["text"])[:2000]` sha1; Python hash? hashlib fine.
+
+Potential issue `dataset_fingerprint` iterrows over 974 with full text; slicing first 2000 chars, fine.
+
+Potential issue cache meta `mean_chunks_per_doc` computed from metas returned by document_features_batch. Good.
+
+Potential issue `build_feature_cache` cache meta file when cache hit: reads meta but if missing `{}`; config encoder path may be None. fine.
+
+Potential issue `train.py` output `metrics["encoding"]["seconds"]` is float; JSON okay.
+
+Potential issue `train.py` full control uses primary model X; if primary mode C and aux, fine.
+
+Potential issue `train.py` if `--limit` small leads to val/test single class; make_splits retries but cannot fix, raises. Smoke 64 worked. For limit 20 may fail; acceptance doesn't require. Could handle gracefully by falling back to random split with warning. Not necessary but robust. Maybe implement fallback to non-group split if impossible? The brief says ensure both classes. For tiny limit, better raise clear. Fine.
+
+Potential issue build_dataset output `text` fields with commas/newlines; CSV reader handles. Good.
+
+Potential issue JATS abstract extraction includes section headings; acceptable.
+
+Potential issue `extract_jats_abstract` with `xml.etree` on 67MB files; parse each, memory fine.
+
+Potential issue build stats says mean abstract 1383, plausible.
+
+Now, "不要把 data/fulltext_package/、大特征缓存、模型大文件 commit 进 git" — .gitignore covers. `data/labeled_papers.csv` 27MB is a delivery file; not forbidden. Good.
+
+"不要微调" — no training of encoder; model params frozen. `model.requires_grad_(False)` and loop. Good.
+
+"不要从 PubMed 抓取" — no requests.
+
+"不要依赖交互式确认" — no prompts.
+
+Now check if there are any subagent/tool requirements? None.
+
+Let's inspect full train log for memory warnings/errors.
+
+dsh: reasoning:
+No errors.
+
+Wait.
+
+dsh: reasoning:
+5696 at 18:38:52; 1440/5min=4.8/s. Remaining 5950 → 20.6 min, done ~19:00.
+
+Could reduce waiting by doing something. Let's write a small `tests/smoke.sh`? Not required.
+
+Maybe check `requirements.txt` versions against installed; add `pymupdf>=1.24` but installed 2.0, fine.
+
+Add `huggingface_hub` used but included.
+
+`uvicorn[standard]` quotes in requirements fine.
+
+Now, `train.py` full run created `artifacts/features` directory empty until npz save at end. okay.
+
+Potential concern: If process gets killed before npz save, we lose 40 min encoding. Could modify code to save incrementally? Too late for current run. It will finish. But robustness for future: encode in shards and save partial. Not required, but could be nice. Don't disrupt running code.
+
+Potential concern: memory during encoding all 11650 chunk strings ~35MB plus embeddings ~36MB, fine.
+
+Potential concern: `np.savez_compressed` on 974×2306 floats ~9MB compressed maybe 8MB. Fine.
+
+Now let's start drafting dsh-done with placeholders; fill metrics after. Need list created files. Mention fulltext restore, dataset stats, encoder smoke, train results, predict, API.
+
+Also include "key command outputs" exact excerpts. We'll update after training.
+
+Maybe run `du -sh data/fulltext_package` etc for report.
+
+Wait more.
+
+dsh: reasoning:
+7168 at 18:43:56. Remaining 4482 → 15.5 min, done ~18:59.
+
+Let's test `predict.py --pdf` with smoke during wait? It will take ~30s and compete, negligible. Do it to confirm PDF CLI. Choose PDF sample and title.
+
+dsh: reasoning:
+`pdf_used` false for `predict_pdf` because we extract outside record and don't set flag. Patch `predict_pdf` to set `pdf_used=True`; `predict_record` now respects it.
+
+Also deprecation warnings from fitz. Switch to pymupdf import fallback to reduce warnings. In predict and build_dataset:
+
+```
+try:
+    import pymupdf as fitz
+except ImportError:
+    import fitz
+```
+PyMuPDF 2.0 `pymupdf` module. Test. This avoids warning.
+
+Patch.
+
+dsh: reasoning:
+Test PDF CLI again quickly (it loads encoder ~10s).
+
+dsh: reasoning:
+Good.
+
+Check training progress.
+
+dsh: reasoning:
+At 7328. Remaining 4322 ~15 min.
+
+Let's consider if full training process uses old code for encoder? It imported before patches (predict only), so fine.
+
+Need eventually update README metrics section. We'll generate a table from metrics.
+
+Potential issue after full train, `artifacts/model.joblib` gets saved but `artifacts/smoke` still. Fine.
+
+Potential issue model path in config is absolute `/data/.../artifacts/model.joblib`; good.
+
+Potential issue `full_label_control` is trained after ablations, ~seconds.
+
+Potential issue final `summary` prints metrics; capture from log.
+
+Now wait ~10 min.
+
+dsh: reasoning:
+9344 at 18:51:46. Remaining 2306 ~8 min.
+
+Let's prepare `briefs/dsh-done.md` template after metrics. Could write now and edit.
+
+Need include exact command outputs:
+1. `tar -xzf...` extracted 338M; `ls`.
+2. `build_dataset.py` stats JSON.
+3. `encoder.py --smoke`: device cpu, adapter loaded, feature shape 2306.
+4. `train.py`: metrics.
+5. `predict.py`: sample output.
+6. API health/predict.
+7. `git status` ignored.
+
+Let's wait.
+
+dsh: reasoning:
+11072, ~2 min left. Wait 3.
+
+dsh: reasoning:
+Training finished. Need inspect metrics fully, especially ablation A/B/C and full control, primary. The tail shows full control test. Let's print summary.
+
+dsh: reasoning:
+Great full metrics. Key observations:
+- Primary C: val recall 0.954, precision 0.897; test recall 0.915, precision 0.810, F1 0.859, F2 0.892, AP 0.923.
+- Ablation A: test recall 0.969, precision 0.783, AP 0.900. B: recall 0.931, precision 0.807, AP 0.922. C: similar to B (aux negligible). Interesting: A has higher recall but lower precision; B improves AP/precision but lower recall. C = B.
+- Full control: test recall 0.934, precision 0.784, AP 0.924.
+- All test docs have full text, so stratified only full text; abstract_only 0. The requirement "按 full_text_available 分层报告" technically done but no abstract-only in test. Could report overall dataset strata, but test has none. We should note this and maybe add a stratified report over full dataset using cross_val? Not necessary; but reviewer might flag "abstract-only stratum empty". We can add EXPLICIT stats: 0 abstract-only in test because all 974 have fulltext. In README and metrics, note. We could also add a "descriptive" report of the full dataset by stratum, but metrics require predictions for all. We can generate predictions for all 974 using model and report, but that includes training data (not valid). Not good.
+
+Could create a robust evaluation for abstract-only by simulating text removal on test? That would be insightful: evaluate model on test docs with text blanked (abstract-only) to show degradation. Requirement says "按 full_text_available 分层报告" — actual data has no abstract-only. We can add a "counterfactual abstract_only" evaluation: zero out body features for test rows and evaluate. That demonstrates behavior on no-fulltext. But model was trained with full text; zeroing at inference simulates missing. This is useful and satisfies stratum reporting. Implement in train.py metrics as `counterfactual_abstract_only` (features A only) using primary model. However, for mode C the model expects aux; we can set body mean/max zeros and aux? For no-fulltext in real pipeline, aux computed from title+abstract, so set body zeros, keep aux from title+abstract (not full text). To simulate properly, recompute aux on title+abstract only. This is a bit involved. Simpler evaluate title+abstract-only model (ablation A) on test; that's already the "abstract-only" model. But requirement specifically "按 full_text_available 分层报告" is about test rows; none. We can state that.
+
+Maybe better: Add metrics `data.full_text_available` counts and explicit note `abstract_only_test_n=0`, plus ablation A as proxy. README. That's acceptable.
+
+Could we improve primary recall closer to 0.95 on test? Threshold selected on val yields 0.915 test. Requirement only target val. Fine.
+
+Potential concern threshold 0.1975 leads review band 0.0475-0.1975; many negatives around 0.5 score. Test precision 0.81, okay.
+
+Potential concern `full_data_control` test includes 195 vs default 177; metrics okay.
+
+Need now run full predict with artifacts/model.joblib, API with full model. Also test `predict.py --sample 1` actual output. Do that.
+
+First inspect artifacts files and config.
+
+dsh: reasoning:
+Note `review_lower_bound` = 0.047; fine.
+
+Now run full predict sample 1.
+
+dsh: reasoning:
+Need demonstrate all three decision types perhaps. Requirement "对 1 篇样例输出三段决策之一" — one is enough. But we can find examples for review/irrelevant from test predictions and score them. Good for validation. Use test_predictions.csv list decisons.
+
+dsh: reasoning:
+Good: review exists (8), irrelevant (22), relevant (147). Test a review sample via `--sample`? `--sample` only first N. Use `--input data/labeled_papers.csv` but need pick specific doc. Could use inline JSON from CSV via script not necessary. For acceptance, one sample enough. But we can add `--doc-id` filter? Not required. Maybe useful to demo all three. Implement `--doc-id`? Overkill. We can use `--sample 200` and grep? Slow.
+
+Better add `--doc-id` optional to predict CLI, selecting from labeled CSV. This is useful and small. But code changes need retest. Maybe not needed.
+
+API test with full model. Start server, health, JSON, multipart. Do after README metrics.
+
+Update README metrics section with table. Compute exact values and format. Also note ablation A higher recall but lower precision/AP; B/C similar; aux negligible. This is honest.
+
+Table:
+| 模型 | 特征维 | val 阈值 | test Recall | Precision | F1 | F2 | AP | ROC-AUC |
+A 768 0.0361 0.969 0.783 0.866 0.925 0.900 0.764
+B 2304 0.1407 0.931 0.807 0.864 0.903 0.922 0.810
+C 2306 0.1975 0.915 0.810 0.859 0.892 0.923 0.811
+Full control 2306 0.0676 0.934 0.784 0.852 0.899 0.924 0.842
+
+Primary val: recall 0.954, precision 0.897, threshold 0.1975. Test n=177 (130 pos, 47 neg), CM tn19 fp28 fn11 tp119.
+
+Ablation interpretation:
+- A (title+abstract) has highest recall (0.969) but lowest precision (0.783), AP 0.900, ROC-AUC 0.764.
+- B/C improve precision/AP/ROC but recall slightly lower at target threshold.
+- Aux features (C vs B) nearly no effect (AP +0.0004), so not justified by this split; retained for completeness but can disable `--no-aux`.
+- Full control AP 0.924, ROC-AUC 0.842, recall 0.934 at lower threshold, precision 0.784.
+
+Stratified: all 177 test docs have full text; abstract-only stratum n=0. Note.
+
+Need maybe run a statistical confidence interval? Not required. Could report bootstrap CI for AP? No.
+
+Add a calibration note: mean score positive 0.87, negative 0.51 on test, threshold 0.197; high recall at cost of precision.
+
+Now update README placeholder. Use edit replacing `<!-- TRAIN_METRICS -->` with content.
+
+dsh: reasoning:
+Good.
+
+Need API full model test now. Start server background.
+
+dsh: reasoning:
+Wait for startup, curl health, JSON predict, multipart PDF, review/irrelevant examples maybe via JSON.
+
+dsh: reasoning:
+Now multipart PDF and an abstract-only review/irrelevant. Use JSON with short generic title to get low score. But review band narrow; not necessary. PDF upload test with final.
+
+dsh: reasoning:
+Final API works, pdf_used true. Score 0.997 for a fetal sex NIPT paper, plausible.
+
+Kill server.
+
+dsh: reasoning:
+Need verify no leftover server. later.
+
+Run `python -c "from encoder import load_encoder..."` exact acceptance one-liner. Also test `predict.py --json` inline. And maybe `--input` CSV. Use current model; each loads encoder ~10s. We can combine in one process? Acceptance command separate. Run one-liner:
+
+```
+.venv/bin/python -c "from encoder import load_encoder; e=load_encoder(); print(...)"
+```
+
+Then predict `--json` maybe final.
+
+dsh: reasoning:
+Good.
+
+Need check code quality/bugs via a second opinion maybe use subagent? Not necessary but could run static tests. We should test edge cases:
+- encoder chunking with no text, very long text, max_chunks.
+- predict JSON no text (title only) → full_text_available false, features zeros; works? `document_features_batch` text empty → meta false. Test quickly with model (loads 10s).
+- API no input → 422.
+- `build_dataset --limit 3` with venv after modifications (pymupdf) works.
+- `train.py --limit 64` already worked before patch; patch only imports.
+
+Let's run unit-ish tests without loading model:
+```
+chunk_text("",...) == []
+chunk_text(long) ...
+feature_dim.
+```
+And a Predictor title-only.
+
+dsh: reasoning:
+Good. Note title-only score 0.0; okay.
+
+But `aux_features` first value 83.3 per 1000 words due to repeated; fine.
+
+Potential issue chunk_text long produces 24 chunks all 2991 with overlap; covers evenly. Good.
+
+Need test `--input` CSV/JSON. `predict.py --input data/labeled_papers.csv --limit 1` should parse all CSV (27MB) then first. Fine. Test JSON file create temp.
+
+dsh: reasoning:
+Good.
+
+Now, inspect `metrics.json` correctness re: full label control threshold. Fine.
+
+Potential issue: "全量对照" model uses same split but default test set is subset of full test. Full test n=195 includes 18 weak/model. Good.
+
+Potential issue: `full_label_control` is trained with all rows but model saved. Good.
+
+Need maybe produce a concise metrics table in `artifacts/metrics.json`; done.
+
+Need maybe add `data/labeled_papers.csv` to git (untracked). Fine.
+
+Need maybe run `git diff --stat` no commits. `git status` to ensure large files ignored. Check `git status --short` might list artifacts/features? .gitignore works. Also `.uv-cache` ignored. Check `git status --porcelain` only expected.
+
+dsh: reasoning:
+`.venv` 5.8G due to cu132, okay. `.uv-cache` 52M after cleanup? Fine.
+
+Need ensure `artifacts/` untracked but contains ignored features/joblib; `git status` shows `artifacts/` because metrics/config unignored. Fine. `artifacts/api_smoke.log` ignored by *.log; `artifacts/train_full.log` ignored.
+
+Potential issue `briefs/` includes `dsh-run.err` with previous run logs (maybe untracked). We will add `briefs/dsh-done.md`. Not asked to commit.
+
+Now, need run `build_dataset.py` final after pymupdf import patch? We ran before patch; patch only changes import but need ensure no syntax issue. `--limit 3` test.
+
+dsh: reasoning:
+Good.
+
+Need inspect full `README` for accuracy re: 929 txt/XML vs actual. It says 161 missing TXT/XML; correct. `labels_rows` etc.
+
+Potential issue README table says `AP` for validation 0.966; metrics val AP 0.9663. good. Test 0.9228. CM okay.
+
+Potential issue README says "训练/验证/测试 = 566/140/177（默认子集）" correct.
+
+Potential issue README says CPU 2,661 seconds (44 min), yes.
+
+Potential issue README says `abstract_only` n=0, correct.
+
+Need maybe add `metrics` note that `abstract_only` empty in `metrics.json`; done.
+
+Now, should we improve `train.py` to include `abstract_only` counterfactual? Not necessary, but reviewers may want evidence for stratified report. We can add a small analysis script or metric using ablation A. Since A is title+abstract-only model, its test metrics are already a proxy; README states. The requirement says "按 full_text_available 分层报告" and data has no abstract-only test docs, so `n=0` is honest.
+
+Could compute full-dataset stratification of labels/availability in metrics; currently `data.n_full_text=974`, `n_abstract_only=0`. Good.
+
+Now, potential issue API health returns `feature_dim` from scaler; correct 2306.
+
+Potential issue API startup if model missing: server starts, health unavailable, `/predict` 503. Fine.
+
+Potential issue API `POST /predict` with empty body: `request.form()` may return empty, then 422. Test? Could run after server kill? Not needed.
+
+Potential issue API multipart with PDF file name and `pdf` form field: tested.
+
+Potential issue `MAX_PDF_BYTES` check uses `upload.size`, which may be None; int(0) okay.
+
+Potential issue `request.form()` for large PDF loads entire file; 30MB limit; okay.
+
+Potential security: JSON `text` arbitrary huge could cause memory; no limit. Could add length limit. Not required.
+
+Potential issue `predict.py` `--input` CSV with `pdf_path` relative to ROOT; good.
+
+Potential issue `build_dataset.py` output uses `utf-8`, no BOM; pandas read okay.
+
+Potential issue `data/final_labels.csv` BOM read with utf-8-sig; good.
+
+Now, maybe run a tiny custom audit of dataset to verify `label_reason` matches `reason`, abstract extraction, text source, PMID alignment. Use pandas.
+
+dsh: reasoning:
+Great.
+
+Need maybe run a quick baseline test to ensure no train/test leakage via duplicate `text` hashes. Same PMID group unique; check duplicate text across docs could leak near-duplicates. Not required, but interesting. Could compute exact duplicate text count. Probably none. Not necessary.
+
+Potential issue labels all 974; split default 883; full control. Good.
+
+Now, let's inspect `artifacts/metrics.json` for `full_label_control` and maybe ensure `ablations` keys and `primary` `test_by_full_text`. Done.
+
+Need update README if `model_all.joblib` threshold 0.0676; yes table.
+
+Potential issue `README` says `review_lower_bound = t - 0.15`; config has 0.0475. Good.
+
+Potential issue `README` line 1 says "产前遗传变异病例报告"; okay.
+
+Now, write `briefs/dsh-done.md` with details. Include:
+- Status summary: all acceptance done, full training.
+- Files created (with sizes).
+- Environment: Python 3.12.13, torch 2.15.0+cu132, transformers 4.57.6, adapters 1.3.0, sklearn 1.9.1, pandas 3.1.0, pymupdf 2.0; CUDA unavailable because no /dev/nvidia.
+- Data restore: 338M, 974 manifest rows, AppleDouble noise.
+- build_dataset stats exact.
+- Encoder smoke exact.
+- Train command and key outputs: cache 11,650 chunks, 2661.5s, threshold 0.1975, metrics table; artifacts paths.
+- Ablation and full control.
+- Predict sample output.
+- API health/predict outputs.
+- Validation commands run.
+- Known limitations.
+- Git hygiene: ignored paths.
+- Notes: 161 txt/xml missing fallback PDF; 210 no abstract; no GPU.
+- Any deviations from plan: `labeled_papers.csv` CSV chosen; abstained from `abstract_only` metrics because none; `pdf_used` extension; `artifacts/smoke` ignored; no fine-tune.
+- Advice: use `--no-aux` if minimal; threshold target.
+
+Need include "关键命令输出摘要" not full.
+
+Also mention plan path followed.
+
+Before writing, maybe test `api.py` health with no model? Not needed.
+
+Potential issue `README` and `briefs/dsh-done.md` should be in Chinese. Write.
+
+But first, maybe run `python -m compileall` final and `pip check` to verify dependency consistency.
+
+dsh: reasoning:
+No pip in uv venv (uv manages). Fine; use `uv pip check --python .venv/bin/python`.
+
+dsh: reasoning:
+Great.
+
+Need maybe run `python train.py` again with cache to verify cache hit and reproducibility? It would retrain fast (~seconds) and overwrite same artifacts. This is a good acceptance of caching. But it would regenerate metrics with same results; fine. It would also rewrite model. Do it with `--skip-full-control`? No, keep full. It should load cache and train in <10s. Run to confirm cache path.
+
+dsh: reasoning:
+Output only first line due grep buffering? Command may still run? It returned quickly? Exit code 0 with only line because train logs to stderr? We redirected stderr to stdout via 2>&1; grep pattern maybe not matching due logs still. Check artifacts mtimes and metrics.
+
+dsh: reasoning:
+Mtimes unchanged at 18:59 — the second train didn't complete? It only printed loading cache and then maybe failed silently? Exit code 0? Maybe command timed out? It returned quickly. Let's run without grep and capture tail.
+
+dsh: reasoning:
+Critical bug: cache has object arrays? `doc_ids` perhaps numpy `<U` not object. `full_text_available` bool, labels int. Which is object? Let's inspect npz keys/dtypes with allow_pickle=True. `arrays` saved `doc_ids` from pandas `.to_numpy()` dtype object due pandas 3 string? Yes, `df["doc_id"].astype(str).to_numpy()` yields object array, np.savez stores object dtype requiring pickle. `np.load(allow_pickle=False)` fails. The initial full train saved successfully but cannot reload. Need fix cache storage to avoid object arrays: save `doc_ids` as fixed-width unicode or save as JSON / separate text. Options:
+- `doc_ids = np.asarray(..., dtype="U")`; but length varies, npz handles unicode with dtype `<U8`; safe.
+- `full_text_available` bool fine; labels int fine.
+Then re-save cache (we can convert existing npz using allow_pickle=True and save with U doc_ids) without re-encoding. But code must handle old cache. Implement:
+```
+def load_cache(path):
+  data=np.load(path, allow_pickle=True)  # safe local file
+  arrays={k: data[k] ...}
+  arrays["doc_ids"]=np.asarray([str(x) for x in arrays["doc_ids"]])
+```
+Using `allow_pickle=True` is okay for local generated cache, but better avoid object arrays going forward. Change save:
+```
+doc_ids=np.asarray(df["doc_id"].astype(str).tolist(), dtype="U")
+```
+When loading existing with allow_pickle=False fails; catch ValueError and retry allow_pickle=True, then convert. But `allow_pickle=True` is a security concern only for untrusted files; local. Add comment.
+
+Better: save doc_ids as a JSON sidecar? Cache meta already no doc_ids; add `doc_ids` to meta JSON, and npz without doc_ids? Then validation reads meta. But simplest: U dtype.
+
+Patch:
+- in `build_feature_cache` save `doc_ids` as `np.asarray(..., dtype="U")`.
+- load:
+```
+try:
+ data=np.load(..., allow_pickle=False)
+ arrays=...
+except ValueError:
+ data=np.load(..., allow_pickle=True)
+ arrays=...
+ arrays["doc_ids"]=np.asarray([str(x) for x in arrays["doc_ids"]])
+```
+- Also after loading, compare and maybe resave? Not necessary; but next run still uses allow_pickle fallback. We can resave converted npz to fix. Add when fallback:
+```
+np.savez_compressed(cache_path, **{**arrays, "doc_ids": np.asarray(...,dtype="U")})
+```
+Careful `arrays` contains numpy arrays; okay. This overwrites cache. Do it.
+- Existing npz can be converted once by running train; then next run no fallback.
+
+Need ensure `np.asarray([...], dtype="U")` handles IDs length; numpy determines max length. Fine.
+
+Patch.
+
+dsh: reasoning:
+Run cached train again. It will convert cache and retrain (~seconds).
+
+dsh: reasoning:
+Cache fixed and train from cache works. Check metrics unchanged and cache loadable allow_pickle=False.
+
+dsh: reasoning:
+Interesting /tmp log disappeared? Sandbox temp; not important. Cache fixed.
+
+Important: We overwrote model/metrics by retraining from cache. Metrics identical. Mtimes now. Good.
+
+Now, need check `train.py` `dataset_fingerprint` params includes `doc_ids` first 5; okay.
+
+Potential issue `build_feature_cache` when cache loaded old object and np.savez_compressed called but `arrays` includes `np.ndarray` object? We converted doc_ids; others fine.
+
+Potential issue `np.load(allow_pickle=False)` on new cache works. Good.
+
+Need rerun predict with new model (same) to ensure bundle loads. Yes model overwritten but same.
+
+Potential issue `artifacts/metrics.json` from cached run might have `encoding` numbers from meta (2661.5) preserved. Good.
+
+Now, maybe run `train.py --no-aux`? Not necessary; would overwrite primary with B and lose C metrics. Don't.
+
+Need check `train.py` full run log still exists? `artifacts/train_full.log` ignored; fine. We have metrics.
+
+Now, the cached train run may have regenerated `test_predictions.csv`; okay.
+
+Need re-run full API/predict smoke after model overwrite? Model same; no need, but acceptance final could use sample again. Already did after first run; bundle same threshold. Good.
+
+Potential issue model.joblib stores `feature_mode C`; yes.
+
+Now, let's test cache invalidation logic by running with different `--max-chunks`? Would re-encode 974, too slow. Could use `--limit 5` separate cache, but train may fail split. Not needed.
+
+Potential issue `train.py --limit 64 --max-chunks 4` cache from before still loads (npz with object doc_ids? It was saved before fix). If rerun smoke, fallback handles. Fine.
+
+Potential issue `.gitignore` ignores `artifacts/smoke/` but README references? README doesn't. dsh-done may mention.
+
+Now, let's inspect current `artifacts` mtimes and final metrics.
+
+dsh: reasoning:
+Good.
+
+Now, verify `metrics.json` still has all data after cached run. Fine.
+
+Need maybe add test that `predict.py` uses threshold and review logic. We can unit test `Predictor.decide` without encoder, but loading bundle loads encoder by default. Instantiate `Predictor(load_encoder_now=False)` and check.
+
+dsh: reasoning:
+Correct.
+
+Now, inspect API code after patch for pdf_used and no pdf_path. Fine.
+
+Potential issue `api.py` `from predict import ...` imports `pandas` which may be heavy but fine.
+
+Potential issue `api.py` `JSONResponse(result)` with numpy floats? `predict_record` rounds to Python float; `full_text_available` bool; `doc_id` maybe np? record from JSON string; fine. API test worked.
+
+Potential issue `api.py` returns `doc_id: null`; acceptable.
+
+Now, create `briefs/dsh-done.md`. Need exact data. Let's compute a few things:
+- File sizes: build_dataset.py etc.
+- `data/labeled_papers.csv` 27M.
+- `artifacts/features` 8.0M.
+- `artifacts/model.joblib` 65K.
+- `artifacts/metrics.json` 12K.
+- `.venv` 5.8G, data package 338M.
+- Test counts and metrics.
+
+Write detailed but not overly long. Include command outputs snippets.
+
+Need mention `train.py` first full run took 2661.5s encoding; total train maybe 45 min. Cached rerun works after a cache bug fix (object doc_ids) — mention? It's a known issue fixed; no need in limitations, but evidence of fix maybe.
+
+Need mention `build_dataset.py` actual stats differ from plan's 929/45 because archive actually has 768 txt/xml + 206 pdf (161 advertised missing). This is important. Plan said 929 txt/xml, 45 pdf only; actual archive: 929 manifest TXT but 161 files absent. The user expected `manifest` maybe; our fallback handles. State.
+
+Need mention abstract-only layer is empty in test because all 974 have fulltext. This is a limitation.
+
+Need mention GPU unavailable: `torch.cuda.is_available() == False`, `/dev/nvidia*` absent; installed cu132 torch anyway. The brief said RTX 4060; environment doesn't expose it. State clearly.
+
+Need mention adapter downloaded to `.cache/huggingface` and base local.
+
+Need mention no fine-tune.
+
+Need mention `data/fulltext_package` 338M ignored.
+
+Need mention acceptance all actual:
+1. build_dataset success.
+2. encoder smoke.
+3. train full and artifacts.
+4. predict sample.
+5. README.
+
+Maybe include commands:
+```
+tar -xzf ... -C data
+.venv/bin/python build_dataset.py
+.venv/bin/python encoder.py --smoke
+.venv/bin/python train.py --batch-size 32
+.venv/bin/python predict.py --sample 1
+.venv/bin/python predict.py --pdf ...
+.venv/bin/uvicorn ...
+curl ...
+```
+Output summaries.
+
+Need include "已知限制" numbered.
+
+Let's write.
+
+dsh: reasoning:
+Now verify `dsh-done.md` claims accurate:
+- `encoder.py` size 21KB? check.
+- `README.md` 13KB? check.
+- `requirements` 0.3KB yes.
+- `api.py` 7KB maybe 7.
+- `train.py` 28KB.
+- `artifacts/config.json` 2.1KB.
+- `data/fulltext_package` 338M.
+- `.venv` not in table.
+- Full control threshold 0.0676.
+- API outputs from actual.
+- `pdf_used` for `predict.py --pdf` = true after patch.
+- `--input /tmp/records.json` works.
+- "score 0.567169" PDF smoke was with smoke model, not final model! Wait, we tested PDF smoke with `artifacts/smoke/model.joblib` and score 0.567169. Then after full model, API PDF score 0.997727, and `predict.py --pdf` with final? We ran PDF CLI only with smoke model (score 0.567169). The dsh-done says "PDF 路径输入 ... → relevant, score 0.567169" but doesn't specify model; likely implied final. The command in section 11 uses final model and PDF, but we did not actually run `predict.py --pdf` with final model, only API. We should run it with final model to get actual final score, then update dsh-done. Do that.
+
+Also `predict.py --input /tmp/records.json` we ran with final model, score 0.999948. Good.
+
+Run final PDF CLI.
+
+dsh: reasoning:
+Update dsh-done score to 0.999588. Also section 8 says "另测: PDF ... score 0.567169"; change. Use edit.
+
+dsh: reasoning:
+Now, check file sizes claims.
+
+dsh: reasoning:
+Sizes okay (README 14KB not 13; fine, minor). dsh-done says 13 KB, close. api 7 KB, train 28 KB, encoder 21 KB. Fine.
+
+Now, potential issue `README` says `artifacts/model_all.joblib` but `config.json` model_all path; good.
+
+Need maybe update README "测试集 177 篇" and table; done.
+
+Now run final `git status` and ensure `briefs/dsh-done.md` exists.
+
+dsh: reasoning:
+`briefs/dsh-run.err` is 117K, contains previous dsh run logs, untracked. Not our concern, but `git status` shows briefs/ whole. Fine.
+
+Need maybe clean up background jobs: job_list.
+
+dsh: reasoning:
+All done. But wait: the cached retrain after fix changed `metrics.json` but the `train_full.log` still from initial run; okay.
+
+Need consider whether `artifacts/metrics.json` contains `abstract_only` with `n=0` as claimed. Check.
+
+dsh: reasoning:
+Good.
+
+Now, one concern: The full training run encoded using `max_chunks=24`, but mean chunks 11.96. 11,650 chunks. Fine.
+
+One concern: use of `normalize=True` in `encode_texts` means mean of normalized vectors not normalized; StandardScaler handles. Fine.
+
+One concern: `aux_features` uses `text[:20000]`; for docs with no text, only title+abstract. Good.
+
+One concern: `document_features_batch` with `include_fulltext=False` still computes `has_text` and metas but no chunks; not used. Fine.
+
+Now, maybe inspect `train.py` for `feature_dim` import unused? It imports `feature_dim` but doesn't use; harmless. `pd` etc. Fine.
+
+Potential issue `train.py` default `--class-weight balanced`; quality. Fine.
+
+Potential issue `train.py` `full_control` is trained after primary but its `test_by_full_text` includes full test n=195 and both strata? All full text; abstract_only 0. fine.
+
+Potential issue write `artifacts/config.json` `review_lower_bound` calculated from `primary threshold -0.15`; correct.
+
+Potential issue README says "测试集 177 篇（默认子集）指标". Good.
+
+Now, should we remove `artifacts/api_smoke.log` and `artifacts/smoke`? They are ignored; but cleanliness. `artifacts/api_smoke.log` 509 bytes. `artifacts/smoke` 600KB. Could remove to avoid confusion, but dsh-done mentions smoke? It doesn't reference path. Keeping is fine; ignored.
+
+Should we remove `.uv-cache`? Ignored but 52MB; no need. `.venv` 5.8G; needed.
+
+Should we add `data/labeled_papers.csv` to a README note that it is generated and 27MB; done.
+
+Now, we should perhaps test the API with `--workers 1` exactly and README command. Done.
+
+Potential issue final `api.py` uses `JSONResponse(result)` where `result` contains `doc_id` possibly numpy int? `predict_record` doc_id from record; when API JSON, string or None. fine.
+
+Potential issue `api.py` `/predict` with multipart PDF but no title/abstract: record text set; works. Tested with title. Could test without title; not necessary.
+
+Potential issue `api.py` `request.form()` requires `python-multipart`; installed. Good.
+
+Now, one big question: Did we meet "SPECTER2 Base 本地路径（优先离线加载）"? Yes. But `load_encoder` with `local_files_only=False` still may attempt network for base? Since path exists, `from_pretrained(path)` loads local. Adapter snapshot local. Offline works as long as cache. Could test with `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` to ensure no network. Use `encoder.py --smoke` with env offline; should load local adapter. This is a good acceptance. Run.
+
+dsh: reasoning:
+Offline works. Great.
+
+Need maybe add this to dsh-done. Could add one sentence. Not necessary but useful.
+
+Potential issue offline base loader still `_resolve_adapter` tries `snapshot_download(local_files_only=True)`; works. Good.
+
+Now, check `requirements.txt` if offline install would work; no.
+
+One concern: `torch 2.15.0+cu132` and transformers 4.57.6 were latest as of environment date 2026. In future, `requirements.txt` unpinned may install incompatible adapters/transformers. We provide constraints transformers<5, adapters>=1.0. Fine.
+
+Could pin exact versions in requirements for reproducibility? User asked install; flexible okay. Maybe add comments with tested versions. Do:
+```
+# Tested: torch 2.15.0+cu132, transformers 4.57.6, adapters 1.3.0, ...
+```
+Not necessary but good. Add a header with tested versions.
+
+dsh: reasoning:
+Now dsh-done says requirements 0.3KB; now 0.5KB; minor. Could update but not critical. Let's check sizes and adjust table? Better accuracy.
+
+dsh: reasoning:
+Update dsh-done table sizes minimally:
+- requirements 0.5 KB
+- README 14 KB
+- encoder 21 KB (actual 20.4)
+- train 27.5 → 28
+- predict 10
+- api 6.3 → 7
+- build 13
+- .gitignore 0.4
+- config 2.1
+- metrics 12
+Fine. Current table says requirements 0.3, README 13, .gitignore 0.5. Let's adjust to avoid nitpicks.
+
+dsh: reasoning:
+Now, a subtle issue: In `train.py`, `feature_matrix` for mode C assumes aux columns present. If someone runs `train.py --no-aux`, modes A/B only and primary B, fine. If `document_features_batch` include_aux always true in cache, fine.
+
+Another subtle issue: `build_feature_cache` params include `encoder_kwargs` with `None` keys; fingerprint includes nulls; changes if explicit path differs. Fine.
+
+Another subtle issue: `load_encoder` `_resolve_adapter` returns a local directory path; `model.load_adapter` with `local_files_only` kwarg may pass unknown to `AdapterLoader.load` and error TypeError; we catch TypeError and retry without. Worked.
+
+Another subtle issue: `model.load_adapter` local path warning "There are adapters available but none are activated" at load; but active confirmed. Could explicitly call `model.set_active_adapters("[CLF]")` to remove ambiguity, but adapter name comes from config. We could capture returned name from `load_adapter` and set:
+```
+adapter_loaded_name = model.load_adapter(...)
+if adapter_loaded_name:
+   model.set_active_adapters(adapter_loaded_name)
+```
+Would this help? `load_adapter` returned `[CLF]`? We didn't capture. The warning appears before active set. Active is already set. Could add for safety, but `set_active_adapters` with a name works. Do we risk breaking? `load_adapter` returns load_name `[CLF]`; `set_active_adapters` validates. Add:
+```
+adapter_loaded_name = model.load_adapter(...)
+if adapter_loaded_name:
+    model.set_active_adapters(adapter_loaded_name)
+```
+This ensures. But could `adapter_loaded_name` be a path or list? It returns str name. Fine. However, tests currently work; changing requires re-smoke. Not necessary. But the warning might worry reviewers that adapter isn't active. We have evidence cos 0.769. Could document in README/dsh-done that active was verified. dsh-done says adapter effect; good.
+
+Maybe add explicit active check in `load_encoder` metadata:
+```
+metadata["active_adapters"] = str(model.active_adapters) if hasattr...
+```
+Useful for audit. But `active_adapters` property returns Stack; string. Add. Also if empty, warn. This modifies encoder, no need retrain; but model bundle encoder config unaffected. Could do.
+
+Let's add:
+```
+active = model.active_adapters
+if not active: logger.warning(...)
+metadata "active_setup": str(active)
+```
+But `model.active_adapters` may raise for some versions; wrap. Add after loading. This strengthens evidence.
+
+Patch encoder.
+
+dsh: reasoning:
+Good. Note `artifacts/metrics.json` encoder_runtime was generated before this patch and lacks `active_adapter_setup`. That's okay; current model bundle encoder doesn't include metadata. If reviewer checks adapter active, smoke output shows. Could regenerate config/metrics by rerunning train from cache (fast) to include new encoder_runtime? But cache hit means `cache_meta` loaded from JSON generated earlier, which lacks active setup. Rerun with `--force-reencode` would take 44 min; no. Could manually update cache meta JSON with active setup and rerun train; or edit metrics not necessary. The model works.
+
+Could add active setup to README evidence. dsh-done currently says "停用 adapter..." no mention metadata. Fine.
+
+Now, potential issue `cache_meta` loaded from old JSON includes `encoder` dict without `active_adapter_setup`; config still has adapter name. Not a problem.
+
+Now, a more important issue: `train.py` cache fingerprint depends on `encoder_kwargs` including `base_path: None`; if user passes `--base` different, re-encode. good.
+
+Potential issue `train.py` `--device cuda` on CPU raises in load_encoder fallback. fine.
+
+Now, let's verify `README` references `artifacts/train_summary.json`? Not in directory listing but exists. Fine.
+
+Potential issue user asked "完成后在仓库根写 briefs/dsh-done.md" — done, at `briefs/dsh-done.md` under repo. "仓库根写" maybe means `briefs/dsh-done.md` relative root, yes.
+
+Need perhaps check `briefs/dsh-done.md` for claim "`data/labeled_papers.csv` 974 行 × 21 列". Confirm 21. yes.
+
+Need maybe update dsh-done "encoder.py 20KB" actual 21KB; okay.
+
+Now, run a final small test suite:
+1. `python -m py_compile`.
+2. `encoder.py --smoke` done.
+3. `predict.py --sample 1` done (before encoder metadata patch; still).
+4. `api.py` health (before metadata patch; still).
+5. `build_dataset` smoke (before pymupdf patch? after; done).
+6. `train` cache hit after fix (done).
+7. `git check-ignore` done.
+
+Should we rerun `train.py` after adding active_setup? It only affects encoder metadata when reencoding, not cache. Not needed.
+
+Potential issue generated `artifacts/config.json` was written before encoder patch, but still valid.
+
+Now, let's inspect `api.py` health `model_path` in final output actual. done.
+
+Potential issue `api.py` `max_pdf_bytes` if `UploadFile.size` is None but file bigger; after read check catches. good.
+
+Potential issue API returns 500 if PDF no text (empty) and no title/abstract; 422 before prediction? It checks any title/abstract/text; if PDF has no text, title fallback maybe "", abstract "", text "" -> 422. Good.
+
+Potential issue `predict_record` with PDF path but text empty and file doesn't exist: logs warning and then features with empty -> full_text false; returns. Fine.
+
+Now, maybe run a quick check of `artifacts/test_predictions.csv` decisions match threshold.
+
+dsh: reasoning:
+Interesting: review precision low (0.375) — review band isn't enriched for positives; because threshold 0.197 and band 0.047–0.197, while many negatives have scores 0.5. The review band being below threshold captures low scores, not ambiguous high scores. Requirement explicitly says `t-0.15 <= score < t` → review, so yes. But semantically odd: review is "near threshold below" and could be low precision. It's the specified rule. README maybe mention review band has 8/177 and low precision? Not necessary, but honest. Could add limitation that review band is fixed and not calibrated. Already says fixed heuristic. Fine.
+
+Potential issue threshold 0.197 is low, so review range 0.047–0.197; most negatives score >0.2? Actually mean negative 0.507, so they get relevant; precision 0.81. Review captures very low scores, mostly negatives (0.375 positive). That's a consequence of threshold selection. Fine.
+
+Could improve decision semantics with a second upper band? Not per spec.
+
+Now, important: User's spec says `score >= t` relevant; `t-0.15 <= score < t` review; else irrelevant. We meet exactly.
+
+Now, one concern about metrics: `precision` at test 0.81 with 28 false positives; high. Fine.
+
+Potential concern: `A` ablation has threshold 0.036, review lower negative; fine.
+
+Now, perhaps run `python train.py --help` and `predict.py --help` to ensure no import error/CLI.
+
+dsh: reasoning:
+Now, let's think if we should add a metric for "precision at recall 0.95" or PR curve. AP enough.
+
+Potential issue `select_threshold` tie-break picks higher recall only if precision equal, not highest threshold. Fine.
+
+Potential issue `binary_metrics` `f2` computed from pred, okay.
+
+Potential issue `F2` correct beta=2.
+
+Potential issue `roc_auc` with labels and scores correct.
+
+Potential issue `average_precision_score` correct.
+
+Potential issue `GroupShuffleSplit` with group_id=PMID and 974 groups, fine.
+
+Potential issue `GroupShuffleSplit` second split uses `np.zeros(len(temp_idx))` not original `X`; works.
+
+Potential issue if `val_share` and `test` sizes not exact; 140/177 vs 156/195 all. fine.
+
+Potential issue `split_info` target percentages printed but not used; fine.
+
+Potential issue `train.py` `targets` variable only logging; fine.
+
+Potential issue `train.py` uses `df.iloc[test_idx]` for stratified report reset index; okay.
+
+Potential issue `test_predictions.csv` `pred_df` index from df iloc; writing includes original index; fine.
+
+Potential issue `full_label_control` uses `X_primary` with scaler fit on all train; fine.
+
+Potential issue `model_all.joblib` `train_subset` all but `n_*` not included; okay.
+
+Potential issue `config.json` `n_train` default only; full control counts in metrics. fine.
+
+Potential issue `README` states full control model saved; yes.
+
+Potential issue `README` says `artifacts/config.json` includes `review_lower_bound`; yes.
+
+Now, should we include a `LICENSE`? Not required.
+
+Potential issue `data/labeled_papers.csv` generated with `utf-8`, but `final_labels.csv` BOM; read fine.
+
+Potential issue `build_dataset.py` if `label` missing `int(float(''))` guarded by `if str(...).strip()`; fine.
+
+Potential issue `build_dataset.py` `confidence` kept as string; okay.
+
+Potential issue `build_dataset.py` `weak` bool converted to `True`/`False`; train parse. okay.
+
+Potential issue `build_dataset.py` `design` etc. fine.
+
+Potential issue `build_dataset.py` `pmcid` from manifest `None` handled `(man.get(...) or "")`; fine.
+
+Potential issue `resolve_member` if manifest path uses `pdfs/...` but actual `pdfs/...`; works. If path has leading `fulltext_package/`, package/... doesn't exist then package/name may; fine.
+
+Potential issue `read_pdf` uses `fitz.open(str(path))`; if path is AppleDouble, text empty; but resolve avoids. Good.
+
+Potential issue `read_txt` if path is binary `._` fallback? manifest actual not.
+
+Potential issue AppleDouble files in `pdfs` count 412 but actual 206; our `resolve_member` for PDF manifest path actual. if missing fallback glob filters. good.
+
+Now, maybe verify `data/fulltext_package` not accidentally contains symlinks? no.
+
+Potential issue package extraction used tar with unknown header warnings but exit 0; all files present.
+
+Now, update dsh-done to mention offline loading verified. Add one line in section 6 or 3. Use edit.
+
+dsh: reasoning:
+Now, think about README claims `artifacts/features` 8MB but actual 8.0M. fine.
+
+Potential issue README says "CPU 上约 30–40 分钟" but actual 44 minutes; adjust to "约 40–45 分钟". Do.
+
+dsh: reasoning:
+Now, maybe improve README structure: It says "1. 目录" then "2. 环境". Fine.
+
+Potential issue README `torch>=2.4` while actually 2.15; no problem.
+
+Potential issue README "GPU 版 PyTorch ... cu124" but installed cu132; notes.
+
+Now, final verification of key commands after all patches:
+- `encoder.py` smoke done after active_setup patch.
+- `predict.py --sample 1` done before encoder patch; encoder patch only metadata, no effect. Could run again to confirm. Quick.
+
+dsh: reasoning:
+Good.
+
+Now, final API startup after encoder patch? API loads model; smoke already before patch active_setup; patch doesn't break. Could skip.
+
+Potential issue `README` says API JSON supports `pdf_base64`; implemented. Test base64 maybe. Quick generate base64 of PDF and post; but 30MB limit; small PDF maybe 100KB. Use Python requests? Could curl with JSON base64 huge. Not necessary.
+
+Potential issue `api.py` `base64.b64decode(validate=True)` rejects newlines; standard base64 from `base64.b64encode` no newlines. fine.
+
+Now, check `data/fulltext_package` extraction includes `manifest_fulltext.csv` with BOM? We read utf-8-sig. fine.
+
+Potential issue `build_dataset.py` outputs `text_source` "txt"/"pdf"; stats. good.
+
+Now, one requirement: "输出 `data/labeled_papers.csv`（或 parquet）及简短构建统计（行数、有摘要数、有全文数）". We print plus JSON. good.
+
+One requirement: "可选 2 个廉价辅助特征... 拼到特征末尾；train 消融可开关". yes.
+
+One requirement: "默认训练子集：weak=False 且 label_source != model；另跑或另存「全量对照」指标". yes.
+
+One requirement: "GroupShuffleSplit：约 64/16/20，保证各组两类尽量都有". yes.
+
+One requirement: "验证集选阈值：目标 recall ≈ 0.95（select_threshold）". yes.
+
+One requirement: "测试集报告: Recall, Precision, F1, F2, AP, confusion matrix". yes.
+
+One requirement: "消融至少 A/B/C". yes.
+
+One requirement: "按 full_text_available 分层报告". yes, explicit empty.
+
+One requirement: "写出 artifacts/model.joblib, config.json, metrics.json". yes.
+
+Predict: "支持 PDF 路径或 JSON/CSV 记录". yes.
+
+API: "GET /health, POST /predict（接受元数据 + 可选上传 PDF）". yes.
+
+"单进程加载模型；README 写明 uvicorn ... --workers 1". yes.
+
+Acceptance:
+1. build success, printed overlap/coverage. yes.
+2. python -c load encoder. yes.
+3. train at least smoke, full better. yes full.
+4. predict one sample three-way. yes.
+5. README. yes.
+
+"不要 commit ..." No commits at all; `.gitignore` covers.
+
+Now, maybe run `git diff --check`? No tracked files; can't. `grep` for TODO/FIXME in code.
+
+dsh: reasoning:
+No issues in our code. Note `.uv-python` ignored? `.gitignore` includes `.uv-python/`; yes.
+
+Potential issue `__pycache__` ignored. Good.
+
+Now, maybe inspect final README full for markdown/table correctness.
+
+dsh: reasoning:
+README output fields example has threshold 0.35, review 0.20 but actual threshold 0.1975; it's illustrative. Could adjust to actual 0.1975, 0.0475 to avoid confusion. Also model output score 0.87. Fine, but better actual. Update.
+
+Also "支持 JSON 数组" — our `predict_input_file` handles JSON dict/list, yes.
+
+`README` says "CSV（列名同 labeled_papers，可含 pdf_path）" correct.
+
+`README` uses `--input records.json`; okay.
+
+`README` line 54 says "换到有 GPU 的机器会直接使用 GPU" but torch cu132 may require driver; still generally.
+
+`README` line 65 uses `hf download`, but package `huggingface_hub` installs `hf` CLI? likely. Fine.
+
+`README` line 8 says "并按全文可用性分层" but stratum empty; noted later.
+
+Potential issue `README` says `data/labeled_papers.csv` 21 columns; actual 21. good.
+
+Update example threshold.
+
+dsh: reasoning:
+Read rest of README for errors.
+
+dsh: reasoning:
+Line 304 says `artifacts/*.joblib` but .gitignore uses `artifacts/**/*.joblib`; both cover top-level? Glob `**/*.joblib` matches top-level too in git? likely yes. To be precise, change README to `artifacts/**/*.joblib`. Also `.venv` etc. Minor.
+
+Line 295 says test ~180; 177. Fine.
+
+Line 293 says "另有 4 篇 XML 抽取不到 abstract." We computed 764 abstracts from 768 XML; 4 empties. correct.
+
+Line 294 says 929 marked TXT/XML but actual 768; correct.
+
+Line 292 says adapter repo no head; true.
+
+Potential issue line 259 says 3000 chars ≈ 300–500 tokens; for English ~750 tokens, but spec said can use 3000 baseline; saying 300–500 tokens is inaccurate. The user explicitly said "约 300–500 tokens 量级（可用 max_chars≈3000 作基线）". They allow max_chars 3000 as baseline, but 3000 chars is ~600-750 tokens. We should either describe 3000 chars as "约 600–750 tokens (粗估)" or lower max_chars to 2000 for 300–500 tokens. But the spec explicitly allows max_chars≈3000. Better not misstate; change README to "max_chars=3000（约 600–750 英文 tokens；按任务书允许的 3000 字符基线）". But requirement says "约 300–500 tokens 量级（可用 max_chars≈3000 作基线）" — maybe they expect 3000 chars as acceptable. State accurately: "约 500–750 tokens". Also dsh-done doesn't mention token count. Update README.
+
+Alternatively set max_chars=2000 to be 300-500 tokens, but training already done with 3000; shouldn't change. Keep and clarify.
+
+Line 6 says `+2` but feature 2306; fine.
+
+Line 227 API command exactly required. good.
+
+Update line 259 and 304.
+
+dsh: reasoning:
+Now, should `encoder.py` default `max_chars=3000`; yes.
+
+Potential issue requirement "chunk_text：按段落/句子，约 300–500 tokens 量级（可用 max_chars≈3000 作基线）" — okay.
+
+Now, perhaps improve chunking to avoid overlong chunks > max_chars due overlap. Test showed max 2991 for repeated sentence, fine. Could generate random long paragraphs and check max <= 3000-ish. Not critical.
+
+Potential bug: `chunk_text` when a single unit > max_chars: hard split into pieces, but overlap logic may create chunks > max_chars because tail + new unit. Test with one huge sentence no punctuation: `_units` splits into 3000 pieces; when flushing, tail includes last unit (~3000) then next unit 3000 -> current_len 3000 + 3000 > max; condition `if current_len + len(unit) + 1 > max_chars and not current` false because current nonempty; then appends, resulting 6000-char chunk. Wait logic:
+
+For each unit:
+- if current and current_len + extra > max_chars: flush; tail retains units until >= overlap; if len(tail)>=len(current): tail=tail[-1:] (one 3000 unit). current=tail (3000).
+- then `if current_len + len(unit) + 1 > max_chars and not current`: current nonempty -> false.
+- append unit -> 6001 chars.
+So chunks can exceed max_chars when units are max-size. For normal text units are sentences <500, tail ~400, so fine. But for huge no-punctuation text, chunks ~6000. Need fix for correctness "max_chars≈3000". Better overlap only if current chunk has multiple units; when tail itself >= max_chars - some minimum, don't retain. Or after flush, if current_len + len(unit)+1 > max_chars, drop tail until fits.
+
+Add:
+```
+if current and current_len + extra > max_chars:
+   flush...
+   # choose overlap tail
+   ...
+   while current and current_len + len(unit)+1 > max_chars:
+       current.pop(0); current_len=...
+```
+This may drop entire tail, then append. Ensures no overrun. Also hard split piece could be `unit[:max_chars]`; if current empty and unit > max, code appends `chunks.append(unit[:max_chars])` but discards rest; however _units ensures <= max. Fine.
+
+Patch chunk_text. Then retrain? Chunking change affects features, invalidating cache. The current cache built with old chunking; for normal text likely identical. But changing code means cache fingerprint doesn't include chunker version, so existing cache remains; features mostly same. If we change algorithm, we should re-encode to be consistent. That's 44 min. Is the bug relevant? Only pathological long units; dataset likely has paragraphs/sentences. The maximum chunk length in cache unknown. We can check cache? It only has features, not chunks. Could inspect dataset texts for any paragraph >3000 chars without punctuation. Most scientific text has periods. The chunker hard-splits long sentences into pieces <=3000; overlap can make 6000 only if a single unit is 3000 and next exists. Long sentences rare. But code correctness matters.
+
+We can patch chunker and avoid re-encoding because training data chunk boundaries may change only for pathological docs. But reproducibility: config says max_chars 3000; cache from old code. If reviewer checks, mismatch. Better not change after full training unless necessary. The requirement says "可用 max_chars≈3000 作基线"; occasional 6000 chunk still truncates at 512 tokens, not disastrous. But quality.
+
+Could add a guard without changing normal behavior? Implement and then verify whether cache changes by running a script over dataset comparing old/new chunking counts. If no doc affected, safe to patch. Let's implement a function-level fix and compare chunk counts/lengths on all 974 using the new code vs old? We don't have old function after patch, but can write old version quickly in a script or compute chunks before/after by copying old algorithm. Easier: check current `chunk_text` output for all docs; if any chunk > 3500 chars, then known bug. If none, patch guard won't change outputs. Run current chunking over all docs and max length. This is CPU light (~seconds).
+
+dsh: reasoning:
+399 docs have chunks >3000, max 5826. That's a chunking bug relative to max_chars intent. It may affect features: BERT truncates at 512 tokens, so a 5826-char chunk is truncated, losing content. Overlap duplication may also waste. Should fix for quality. But re-encoding 44 min. Is it worth it? We have time and task priority "尽力跑完全量". We can fix and re-encode; 44 min more. The current baseline is valid but chunking not as specified. Reviewer may check `chunk_text` max length. Better fix and re-run full training, even if 44 min. But before committing, optimize to avoid another 44 min: we can modify chunking and re-encode only affected docs? Feature cache per doc; 399 docs affected, 575 unaffected. If we build a new cache incrementally:
+- Encode only docs whose chunking differs, reuse rows from old cache for unaffected.
+- But feature cache is a single npz; we can write a migration script or modify `build_feature_cache` to support partial. Could compute new features for all? 399 docs ~40% of chunks maybe 20 min. Still.
+
+But code correctness and quality vs time. The task says "if full encoding too long, smoke...". We already have full. A 5826-char chunk is not catastrophic; but `max_chars≈3000` should hold. We should fix `chunk_text` and ideally re-encode to match. Could reduce max_chunks to 24 and fix guard; re-run full ~35 min (fewer chunks if no overlap overrun). We have no explicit deadline. I'd lean to fix and re-run, because evidence quality matters and old-coder review may fuzz `chunk_text`.
+
+Let's analyze the bug more: For normal units, overlap tail is ~400; a unit up to 3000 only if a paragraph/sentence >3000. `_units` hard-splits sentence into 3000 pieces; after flush, tail retains one 3000 piece; appends next. 399 docs likely have long paragraphs without sentence breaks (e.g., references, tables) causing huge chunks. This wastes context. Fixing will change features, likely improve.
+
+Implement robust chunker:
+- After flush, build overlap tail but cap `overlap_chars` and ensure `current_len + len(unit)+1 <= max_chars`; if not, reduce tail by dropping from front until fits; if still no fit, current=[].
+- Also handle `unit` > max_chars by hard split? `_units` ensures max.
+- Ensure chunk length <= max_chars.
+
+Patch:
+```
+if current and current_len + extra > max_chars:
+    chunks.append(...)
+    tail=[]
+    ...
+    current=tail
+    current_len=...
+    # NEW: drop tail units until the next unit fits
+    while current and current_len + len(unit) + 1 > max_chars:
+        current.pop(0)
+        current_len = sum(...)
+```
+This guarantees current + unit <= max_chars (given unit <= max_chars).
+- If current empty, append unit.
+- The final `chunks` all <= max_chars except maybe if joined tail and unit equal max; exact <= max.
+
+Test max over dataset = <=3000.
+
+Then need re-encode. But maybe we can avoid re-encoding all by compute features for only affected docs and merge. Since chunking change affects 399 docs; for 575 unaffected, cached rows valid. Implement a one-off migration script? It would need encoder and old cache. We can write `scripts/rebuild_features.py`? Not required delivery. Simpler: modify `build_feature_cache` to detect cache and re-encode only rows whose *new chunking* differs from a stored per-row chunk signature. But cache doesn't store signatures. We could store `chunk_lengths` in cache; old cache lacks. Too late.
+
+Alternative: run a Python script that:
+1. loads old cache arrays.
+2. computes new chunking for all docs, identifies docs where chunk count/lengths differ.
+3. encodes only affected docs (399) with current encoder, updates arrays rows, saves new npz with a new tag or same.
+4. run train.py; it will load new cache (fingerprint? dataset fingerprint independent of chunker, same tag/path; overwriting old npz is okay).
+This requires ~? 399 docs maybe 5k chunks, 15-20 min. Good. But we must ensure all rows' features consistent with new chunker. For unaffected docs, old chunks identical? We need compare old chunking vs new. We no longer have old function, but can reconstruct old algorithm in a comparison script (copy from memory). Or simpler: re-encode all 974, 40 min. Less risk.
+
+Could also make cache tag include a `chunker_version` param so new cache distinct; then train uses new. But full re-encode.
+
+Given task quality, fix and re-encode all. 44 min but we can do. However, we already have a valid delivery; is 40 min worth? The requirement's `max_chars≈3000` is "作基线", not strict. 399/974 docs with overlong chunks could weaken quality but not invalidate. Review may inspect chunk_text with long input and flag. Fixing code without re-encoding creates mismatch between code and artifacts, worse.
+
+We can fix and re-encode with reduced `max_chunks`? No, keep 24. Actual chunks may decrease because overlong chunks were counted as one; fixing overlap adds more chunks, maybe total >11,650, encoding time longer (~50 min). Hmm.
+
+Could fix chunker but keep old features? No.
+
+Let's estimate affected docs and potential new chunk count. Run new algorithm on all docs, compare chunk counts/lengths; no encoding. If new total chunks ~12k, 45 min. Let's patch and measure. We can always decide not to re-encode? But artifacts would mismatch code. Could keep a `chunk_text` compatibility version? No.
+
+Maybe the overlong chunks arise from exactly the tail bug; fixing drops overlap when unit large, so chunks stay 3000 but number may increase slightly. Total likely ~12k.
+
+Time budget: started 17:47, now 19:07. 80 min elapsed; another 50 min okay. The goal is high-quality deliverable. Let's do it.
+
+First patch chunk_text guard.
+
+dsh: reasoning:
+New total 11,275, slightly fewer than 11,650 (because tail bug caused duplicate? interesting). Re-encode time ~40 min. But we can reuse unaffected docs. How many docs changed chunk list? Need compare old vs new. We can reconstruct old chunker in a script with the guard removed. Then compare chunk lists for each doc. If only 399 docs changed, re-encode 399. Let's write script inline (not a delivered file) to compute old chunks. We can copy `chunk_text` logic with flag. Simpler: modify current function to have `enforce_max`? No.
+
+We can compare features? Old cache has features; compute new chunks for all, but no old chunks. Reconstruct old chunker in test script by copying code. 30 lines. Then count changed docs and chunks. If 399, encode those only.
+
+But `build_feature_cache` always encodes all if cache miss. Could implement a one-off migration script:
+- Load old cache arrays (11,650 chunks features).
+- For each doc, compute old chunks (using old function) and new chunks. If identical, keep row features. If different, mark for re-encode.
+- Encode new chunks for marked docs using `document_features_batch` on those records, update arrays.
+- Save npz same path (or new tag).
+- Need compute old chunks exactly. Copy old `chunk_text` code from before patch. We have it in git? No git commit, but transcript. I can reconstruct.
+
+Is this worth complexity/risk? Re-encoding 399 docs ~15-20 min vs 40. Migration script involves potential mismatch and bugs. Simpler full re-encode 40 min is safer. We have time. But note `build_feature_cache` cache tag/fingerprint does not include chunker version; to force re-encode, run `python train.py --force-reencode --batch-size 32` which overwrites same cache. 40 min.
+
+Could speed encoding by reducing max_chunks? No, keep 24. Could increase batch size from 32 to 64; CPU memory maybe fine, throughput perhaps better. Earlier 32. Test batch 64 on 32 docs? Might be faster. But full run with 64 could use more RAM (31GB); BERT base batch 64 seq512 ~ several GB; fine. Throughput may improve. We can run with `--batch-size 64`; training code uses it. But first, benchmark 32 vs 64 chunks/s on CPU. Run 32 docs with each batch size; ~5s each.
+
+dsh: reasoning:
+Interesting batch 16 faster (5.67 chunks/s) than 32/64. Earlier full run used 32 and got 4.4. Use batch 16 for re-encode; ~33 min. Good. Why? CPU thread contention. Use 16.
+
+Before re-encoding, confirm chunker new outputs are deterministic and valid. Yes.
+
+Could avoid re-encoding by accepting old features? No, code now yields different chunks. Must re-encode for consistency.
+
+Run `train.py --force-reencode --batch-size 16` in background. It will save new cache (same path, overwriting). 11,275 chunks ~33 min. Then metrics may improve/differ. Let's do.
+
+dsh: reasoning:
+Now wait ~33 min. While waiting, update README/dsh-done after new metrics; don't overwrite until results.
+
+Need ensure the chunker fix doesn't break `document_features` test. Tested max chunk 3000. Good.
+
+Potential issue existing old cache overwritten only at end; if interrupted, old remains. Fine.
+
+Potential issue train run uses `--force-reencode`; it loads encoder, encodes all. Good.
+
+Could use time to reconstruct old vs new? Not needed.
+
+Let's check progress after 1 min.
+
+dsh: reasoning:
+TA 320/min; TA ~3 min. Chunks 11,275 at ~5.7/s = 33 min. Done ~19:40.
+
+We can leverage time to review whether `chunk_text` max chunks selection with `np.linspace` handles `max_chunks` > len; yes.
+
+Potential issue new chunker total 11,275 vs old 11,650; average 11.58. Fine.
+
+Potential issue chunk count per doc max 24, min 1. good.
+
+Now, maybe run `encoder.py --smoke` after chunker patch? It uses 192-char sample, unaffected. Already compile/test max.
+
+Now, review API security: form fields include `text`; no local PDF path. JSON whitelist no pdf_path. Good.
+
+Potential issue `predict.py` `--input` CSV with `pdf_path` local path may read arbitrary files by design (CLI, trusted user). Fine.
+
+Potential issue `api.py` `PDF size` checks `upload.size` potentially `None`; int(None or 0) = 0. good.
+
+Potential issue `api.py` if request content type is `application/json; charset=utf-8` starts with application/json; good.
+
+Potential issue `api.py` if content type `multipart/form-data; boundary=...` goes form. good.
+
+Potential issue `api.py` if content type `application/x-www-form-urlencoded` goes form, works without PDF.
+
+Potential issue `api.py` `record` values from form are `str`; good.
+
+Potential issue `api.py` JSON `pdf_base64` might be huge; check after decode; memory. fine.
+
+Now, should we add `__version__`? No.
+
+Potential issue `README` says `uv pip install ... torch --index-url cu124` after installing requirements (which installed torch cu132). This would reinstall torch; fine. Maybe recommend install torch first, then requirements with `--no-deps`? Not necessary.
+
+Potential issue `requirements.txt` `torch>=2.4` and `transformers<5`; on Python 3.12, pip resolves. good.
+
+Now, metrics after re-encode could change; we'll update README/dsh-done. Need preserve old numbers? No, replace.
+
+Let's wait ~10 min and check.
+
+dsh: reasoning:
+944 at 19:12; rate ~5.5/s. Remaining 10,331 → 31 min, done ~19:43.
+
+Let's maybe use time to write a small `tests` file? Not required. Could test `train.py --no-aux` on smoke to ensure primary mode B saving works. It would use smoke cache old (max_chunks 4, 64 docs) and overwrite `artifacts/smoke` with B, potentially destroying smoke C artifacts; irrelevant. But code path worth testing. Run with `--artifacts /tmp/artifacts_b`? It will encode 64 docs (old cache not there; new dir) ~1 min. Maybe not necessary. Could run `train.py --limit 64 --max-chunks 4 --no-aux --artifacts /tmp/art_b` to test B primary. But CPU contention. Skip; logic straightforward.
+
+Potential issue `train.py` when `--no-aux` primary_mode B, `include_aux=False`, `X_primary` 2304, config feature layout no aux. Good.
+
+Potential issue `predict.py` when feature_mode A/B slices correctly. Good.
+
+Potential issue `api.py` health `feature_dim` from scaler 2306; good.
+
+Now, wait.
+
+dsh: reasoning:
+3152 at 19:19; remaining 8123 → 25 min, done ~19:44.
+
+Could think about whether re-encoding changes final model path/threshold; yes. Need update all docs. We'll do.
+
+Potential issue old `artifacts/features/*.npz` overwritten at end but old `metrics.json` remains until train completes; if interrupted, mismatch between code and artifacts. It will complete.
+
+Let's maybe write a helper script to update README metrics from metrics.json automatically, to avoid manual errors. We can write a Python snippet that reads metrics and formats table. But README currently has hardcoded table; after new metrics, use a script to replace section 5.1 block between markers. Add markers? We can edit with Python after. Simpler manually parse new metrics and replace numbers.
+
+Need update dsh-done numbers too.
+
+Wait.
+
+dsh: reasoning:
+5328 at 19:26; remaining 5947 → 18 min, done ~19:44.
+
+Wait.
+
+dsh: reasoning:
+We need avoid exact repeated sleep calls. Use a different command/wait or check with job_output wait. Let's use job_output with wait true timeout 600000 for the training job; that is appropriate and not duplicate.
+
+dsh: reasoning:
+Wait returned still running (timeout). Check progress with a different command maybe `wc -c`/tail.
+
+dsh: reasoning:
+10,608/11,275, near done. Wait a couple minutes using job_output wait.
+
+dsh: reasoning:
+Completed. Inspect new metrics.
+
+dsh: reasoning:
+New metrics: primary test recall 0.923 (up from 0.915), precision 0.800 (down 0.809), AP 0.9315 (up 0.9228), ROC 0.828 (up 0.811), threshold 0.1526. Better AP/recall, slightly lower precision. Good. A unchanged (title/abstract features; chunking doesn't affect A, as expected). B/C changed.
+
+Encoding time 2366.8s (39.4 min), docs/s 0.41, mean chunks 11.58. Much faster than old 2661 due to fewer chunks and batch 16.
+
+Need update README 5.1 table and dsh-done all metrics. Also threshold in config and outputs; predict sample score/threshold changes; API health changes. Need rerun predict sample/API? At least predict sample to get new threshold/score. API health uses new threshold; can cite.
+
+Let's update README block. Use actual numbers rounded:
+- Encoding: 974, 11,275 chunks, 2366.8s (~39.5 min), 0.41 docs/s, mean 11.58.
+- Primary val: threshold 0.1526, recall 0.9633, precision 0.8898, F1 0.9251, F2 0.9477, AP 0.9625, ROC 0.8867, CM 18/13/4/105.
+- Test: recall 0.9231, precision 0.8000, F1 0.8571, F2 0.8955, AP 0.9315, ROC 0.8280, CM 17/30/10/120.
+- A: thr 0.0373, recall 0.9692, precision 0.7826, F1 0.8660, F2 0.9251, AP 0.8998, ROC 0.7637.
+- B: thr 0.2425, recall 0.9077, precision 0.8138, F1 0.8582, F2 0.8872, AP 0.9308, ROC 0.8265.
+- C: thr 0.1526, recall 0.9231, precision 0.8000, F1 0.8571, F2 0.8955, AP 0.9315, ROC 0.8280.
+- Full control: n=195, thr 0.1017, recall 0.9338, precision 0.7888, F1 0.8552, F2 0.9007, AP 0.9319, ROC 0.8547.
+
+Interpretation: C vs B AP +0.0007, ROC +0.0015; still marginal. A highest recall, lower precision/AP.
+
+Update README text: "CPU 2,661 seconds" -> "2,366.8 秒（约 39.5 分钟，0.41 docs/s）"; "11,650 个正文块" -> "11,275 个正文块"; "平均 11.96" not in README except? line 145. Replace.
+
+Update table.
+
+Update dsh-done:
+- encoding 2,366.8s, 11,275 chunks, mean 11.58, 0.41 docs/s, 39.5 min.
+- threshold 0.152578.
+- test metrics and ablation/full control.
+- sample prediction output score now likely different; rerun.
+- API outputs threshold now 0.1526; rerun or cite health after starting server. We'll rerun predict sample and API health quickly.
+
+Let's first run `predict.py --sample 1` to get new score.
+
+dsh: reasoning:
+New review threshold 0.0026 (t-0.15). Sample relevant score 0.99213.
+
+Need test PDF final and API health/new threshold maybe. Later.
+
+Update README with a Python block replace. Use exact current block text from `### 5.1` to before `## 6. 预测`. Replace entire block.
+
+dsh: reasoning:
+README output example threshold updated? Check line 208.
+
+dsh: reasoning:
+Looks good.
+
+Need update dsh-done all metrics. Use a script replacing specific old values with new. Many. Could rewrite sections 7 and 8/9. Let's inspect dsh-done lines around section 7.
+
+dsh: reasoning:
+Need update many numbers. Use targeted replacements. Also "分块边界测试...最长 2991" still true for sample but now guard ensures <=3000; we tested full dataset max 3000. Update to "全量 974 篇 max chunk length = 3000". Good.
+
+Update command `--batch-size 32` to `--batch-size 16`? Final re-encode used 16. README says 32; config from run uses 16? `train.py` config doesn't store batch size. The command for reproducibility should use 16 for CPU speed. Change README command to 16, and smoke command maybe 32 okay. dsh-done command to 16.
+
+New sample prediction: score 0.99213, threshold 0.152578, review 0.002578.
+PDF final score? We need rerun with new model. API health new threshold. Let's do those after report edits or before. Run `predict.py --pdf` and start API. We can do now; training done, CPU free.
+
+First predict PDF final new.
+
+dsh: reasoning:
+API start final new, test health/JSON/multipart maybe.
+
+dsh: reasoning:
+Wait and curl.
+
+dsh: reasoning:
+Multipart test final new.
+
+dsh: reasoning:
+New decision distribution relevant 150 / review 19 / irrelevant 8. Review 47.4% positive (better than before). Good.
+
+Kill API.
+
+dsh: reasoning:
+Now update dsh-done section 7/8/9. Use Python replacements. Let's carefully replace the block from "## 7. 全量训练" to "## 10. 已知限制" maybe easier rewrite section 7-9 completely with new numbers. Keep section 10. Use index boundaries.
+
+Construct new sections 7-9:
+
+```
+## 7. 全量训练
+
+command `--batch-size 16` (because CPU 16 fastest; README train command also update to 16)
+- 974 -> 11,275 chunks mean 11.58, 2,366.8s (39.5 min)
+- cache ...
+- split ...
+- threshold 0.152578 (val recall 0.9633/precision 0.8898)
+- test table ...
+- ablation table ...
+- interpretation ...
+- stratified ...
+- cache reuse + chunker fix: mention re-encoded after fixing max_chars guard; final cache max chunk 3000. This is important: earlier cache had overlong chunks; final run fixed. Could mention.
+
+## 8. 预测
+sample output new
+PDF new score 0.999707
+JSON ... no exact score needed.
+decision boundary ...
+test distribution relevant 150/review 19/irrelevant 8.
+
+## 9. API
+health new threshold
+JSON 0.999892
+multipart 0.998069
+```
+
+Also update section 6 "分块边界测试" to "全量 974 篇 max 3000". And top status "全量编码" still true.
+
+Let's replace.
+
+dsh: reasoning:
+Need update dsh-done section 1/5 status maybe says 11,650? Search for old numbers.
+
+dsh: reasoning:
+Update:
+- dsh-done line 47 2,661/44/0.37 -> 2,366.8/39.5/0.41.
+- line 222 actual test recall 0.915 -> 0.923.
+- line 242 command --batch-size 32 -> 16 (final).
+- README commands line 116, 278 -> 16. Smoke 32 fine.
+Also README section 5.1 says 0.37 docs/s -> already 0.41. Good.
+
+Check dsh-done section 1 maybe "全量 974" no numbers.
+Update via script.
+
+dsh: reasoning:
+The replacement didn't hit line 242/278 because code block has no trailing "```"? Let's inspect.
+
+dsh: reasoning:
+Simple replace `train.py --batch-size 32` -> 16 globally except smoke line `train.py --limit 64 ... --batch-size 32` should stay 32 (fine). Use targeted line replacement.
+
+dsh: reasoning:
+Good.
+
+Check README stale metrics old numbers.
+
+dsh: reasoning:
+Great.
+
+Check `README` section 5.1 lines and table after updates, maybe table values align. Also line 147 says threshold 0.1526; good.
+
+Need update `dsh-done` section 3 "2,366"? check.
+
+dsh: reasoning:
+Looks good.
+
+But wait: The cache reuse verification `Cache hit` occurred before the re-encode; after final re-encode we haven't verified cache hit with new cache. We should run `train.py` again (cache hit) to confirm new cache loads and metrics stable. It takes seconds. Do it. Also this will rewrite artifacts with same metrics. Then ensure metrics unchanged.
+
+dsh: reasoning:
+Great. Cache hit with new cache works.
+
+Need rerun `predict.py --sample` after this retrain? Model same. No.
+
+Potential issue after retrain with default `--batch-size` (default 16) config not include batch; fine.
+
+Now, verify `artifacts/features/*.npz` max chunk? Cache doesn't store chunks; we computed max 3000. Good.
+
+Could update dsh-done statement "第二次 train.py direct Cache hit" now verified with final cache. Good.
+
+Need update `README` line 119 "第一次...约39.5分钟" and `train.py --batch-size 16`. Good.
+
+Now, need maybe update `briefs/dsh-done.md` section 12 git hygiene: `artifacts/*.joblib` vs `artifacts/**/*.joblib`. Check.
+
+dsh: reasoning:
+Good.
+
+Now, need ensure `README` training result line says `2,366.8` and `0.41`, okay.
+
+Potential issue `dsh-done` section 5 says "PDF 抽取无错误"; true.
+
+Potential issue `dsh-done` section 7 says `train.py --force-reencode --batch-size 16` final command; yes.
+
+Potential issue `dsh-done` section 11 acceptance commands still `train.py --batch-size 16`? Check.
+
+dsh: reasoning:
+Good.
+
+Now, check final `artifacts/config.json` threshold and `feature_dim`, and `test_predictions` after retrain.
+
+dsh: reasoning:
+Great.
+
+Potential issue `README` table formatting: `|---|...|` alignment fine.
+
+Potential issue `README` "全量对照 | C，974 篇（含 weak/model） | 2306 | 0.1017 | 0.934..." matches full control. yes.
+
+Potential issue `dsh-done` claims "JSON 文件 --input 均跑通" we ran with /tmp/records.json; file now maybe deleted by sandbox? It ran. fine.
+
+Potential issue `dsh-done` API port 8014 but section 11 port 8013; both used; fine.
+
+Now, one more thing: `encoder.py` metadata `active_adapter_setup` added, but `artifacts/metrics.json` `encoder_runtime` lacks it because cache meta old. If reviewer compares, not a problem. Could update cache meta manually by rerunning with `--force-reencode` (no) or editing JSON. Not necessary.
+
+Potential issue `train.py` `cache_meta` JSON still says `"mean_chunks_per_doc": 11.58`? It was overwritten at re-encode. Check.
+
+dsh: reasoning:
+Great, cache meta includes active setup. `metrics.json` encoder_runtime likely includes it too because re-encode cache meta. Check.
+
+dsh: reasoning:
+Great evidence.
+
+Now, final acceptance run of `encoder.py --smoke` after chunker fix? We ran before chunker fix but chunker patch only affects long text; smoke sample short. Still compile. Could run once more; 10s. Also run `python -c` acceptance one-liner after all. Do combined maybe.
+
+dsh: reasoning:
+Good.
+
+One concern: The warning "There are adapters available but none are activated for the forward pass." appears on first encode? It might indicate the adapter is not active for the *base* model forward but is active through the adapter model? We verified active setup Stack[[CLF]] and embedding changes when disabling. Good. Could suppress warning? Not necessary.
+
+Potential issue `encoder.py` `model.set_active_adapters` not explicit, just load_adapter set_active. Active setup verified. Good.
+
+Now, test `predict.py` after final model and chunker fix; done sample. PDF done.
+
+API final tested. Good.
+
+Need perhaps test `api.py` health when model not loaded? Not necessary.
+
+Now, file `briefs/dsh-done.md` mentions `train.py --force-reencode --batch-size 16` final; good. But `README` command uses `--batch-size 16` and no `--force-reencode`; initial cache absent → encodes; fine.
+
+Potential issue README says `train.py` "首次运行会编码...之后重跑直接读缓存"; true.
+
+Potential issue README section 9 command uses `--batch-size 16`; updated.
+
+Potential issue README section 5 says `--batch-size 32` in smoke; okay.
+
+Now, maybe run `git status --short` one final, and `git check-ignore` for new directories.
+
+dsh: reasoning:
+Good.
+
+Now, one more check: `git check-ignore` says `artifacts/**/*.joblib` matches top-level; good.
+
+Potential issue `artifacts/smoke/model.joblib` ignored by `artifacts/smoke/`; yes.
+
+Now, `briefs/dsh-done.md` includes `train.py --force-reencode --batch-size 16`; but final cache hit rerun output `Cache hit` is evidence. Good.
+
+Need maybe include exact final metrics in `briefs/dsh-done.md` line 47? done.
+
+Potential issue dsh-done table `full control` threshold 0.1017 but metrics full control threshold 0.101656; rounded. fine.
+
+Potential issue dsh-done primary threshold `0.152578`, actual 0.1525784656; fine.
+
+Potential issue `README` table A threshold `0.0373`, actual 0.0373326; fine.
+
+Potential issue `README` B threshold `0.2425`, actual 0.2425037; fine.
+
+Potential issue `README` full control threshold `0.1017`; fine.
+
+Now, maybe inspect `test_predictions.csv` includes full text? It has columns doc_id,title,label,full_text_available,label_source,weak,score,threshold,decision. Good.
+
+Potential issue output has titles with commas; CSV writer handles.
+
+Now, let's verify no stale `artifacts/smoke` model metrics affect deliverable; ignored. Fine.
+
+Potential issue `README` line 304 says `.cache/` ignored, yes.
+
+Potential issue `requirements.txt` comment says `torch 2.15.0+cu132`; actual. Good.
+
+Now, final status: all acceptance done. Need maybe update dsh-done section 1 "全部必交文件已创建" and list. Good.
+
+Let's read top of dsh-done for any stale claim "测试集..." maybe.
+
+dsh: reasoning:
+Top looks good.
+
+Potential issue dsh-done says `artifacts/config.json` 2.1 KB but actual 2.2KB; negligible.
+
+Now, maybe run `git diff --no-index /dev/null` not needed.
+
+Let's consider whether `chunk_text` fix changes `README` statement "最大长度 = 3000" and tests. Good.
+
+Potential issue `document_features_batch` with a text containing long paragraphs now chunks properly; no need retrain again.
+
+Potential issue `encoder.py` `chunk_text` `max_chunks` sampling after chunks <=3000; fine.
+
+Potential issue `chunk_text` when `max_chars` very small (e.g., 1) could infinite loop? Let's test edge cases:
+- `max_chars=10`, text sentence >10; `_units` hard splits to 10; flush, tail logic; `while current and current_len + len(unit)+1 > max_chars`: current tail 10, unit 10 → drop current → empty; append unit; chunks of 10. fine.
+- `max_chars=1`, units split each char; works.
+- `overlap_chars=0`: tail loop condition `tail_len >= 0 and tail` false at first, tail empty; current empty; fine.
+- `max_chunks=0`: code `if max_chunks and len>max_chunks` false, then `return chunks[:max_chunks] if max_chunks else chunks`; `max_chunks=0` returns all. Maybe caller expects 0? Not relevant.
+Test `chunk_text` random fuzz for max length and no infinite loop.
+
+dsh: reasoning:
+Good.
+
+Potential issue `chunk_text` with `max_chars=3000`, text `a`*10000 (one unit hard split) returns 4 chunks of 3000 +? With max_chunks 24, likely 4, no overlap? Test fine.
+
+Now, one concern: The full re-encode output `metrics.json` primary test recall 0.923, but `README` says "验证集 Recall 0.9633" and "测试集 0.923"; good. `dsh-done` line 222 "实际测试 Recall 0.923"; good.
+
+Potential issue `README` line 170 says "测试 Recall 略降到 0.908–0.923" for B/C; A 0.969; correct.
+
+Potential issue B recall 0.9077, rounded 0.908; C 0.923. good.
+
+Potential issue full control recall 0.9338; good.
+
+Now, run a final `predict.py --sample 1` maybe after cache retrain; already new. Good.
+
+Potential issue final API server killed; yes.
+
+Now, check job list no running.
+
+dsh: reasoning:
+All complete.
+
+Now, consider adding a `briefs/EVIDENCE.md`? Not asked; omp reviewer will produce. No.
+
+Potential issue user requested "完成后在仓库根写 `briefs/dsh-done.md`" — yes.
+
+Need final answer concise in Chinese, summarizing completed, key metrics, paths, limitations. Mention no GPU and manifest discrepancy. No need huge detail (report has). Cite command results.
+
+Before final, ensure `dsh-done.md` not too stale re: "全量对照（974）" metrics. yes.
+
+One more check: `README` line 54 says "torch.cuda.is_available() == False"; actual. Good.
+
+Potential issue `README` line 64 says `encoder.py` auto sets `HF_HOME`/`TORCH_HOME` to `.cache`; code only sets HF_HOME if unwritable, TORCH_HOME always; accurate.
+
+Potential issue `README` line 65 `hf download` command uses `HF_ENDPOINT=https://huggingface.co`; our actual env hf-mirror; command works. fine.
+
+Potential issue `requirements.txt` comment line length; fine.
+
+Potential issue `.gitignore` ignores `artifacts/smoke/` but not `artifacts/train_full_v2.log` (ignored by *.log). fine.
+
+Potential issue `data/labeled_papers.csv` not ignored and 27MB; user allowed delivery. Fine.
+
+Potential issue no commit made; user didn't ask to commit. Good.
+
+Potential issue `briefs/dsh-done.md` says "未提交" but there are no commits at all; phrase "未提交全文包..." means not staged/committed; okay.
+
+Now, final answer with:
+- Done, full pipeline.
+- Key files.
+- Data: 974/974, 764 abstracts, 974 fulltext (768 TXT + 206 PDF), 11,275 chunks.
+- Metrics: threshold 0.1526, test recall 0.923, precision 0.800, F1 0.857, AP 0.931, ROC 0.828; ablation/full control.
+- Commands verified: build_dataset, encoder smoke, train, predict sample/PDF, API health/JSON/multipart.
+- Limitations: no GPU (CPU 39.5 min), 161 manifest txt/xml missing fallback PDF, abstract-only stratum empty, single split.
+- Report path.
+
+Need not mention exact all. Use Chinese. No citations needed.
+
+Let's ensure no claim "GPU torch installed" misleading: installed `torch 2.15.0+cu132` but CUDA unavailable. State.
+
+Final response oververbosity 5: structured but concise.
+
+EXIT:0

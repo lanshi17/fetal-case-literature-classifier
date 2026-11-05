@@ -1,0 +1,24 @@
+[project]
+name = "casefilter"
+version = "0.1.0"
+description = "Classifier that screens literature for prenatal-ultrasound fetal cases with genetic testing (UltraPhenoCards intake)."
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+llm = ["anthropic>=0.40"]
+dev = ["pytest"]
+
+[project.scripts]
+casefilter = "casefilter.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

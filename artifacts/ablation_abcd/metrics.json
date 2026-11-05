@@ -1,0 +1,826 @@
+{
+  "generated_at": "2026-11-05T02:22:40.025112+00:00",
+  "protocol": {
+    "seed": 42,
+    "split": "GroupShuffleSplit 64/16/20, default subset val/test/train",
+    "n_train": 566,
+    "n_val": 140,
+    "n_test": 177,
+    "C": 10.0,
+    "target_recall": 0.95,
+    "encoder": "frozen PubMedBERT chunk-pool (480\u00d7\u226412 \u2192 1536)"
+  },
+  "encode_timing": {
+    "A_title_abstract_sec": 10.966576099395752,
+    "B_fulltext_sec": 147.92227435112,
+    "A_sec_per_doc": 0.01125931837720303,
+    "B_sec_per_doc": 0.1518709182249692,
+    "speedup_A_vs_B": 13.488464677618968
+  },
+  "experiments": {
+    "A": {
+      "description": "title + abstract only",
+      "feature_dim": 1536,
+      "threshold": 0.17059406065690036,
+      "val": {
+        "n": 140,
+        "positives": 109,
+        "negatives": 31,
+        "threshold": 0.17059406065690036,
+        "recall": 0.9541284403669725,
+        "precision": 0.8387096774193549,
+        "f1": 0.8927038626609443,
+        "f2": 0.9285714285714286,
+        "ap": 0.9555057761467396,
+        "roc_auc": 0.8641609943770346,
+        "confusion_matrix": {
+          "tn": 11,
+          "fp": 20,
+          "fn": 5,
+          "tp": 104
+        },
+        "predicted_positive": 124,
+        "mean_score_positive": 0.7653773887161894,
+        "mean_score_negative": 0.324970748001597
+      },
+      "test": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.17059406065690036,
+        "recall": 0.9692307692307692,
+        "precision": 0.7924528301886793,
+        "f1": 0.8719723183391004,
+        "f2": 0.9278350515463918,
+        "ap": 0.9185028006542914,
+        "roc_auc": 0.818821603927987,
+        "confusion_matrix": {
+          "tn": 14,
+          "fp": 33,
+          "fn": 4,
+          "tp": 126
+        },
+        "predicted_positive": 159,
+        "mean_score_positive": 0.8184572487107629,
+        "mean_score_negative": 0.4399012305940006
+      },
+      "gold": {
+        "n": 49,
+        "positives": 23,
+        "negatives": 26,
+        "threshold": 0.17059406065690036,
+        "recall": 0.8260869565217391,
+        "precision": 0.4634146341463415,
+        "f1": 0.59375,
+        "f2": 0.7142857142857143,
+        "ap": 0.4323200677989303,
+        "roc_auc": 0.43645484949832775,
+        "confusion_matrix": {
+          "tn": 4,
+          "fp": 22,
+          "fn": 4,
+          "tp": 19
+        },
+        "predicted_positive": 41,
+        "mean_score_positive": 0.4833994212581862,
+        "mean_score_negative": 0.5453895907395165
+      },
+      "hard_negatives_test": {
+        "name": "A",
+        "n_hard_neg": 27,
+        "tn": 8,
+        "fp": 19,
+        "specificity": 0.2962962962962963,
+        "fp_rate": 0.7037037037037037,
+        "mean_score": 0.4472340672115046,
+        "examples_fp": [
+          {
+            "pmid": "14726642",
+            "title": "Prenatal sonographic diagnosis of focal musculoskeletal anomalies.",
+            "design": "review"
+          },
+          {
+            "pmid": "17171632",
+            "title": "First-trimester combined screening for trisomy 21 in a predominantly Chinese population.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "25923652",
+            "title": "Fetal calcifications are associated with chromosomal abnormalities.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "30871627",
+            "title": "Noninvasive prenatal testing for chromosome aneuploidies and subchromosomal microdeletions/microduplications in a cohort of 8141 single pregnancies.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "31123326",
+            "title": "Clinical application of noninvasive prenatal screening for sex chromosome aneuploidies in 50,301 pregnancies: initial experience in a Chinese hospital.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "31523615",
+            "title": "A Systematic Clinical Review of Prenatally Diagnosed Tetrasomy 9p.",
+            "design": "review"
+          },
+          {
+            "pmid": "31864361",
+            "title": "Karyotyping and prenatal diagnosis of 47,XX,+\u20098[67]/46,XX [13] Mosaicism: case report and literature review.",
+            "design": "case report"
+          },
+          {
+            "pmid": "32864771",
+            "title": "The difference between karyotype analysis and chromosome microarray for mosaicism of aneuploid chromosomes in prenatal diagnosis.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "33785045",
+            "title": "Performance of cell-free DNA sequencing-based non-invasive prenatal testing: experience on 36,456 singleton and multiple pregnancies.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "35195919",
+            "title": "Combined diagnosis of QF-PCR and CNV-Seq in fetal chromosomal abnormalities: A new perspective on prenatal diagnosis.",
+            "design": "cohort"
+          }
+        ]
+      }
+    },
+    "B": {
+      "description": "title + abstract + fulltext",
+      "feature_dim": 1536,
+      "threshold": 0.21026310665576933,
+      "val": {
+        "n": 140,
+        "positives": 109,
+        "negatives": 31,
+        "threshold": 0.21026310665576933,
+        "recall": 0.963302752293578,
+        "precision": 0.8898305084745762,
+        "f1": 0.9251101321585903,
+        "f2": 0.9476534296028881,
+        "ap": 0.9705675707054902,
+        "roc_auc": 0.9035217519976324,
+        "confusion_matrix": {
+          "tn": 18,
+          "fp": 13,
+          "fn": 4,
+          "tp": 105
+        },
+        "predicted_positive": 118,
+        "mean_score_positive": 0.7883017322012613,
+        "mean_score_negative": 0.2732289443912878
+      },
+      "test": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.21026310665576933,
+        "recall": 0.9461538461538461,
+        "precision": 0.8424657534246576,
+        "f1": 0.8913043478260869,
+        "f2": 0.9234234234234234,
+        "ap": 0.9255638765988422,
+        "roc_auc": 0.8476268412438626,
+        "confusion_matrix": {
+          "tn": 24,
+          "fp": 23,
+          "fn": 7,
+          "tp": 123
+        },
+        "predicted_positive": 146,
+        "mean_score_positive": 0.8000710316559941,
+        "mean_score_negative": 0.3319749653811745
+      },
+      "gold": {
+        "n": 49,
+        "positives": 23,
+        "negatives": 26,
+        "threshold": 0.21026310665576933,
+        "recall": 0.6086956521739131,
+        "precision": 0.4666666666666667,
+        "f1": 0.5283018867924528,
+        "f2": 0.5737704918032787,
+        "ap": 0.4776210630133082,
+        "roc_auc": 0.5167224080267558,
+        "confusion_matrix": {
+          "tn": 10,
+          "fp": 16,
+          "fn": 9,
+          "tp": 14
+        },
+        "predicted_positive": 30,
+        "mean_score_positive": 0.4140837455507612,
+        "mean_score_negative": 0.40930870184558815
+      },
+      "hard_negatives_test": {
+        "name": "B",
+        "n_hard_neg": 27,
+        "tn": 13,
+        "fp": 14,
+        "specificity": 0.48148148148148145,
+        "fp_rate": 0.5185185185185185,
+        "mean_score": 0.342361366349618,
+        "examples_fp": [
+          {
+            "pmid": "14726642",
+            "title": "Prenatal sonographic diagnosis of focal musculoskeletal anomalies.",
+            "design": "review"
+          },
+          {
+            "pmid": "25923652",
+            "title": "Fetal calcifications are associated with chromosomal abnormalities.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "29496978",
+            "title": "Practice guideline: joint CCMG-SOGC recommendations for the use of chromosomal microarray analysis for prenatal diagnosis and assessment of fetal loss in Canada.",
+            "design": "review"
+          },
+          {
+            "pmid": "30871627",
+            "title": "Noninvasive prenatal testing for chromosome aneuploidies and subchromosomal microdeletions/microduplications in a cohort of 8141 single pregnancies.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "31523615",
+            "title": "A Systematic Clinical Review of Prenatally Diagnosed Tetrasomy 9p.",
+            "design": "review"
+          },
+          {
+            "pmid": "32864771",
+            "title": "The difference between karyotype analysis and chromosome microarray for mosaicism of aneuploid chromosomes in prenatal diagnosis.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "35195919",
+            "title": "Combined diagnosis of QF-PCR and CNV-Seq in fetal chromosomal abnormalities: A new perspective on prenatal diagnosis.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "35902388",
+            "title": "Application of the prenatal BACs-on-Beads\u2122 assay for rapid prenatal detection of sex chromosome mosaicism.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "36636555",
+            "title": "Assessment of Combined Karyotype Analysis and Chromosome Microarray Analysis in Prenatal Diagnosis: A Cohort Study of 3710 Pregnancies.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "37147405",
+            "title": "Risk of adverse pregnancy and infant outcomes associated with prenatal Zika virus infection: a post-epidemic cohort in Central-West Brazil.",
+            "design": "cohort"
+          }
+        ]
+      }
+    },
+    "C": {
+      "description": "fulltext + explicit case/variant lexical features (1536+2)",
+      "feature_dim": 1538,
+      "threshold": 0.18343612910732815,
+      "val": {
+        "n": 140,
+        "positives": 109,
+        "negatives": 31,
+        "threshold": 0.18343612910732815,
+        "recall": 0.9724770642201835,
+        "precision": 0.8760330578512396,
+        "f1": 0.9217391304347826,
+        "f2": 0.9515260323159784,
+        "ap": 0.9702603777416642,
+        "roc_auc": 0.9008582420834567,
+        "confusion_matrix": {
+          "tn": 16,
+          "fp": 15,
+          "fn": 3,
+          "tp": 106
+        },
+        "predicted_positive": 121,
+        "mean_score_positive": 0.7893820933742669,
+        "mean_score_negative": 0.27746391319857117
+      },
+      "test": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.18343612910732815,
+        "recall": 0.9538461538461539,
+        "precision": 0.8435374149659864,
+        "f1": 0.8953068592057761,
+        "f2": 0.9295352323838081,
+        "ap": 0.931371713826319,
+        "roc_auc": 0.8564648117839607,
+        "confusion_matrix": {
+          "tn": 24,
+          "fp": 23,
+          "fn": 6,
+          "tp": 124
+        },
+        "predicted_positive": 147,
+        "mean_score_positive": 0.8019753711800636,
+        "mean_score_negative": 0.3220079661049168
+      },
+      "gold": {
+        "n": 49,
+        "positives": 23,
+        "negatives": 26,
+        "threshold": 0.18343612910732815,
+        "recall": 0.6521739130434783,
+        "precision": 0.4838709677419355,
+        "f1": 0.5555555555555556,
+        "f2": 0.6097560975609756,
+        "ap": 0.4793489469961217,
+        "roc_auc": 0.520066889632107,
+        "confusion_matrix": {
+          "tn": 10,
+          "fp": 16,
+          "fn": 8,
+          "tp": 15
+        },
+        "predicted_positive": 31,
+        "mean_score_positive": 0.4203990237887647,
+        "mean_score_negative": 0.3962840883025697
+      },
+      "hard_negatives_test": {
+        "name": "C",
+        "n_hard_neg": 27,
+        "tn": 13,
+        "fp": 14,
+        "specificity": 0.48148148148148145,
+        "fp_rate": 0.5185185185185185,
+        "mean_score": 0.331299770473426,
+        "examples_fp": [
+          {
+            "pmid": "14726642",
+            "title": "Prenatal sonographic diagnosis of focal musculoskeletal anomalies.",
+            "design": "review"
+          },
+          {
+            "pmid": "25923652",
+            "title": "Fetal calcifications are associated with chromosomal abnormalities.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "29496978",
+            "title": "Practice guideline: joint CCMG-SOGC recommendations for the use of chromosomal microarray analysis for prenatal diagnosis and assessment of fetal loss in Canada.",
+            "design": "review"
+          },
+          {
+            "pmid": "30871627",
+            "title": "Noninvasive prenatal testing for chromosome aneuploidies and subchromosomal microdeletions/microduplications in a cohort of 8141 single pregnancies.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "31523615",
+            "title": "A Systematic Clinical Review of Prenatally Diagnosed Tetrasomy 9p.",
+            "design": "review"
+          },
+          {
+            "pmid": "32864771",
+            "title": "The difference between karyotype analysis and chromosome microarray for mosaicism of aneuploid chromosomes in prenatal diagnosis.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "35195919",
+            "title": "Combined diagnosis of QF-PCR and CNV-Seq in fetal chromosomal abnormalities: A new perspective on prenatal diagnosis.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "35902388",
+            "title": "Application of the prenatal BACs-on-Beads\u2122 assay for rapid prenatal detection of sex chromosome mosaicism.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "36636555",
+            "title": "Assessment of Combined Karyotype Analysis and Chromosome Microarray Analysis in Prenatal Diagnosis: A Cohort Study of 3710 Pregnancies.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "37147405",
+            "title": "Risk of adverse pregnancy and infant outcomes associated with prenatal Zika virus infection: a post-epidemic cohort in Central-West Brazil.",
+            "design": "cohort"
+          }
+        ]
+      }
+    }
+  },
+  "deltas": {
+    "B_minus_A_test_recall": -0.023076923076923106,
+    "B_minus_A_test_ap": 0.007061075944550854,
+    "C_minus_B_test_precision": 0.0010716615413288721,
+    "C_minus_B_hard_neg_specificity": 0.0
+  },
+  "D": {
+    "description": "hard negatives: cohort/review/screening/method designs + title keywords",
+    "n_corpus_hard_neg": 142,
+    "n_test_hard_neg": 27,
+    "per_model": {
+      "A": {
+        "name": "A",
+        "n_hard_neg": 27,
+        "tn": 8,
+        "fp": 19,
+        "specificity": 0.2962962962962963,
+        "fp_rate": 0.7037037037037037,
+        "mean_score": 0.4472340672115046,
+        "examples_fp": [
+          {
+            "pmid": "14726642",
+            "title": "Prenatal sonographic diagnosis of focal musculoskeletal anomalies.",
+            "design": "review"
+          },
+          {
+            "pmid": "17171632",
+            "title": "First-trimester combined screening for trisomy 21 in a predominantly Chinese population.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "25923652",
+            "title": "Fetal calcifications are associated with chromosomal abnormalities.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "30871627",
+            "title": "Noninvasive prenatal testing for chromosome aneuploidies and subchromosomal microdeletions/microduplications in a cohort of 8141 single pregnancies.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "31123326",
+            "title": "Clinical application of noninvasive prenatal screening for sex chromosome aneuploidies in 50,301 pregnancies: initial experience in a Chinese hospital.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "31523615",
+            "title": "A Systematic Clinical Review of Prenatally Diagnosed Tetrasomy 9p.",
+            "design": "review"
+          },
+          {
+            "pmid": "31864361",
+            "title": "Karyotyping and prenatal diagnosis of 47,XX,+\u20098[67]/46,XX [13] Mosaicism: case report and literature review.",
+            "design": "case report"
+          },
+          {
+            "pmid": "32864771",
+            "title": "The difference between karyotype analysis and chromosome microarray for mosaicism of aneuploid chromosomes in prenatal diagnosis.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "33785045",
+            "title": "Performance of cell-free DNA sequencing-based non-invasive prenatal testing: experience on 36,456 singleton and multiple pregnancies.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "35195919",
+            "title": "Combined diagnosis of QF-PCR and CNV-Seq in fetal chromosomal abnormalities: A new perspective on prenatal diagnosis.",
+            "design": "cohort"
+          }
+        ]
+      },
+      "B": {
+        "name": "B",
+        "n_hard_neg": 27,
+        "tn": 13,
+        "fp": 14,
+        "specificity": 0.48148148148148145,
+        "fp_rate": 0.5185185185185185,
+        "mean_score": 0.342361366349618,
+        "examples_fp": [
+          {
+            "pmid": "14726642",
+            "title": "Prenatal sonographic diagnosis of focal musculoskeletal anomalies.",
+            "design": "review"
+          },
+          {
+            "pmid": "25923652",
+            "title": "Fetal calcifications are associated with chromosomal abnormalities.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "29496978",
+            "title": "Practice guideline: joint CCMG-SOGC recommendations for the use of chromosomal microarray analysis for prenatal diagnosis and assessment of fetal loss in Canada.",
+            "design": "review"
+          },
+          {
+            "pmid": "30871627",
+            "title": "Noninvasive prenatal testing for chromosome aneuploidies and subchromosomal microdeletions/microduplications in a cohort of 8141 single pregnancies.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "31523615",
+            "title": "A Systematic Clinical Review of Prenatally Diagnosed Tetrasomy 9p.",
+            "design": "review"
+          },
+          {
+            "pmid": "32864771",
+            "title": "The difference between karyotype analysis and chromosome microarray for mosaicism of aneuploid chromosomes in prenatal diagnosis.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "35195919",
+            "title": "Combined diagnosis of QF-PCR and CNV-Seq in fetal chromosomal abnormalities: A new perspective on prenatal diagnosis.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "35902388",
+            "title": "Application of the prenatal BACs-on-Beads\u2122 assay for rapid prenatal detection of sex chromosome mosaicism.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "36636555",
+            "title": "Assessment of Combined Karyotype Analysis and Chromosome Microarray Analysis in Prenatal Diagnosis: A Cohort Study of 3710 Pregnancies.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "37147405",
+            "title": "Risk of adverse pregnancy and infant outcomes associated with prenatal Zika virus infection: a post-epidemic cohort in Central-West Brazil.",
+            "design": "cohort"
+          }
+        ]
+      },
+      "C": {
+        "name": "C",
+        "n_hard_neg": 27,
+        "tn": 13,
+        "fp": 14,
+        "specificity": 0.48148148148148145,
+        "fp_rate": 0.5185185185185185,
+        "mean_score": 0.331299770473426,
+        "examples_fp": [
+          {
+            "pmid": "14726642",
+            "title": "Prenatal sonographic diagnosis of focal musculoskeletal anomalies.",
+            "design": "review"
+          },
+          {
+            "pmid": "25923652",
+            "title": "Fetal calcifications are associated with chromosomal abnormalities.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "29496978",
+            "title": "Practice guideline: joint CCMG-SOGC recommendations for the use of chromosomal microarray analysis for prenatal diagnosis and assessment of fetal loss in Canada.",
+            "design": "review"
+          },
+          {
+            "pmid": "30871627",
+            "title": "Noninvasive prenatal testing for chromosome aneuploidies and subchromosomal microdeletions/microduplications in a cohort of 8141 single pregnancies.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "31523615",
+            "title": "A Systematic Clinical Review of Prenatally Diagnosed Tetrasomy 9p.",
+            "design": "review"
+          },
+          {
+            "pmid": "32864771",
+            "title": "The difference between karyotype analysis and chromosome microarray for mosaicism of aneuploid chromosomes in prenatal diagnosis.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "35195919",
+            "title": "Combined diagnosis of QF-PCR and CNV-Seq in fetal chromosomal abnormalities: A new perspective on prenatal diagnosis.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "35902388",
+            "title": "Application of the prenatal BACs-on-Beads\u2122 assay for rapid prenatal detection of sex chromosome mosaicism.",
+            "design": "screening/validation"
+          },
+          {
+            "pmid": "36636555",
+            "title": "Assessment of Combined Karyotype Analysis and Chromosome Microarray Analysis in Prenatal Diagnosis: A Cohort Study of 3710 Pregnancies.",
+            "design": "cohort"
+          },
+          {
+            "pmid": "37147405",
+            "title": "Risk of adverse pregnancy and infant outcomes associated with prenatal Zika virus infection: a post-epidemic cohort in Central-West Brazil.",
+            "design": "cohort"
+          }
+        ]
+      }
+    },
+    "gold_hard_neg_n": 26,
+    "gold_hard_reason_counts": {
+      "gwas_large_sequencing": 18,
+      "review_or_editorial": 5,
+      "prediction_only": 3
+    }
+  },
+  "dora_inference": {
+    "threshold": 0.7619361281394958,
+    "A": {
+      "n": 177,
+      "positives": 130,
+      "negatives": 47,
+      "threshold": 0.7619361281394958,
+      "recall": 0.9461538461538461,
+      "precision": 0.7834394904458599,
+      "f1": 0.8571428571428571,
+      "f2": 0.9084194977843427,
+      "ap": 0.8357224198004014,
+      "roc_auc": 0.6895253682487724,
+      "confusion_matrix": {
+        "tn": 13,
+        "fp": 34,
+        "fn": 7,
+        "tp": 123
+      },
+      "predicted_positive": 157,
+      "mean_score_positive": 0.9150930112371078,
+      "mean_score_negative": 0.7657946282403266,
+      "infer_sec": 2.819145679473877,
+      "sec_per_doc": 0.015927376720191396
+    },
+    "B": {
+      "n": 177,
+      "positives": 130,
+      "negatives": 47,
+      "threshold": 0.7619361281394958,
+      "recall": 0.9923076923076923,
+      "precision": 0.7914110429447853,
+      "f1": 0.8805460750853242,
+      "f2": 0.9443631039531479,
+      "ap": 0.8847277206016848,
+      "roc_auc": 0.760392798690671,
+      "confusion_matrix": {
+        "tn": 13,
+        "fp": 34,
+        "fn": 1,
+        "tp": 129
+      },
+      "predicted_positive": 163,
+      "mean_score_positive": 0.9392360370892745,
+      "mean_score_negative": 0.7982740148584894,
+      "infer_sec": 30.592790842056274,
+      "sec_per_doc": 0.17284062622630664
+    },
+    "delta_recall_B_minus_A": 0.04615384615384621,
+    "delta_ap_B_minus_A": 0.0490053008012834,
+    "D_hard_neg_B": {
+      "name": "dora_B",
+      "n_hard_neg": 27,
+      "tn": 10,
+      "fp": 17,
+      "specificity": 0.37037037037037035,
+      "fp_rate": 0.6296296296296297,
+      "mean_score": 0.784307062625885,
+      "examples_fp": [
+        {
+          "pmid": "14726642",
+          "title": "Prenatal sonographic diagnosis of focal musculoskeletal anomalies.",
+          "design": "review"
+        },
+        {
+          "pmid": "17171632",
+          "title": "First-trimester combined screening for trisomy 21 in a predominantly Chinese population.",
+          "design": "screening/validation"
+        },
+        {
+          "pmid": "25923652",
+          "title": "Fetal calcifications are associated with chromosomal abnormalities.",
+          "design": "cohort"
+        },
+        {
+          "pmid": "30871627",
+          "title": "Noninvasive prenatal testing for chromosome aneuploidies and subchromosomal microdeletions/microduplications in a cohort of 8141 single pregnancies.",
+          "design": "screening/validation"
+        },
+        {
+          "pmid": "31523615",
+          "title": "A Systematic Clinical Review of Prenatally Diagnosed Tetrasomy 9p.",
+          "design": "review"
+        },
+        {
+          "pmid": "31864361",
+          "title": "Karyotyping and prenatal diagnosis of 47,XX,+\u20098[67]/46,XX [13] Mosaicism: case report and literature review.",
+          "design": "case report"
+        },
+        {
+          "pmid": "32539871",
+          "title": "Cell-free DNA screening for aneuploidies in 7113 pregnancies: single Italian centre study.",
+          "design": "screening/validation"
+        },
+        {
+          "pmid": "32864771",
+          "title": "The difference between karyotype analysis and chromosome microarray for mosaicism of aneuploid chromosomes in prenatal diagnosis.",
+          "design": "cohort"
+        },
+        {
+          "pmid": "33785045",
+          "title": "Performance of cell-free DNA sequencing-based non-invasive prenatal testing: experience on 36,456 singleton and multiple pregnancies.",
+          "design": "screening/validation"
+        },
+        {
+          "pmid": "34429082",
+          "title": "Cell-free fetal DNA testing and its correlation with prenatal indications.",
+          "design": "screening/validation"
+        }
+      ]
+    },
+    "D_hard_neg_A": {
+      "name": "dora_A",
+      "n_hard_neg": 27,
+      "tn": 11,
+      "fp": 16,
+      "specificity": 0.4074074074074074,
+      "fp_rate": 0.5925925925925926,
+      "mean_score": 0.6993011832237244,
+      "examples_fp": [
+        {
+          "pmid": "14726642",
+          "title": "Prenatal sonographic diagnosis of focal musculoskeletal anomalies.",
+          "design": "review"
+        },
+        {
+          "pmid": "25923652",
+          "title": "Fetal calcifications are associated with chromosomal abnormalities.",
+          "design": "cohort"
+        },
+        {
+          "pmid": "30871627",
+          "title": "Noninvasive prenatal testing for chromosome aneuploidies and subchromosomal microdeletions/microduplications in a cohort of 8141 single pregnancies.",
+          "design": "screening/validation"
+        },
+        {
+          "pmid": "31523615",
+          "title": "A Systematic Clinical Review of Prenatally Diagnosed Tetrasomy 9p.",
+          "design": "review"
+        },
+        {
+          "pmid": "31864361",
+          "title": "Karyotyping and prenatal diagnosis of 47,XX,+\u20098[67]/46,XX [13] Mosaicism: case report and literature review.",
+          "design": "case report"
+        },
+        {
+          "pmid": "32864771",
+          "title": "The difference between karyotype analysis and chromosome microarray for mosaicism of aneuploid chromosomes in prenatal diagnosis.",
+          "design": "cohort"
+        },
+        {
+          "pmid": "33151425",
+          "title": "Analysis of cell-free DNA in a consecutive series of 13,607 routine cases for the detection of fetal chromosomal aneuploidies in a single center in Germany.",
+          "design": "screening/validation"
+        },
+        {
+          "pmid": "34429082",
+          "title": "Cell-free fetal DNA testing and its correlation with prenatal indications.",
+          "design": "screening/validation"
+        },
+        {
+          "pmid": "35195919",
+          "title": "Combined diagnosis of QF-PCR and CNV-Seq in fetal chromosomal abnormalities: A new perspective on prenatal diagnosis.",
+          "design": "cohort"
+        },
+        {
+          "pmid": "35902388",
+          "title": "Application of the prenatal BACs-on-Beads\u2122 assay for rapid prenatal detection of sex chromosome mosaicism.",
+          "design": "screening/validation"
+        }
+      ]
+    },
+    "gold_A": {
+      "n": 49,
+      "positives": 23,
+      "negatives": 26,
+      "threshold": 0.7619361281394958,
+      "recall": 0.9130434782608695,
+      "precision": 0.525,
+      "f1": 0.6666666666666666,
+      "f2": 0.7954545454545454,
+      "ap": 0.7731568416277621,
+      "roc_auc": 0.7926421404682273,
+      "confusion_matrix": {
+        "tn": 7,
+        "fp": 19,
+        "fn": 2,
+        "tp": 21
+      },
+      "predicted_positive": 40,
+      "mean_score_positive": 0.8881365708682848,
+      "mean_score_negative": 0.7876423459786636
+    },
+    "gold_B": {
+      "n": 49,
+      "positives": 23,
+      "negatives": 26,
+      "threshold": 0.7619361281394958,
+      "recall": 1.0,
+      "precision": 0.5348837209302325,
+      "f1": 0.696969696969697,
+      "f2": 0.8518518518518519,
+      "ap": 0.7618202132509904,
+      "roc_auc": 0.7474916387959866,
+      "confusion_matrix": {
+        "tn": 6,
+        "fp": 20,
+        "fn": 0,
+        "tp": 23
+      },
+      "predicted_positive": 43,
+      "mean_score_positive": 0.9209763304046963,
+      "mean_score_negative": 0.8343346583155485
+    }
+  }
+}

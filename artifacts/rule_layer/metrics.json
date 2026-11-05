@@ -1,0 +1,143 @@
+{
+  "threshold": 0.7619361281394958,
+  "note": "pipeline metrics count relevant|review as positive (kept for human); auto = relevant only",
+  "test": {
+    "model_pipeline": {
+      "n": 177,
+      "mode": "pipeline",
+      "recall": 1.0,
+      "precision": 0.7738095238095238,
+      "f1": 0.87248322147651,
+      "ap_model_scores": 0.8847277206016848,
+      "confusion_matrix": {
+        "tn": 9,
+        "fp": 38,
+        "fn": 0,
+        "tp": 130
+      },
+      "n_relevant": 163,
+      "n_review": 5,
+      "n_irrelevant": 9,
+      "threshold": 0.7619361281394958
+    },
+    "rules_pipeline": {
+      "n": 177,
+      "mode": "pipeline",
+      "recall": 0.9769230769230769,
+      "precision": 0.8300653594771242,
+      "f1": 0.8975265017667845,
+      "ap_model_scores": 0.8847277206016848,
+      "confusion_matrix": {
+        "tn": 21,
+        "fp": 26,
+        "fn": 3,
+        "tp": 127
+      },
+      "n_relevant": 133,
+      "n_review": 20,
+      "n_irrelevant": 24,
+      "threshold": 0.7619361281394958
+    },
+    "rules_auto": {
+      "n": 177,
+      "mode": "auto",
+      "recall": 0.8538461538461538,
+      "precision": 0.8345864661654135,
+      "f1": 0.844106463878327,
+      "ap_model_scores": 0.8847277206016848,
+      "confusion_matrix": {
+        "tn": 25,
+        "fp": 22,
+        "fn": 19,
+        "tp": 111
+      },
+      "n_relevant": 133,
+      "n_review": 20,
+      "n_irrelevant": 24,
+      "threshold": 0.7619361281394958
+    },
+    "n_overridden": 32
+  },
+  "gold49": {
+    "model_pipeline": {
+      "n": 40,
+      "mode": "pipeline",
+      "recall": 1.0,
+      "precision": 0.4864864864864865,
+      "f1": 0.6545454545454545,
+      "ap_model_scores": 0.7830834451448486,
+      "confusion_matrix": {
+        "tn": 3,
+        "fp": 19,
+        "fn": 0,
+        "tp": 18
+      },
+      "n_relevant": 35,
+      "n_review": 2,
+      "n_irrelevant": 3,
+      "threshold": 0.7619361281394958
+    },
+    "rules_pipeline": {
+      "n": 40,
+      "mode": "pipeline",
+      "recall": 1.0,
+      "precision": 0.5806451612903226,
+      "f1": 0.7346938775510204,
+      "ap_model_scores": 0.7830834451448486,
+      "confusion_matrix": {
+        "tn": 9,
+        "fp": 13,
+        "fn": 0,
+        "tp": 18
+      },
+      "n_relevant": 24,
+      "n_review": 7,
+      "n_irrelevant": 9,
+      "threshold": 0.7619361281394958
+    },
+    "rules_auto": {
+      "n": 40,
+      "mode": "auto",
+      "recall": 0.9444444444444444,
+      "precision": 0.7083333333333334,
+      "f1": 0.8095238095238095,
+      "ap_model_scores": 0.7830834451448486,
+      "confusion_matrix": {
+        "tn": 15,
+        "fp": 7,
+        "fn": 1,
+        "tp": 17
+      },
+      "n_relevant": 24,
+      "n_review": 7,
+      "n_irrelevant": 9,
+      "threshold": 0.7619361281394958
+    }
+  },
+  "hard_negatives_test": {
+    "model": {
+      "n_hard_neg": 27,
+      "tn_or_review": 10,
+      "fp_relevant": 17,
+      "specificity": 0.37037037037037035,
+      "fp_rate": 0.6296296296296297
+    },
+    "model_plus_rules": {
+      "n_hard_neg": 27,
+      "tn_or_review": 22,
+      "fp_relevant": 5,
+      "specificity": 0.8148148148148148,
+      "fp_rate": 0.18518518518518517
+    }
+  },
+  "rule_code_counts_test": {
+    "DESIGN_SCREENING": 10,
+    "NIPT_SCREENING": 10,
+    "COHORT_LANGUAGE": 8,
+    "REVIEW_OR_GUIDELINE": 7,
+    "DESIGN_HARD_EXCLUDE": 6,
+    "NIPT_SCREENING_COHORT": 6,
+    "PROTECTED_DEMOTE_ONLY": 5,
+    "LARGE_PRENATAL_COHORT": 2
+  }
+}

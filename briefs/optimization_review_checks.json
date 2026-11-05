@@ -1,0 +1,387 @@
+{
+  "suite": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/briefs/optimization_review_checks.py",
+  "spec": "briefs/OPTIMIZATION_REVIEW_SPEC.md",
+  "run_at": "2026-11-03T03:54:09.849764+00:00",
+  "python": "3.12.13",
+  "failures": 1,
+  "results": [
+    {
+      "id": "S01",
+      "name": "S01 audit rows == independent FN/FP selection",
+      "status": "PASS",
+      "seconds": 0.0,
+      "detail": {
+        "fn_rows": 10,
+        "fp_rows": 30,
+        "baseline_cm": {
+          "tn": 17,
+          "fp": 30,
+          "fn": 10,
+          "tp": 120
+        }
+      }
+    },
+    {
+      "id": "S02",
+      "name": "S02 audit schema + blank manual columns",
+      "status": "PASS",
+      "seconds": 0.0,
+      "detail": {
+        "fn_columns": [
+          "doc_id",
+          "pmid",
+          "title",
+          "year",
+          "label",
+          "score",
+          "threshold",
+          "decision",
+          "design",
+          "reason",
+          "quote",
+          "label_source",
+          "confidence",
+          "weak",
+          "text_source",
+          "abstract_available",
+          "text_chars",
+          "heuristic_tag",
+          "manual_tag",
+          "manual_note",
+          "text_head"
+        ],
+        "fp_columns": [
+          "doc_id",
+          "pmid",
+          "title",
+          "year",
+          "label",
+          "score",
+          "threshold",
+          "decision",
+          "design",
+          "reason",
+          "quote",
+          "label_source",
+          "confidence",
+          "weak",
+          "text_source",
+          "abstract_available",
+          "text_chars",
+          "heuristic_tag",
+          "manual_tag",
+          "manual_note",
+          "text_head"
+        ]
+      }
+    },
+    {
+      "id": "S03",
+      "name": "S03 heuristic tags match definitions",
+      "status": "PASS",
+      "seconds": 0.08,
+      "detail": {
+        "fn_tags": {
+          "empty_abstract": 2,
+          "pdf_text_source": 2,
+          "design_case_report": 5,
+          "low_score_band": 9,
+          "design_missing": 1,
+          "high_score_confident_error": 8,
+          "design_cohort_or_screening": 4,
+          "below_review_band": 1
+        },
+        "fp_tags": {
+          "empty_abstract": 4,
+          "pdf_text_source": 4,
+          "design_cohort_or_screening": 12,
+          "low_score_band": 4,
+          "design_case_report": 13,
+          "design_review": 3,
+          "mid_score_band": 9,
+          "design_other": 2,
+          "high_score_confident_error": 17
+        }
+      }
+    },
+    {
+      "id": "S04",
+      "name": "S04 error_summary confusion/totals",
+      "status": "PASS",
+      "seconds": 0.0,
+      "detail": {
+        "totals": {
+          "n_test": 177,
+          "positives": 130,
+          "negatives": 47,
+          "fn": 10,
+          "fp": 30,
+          "tp": 120,
+          "tn": 17
+        }
+      }
+    },
+    {
+      "id": "S05",
+      "name": "S05 documented empty-reason gap",
+      "status": "PASS",
+      "seconds": 0.0,
+      "detail": {
+        "empty_reason_pmids": [
+          "35791503"
+        ]
+      }
+    },
+    {
+      "id": "S06",
+      "name": "S06 threshold strategies reproduce on test",
+      "status": "PASS",
+      "seconds": 0.02,
+      "detail": {
+        "max_precision_at_recall_ge_0.95": {
+          "threshold": 0.1525784656405449,
+          "test_recall": 0.9230769230769231,
+          "test_precision": 0.8
+        },
+        "max_f2": {
+          "threshold": 0.015851101838052273,
+          "test_recall": 0.9615384615384616,
+          "test_precision": 0.7763975155279503
+        },
+        "max_recall_at_precision_ge_0.80": {
+          "threshold": 0.0010562744282651693,
+          "test_recall": 1.0,
+          "test_precision": 0.7558139534883721
+        },
+        "max_recall_at_pp_budget_120": {
+          "threshold": 0.05694518983364105,
+          "test_recall": 0.9461538461538461,
+          "test_precision": 0.7884615384615384
+        }
+      }
+    },
+    {
+      "id": "S07",
+      "name": "S07 thresholds re-derived on val",
+      "status": "PASS",
+      "seconds": 0.4,
+      "detail": {
+        "max_precision_at_recall_ge_0.95": 0.1525784656405449,
+        "max_f2": 0.015851101838052273,
+        "max_recall_at_precision_ge_0.80": 0.0010562744282651693,
+        "max_recall_at_pp_budget_120": 0.05694518983364105
+      }
+    },
+    {
+      "id": "S08",
+      "name": "S08 bootstrap CI reproducible",
+      "status": "PASS",
+      "seconds": 7.17,
+      "detail": {
+        "recall": {
+          "independent_ci": [
+            0.8741,
+            0.9664
+          ],
+          "recorded_ci": [
+            0.8712,
+            0.9627
+          ]
+        },
+        "precision": {
+          "independent_ci": [
+            0.7361,
+            0.8616
+          ],
+          "recorded_ci": [
+            0.7342,
+            0.8618
+          ]
+        },
+        "f1": {
+          "independent_ci": [
+            0.8106,
+            0.9
+          ],
+          "recorded_ci": [
+            0.8104,
+            0.8987
+          ]
+        },
+        "ap": {
+          "independent_ci": [
+            0.8903,
+            0.9609
+          ],
+          "recorded_ci": [
+            0.8906,
+            0.9633
+          ]
+        }
+      }
+    },
+    {
+      "id": "S09",
+      "name": "S09 GroupKFold protocol and aggregates",
+      "status": "PASS",
+      "seconds": 0.0,
+      "detail": {
+        "n": 883,
+        "n_groups": 883,
+        "thresholds": [
+          0.256305,
+          0.030307,
+          0.118538,
+          0.231313,
+          0.249127
+        ],
+        "metrics": {
+          "recall": [
+            0.9333,
+            0.0164
+          ],
+          "precision": [
+            0.846,
+            0.038
+          ],
+          "f1": [
+            0.8873,
+            0.0262
+          ],
+          "ap": [
+            0.9427,
+            0.014
+          ]
+        },
+        "note": "groups == rows in this dataset (unique PMIDs), so grouped CV and grouped bootstrap reduce to row-level resampling"
+      }
+    },
+    {
+      "id": "S10",
+      "name": "S10 cached features only (encoder guard)",
+      "status": "PASS",
+      "seconds": 6.48,
+      "detail": {
+        "eval_hardening.py": {
+          "seconds": 5.7,
+          "outputs": [
+            "bootstrap_ci.json",
+            "group_cv.json",
+            "threshold_strategies.json"
+          ],
+          "encoder_calls": 0
+        },
+        "error_audit.py": {
+          "seconds": 0.8,
+          "outputs": [
+            "error_summary.json",
+            "fn_audit.csv",
+            "fp_audit.csv"
+          ],
+          "encoder_calls": 0
+        }
+      }
+    },
+    {
+      "id": "S11",
+      "name": "S11 reruns reproduce committed artifacts",
+      "status": "PASS",
+      "seconds": 39.11,
+      "detail": {
+        "error_audit.py": "reproduced",
+        "eval_hardening.py": "reproduced"
+      }
+    },
+    {
+      "id": "S12",
+      "name": "S12 protected artifacts unchanged",
+      "status": "PASS",
+      "seconds": 0.03,
+      "detail": {
+        "artifacts/config.json": "5b2be8642df5a1ea0fea9ce1b689fb092959428c193fcbb909270f7bd6284dc3",
+        "artifacts/features/specter2_mc24_ch3000_n974_339bee2712.npz": "6ef1ec6d9ea66ce487a8399d7e7b0853aebb29443cdc49e9a2518cb36960d76d",
+        "artifacts/metrics.json": "4bf5b583834720b7a812ba775b382d1bad8efb78979558d93a4a4d7ff1493621",
+        "artifacts/model.joblib": "e3b90fb50bb1bfd4fbe505f9701fbad9186b733e0ddc0be630487c20a9afc556",
+        "artifacts/model_all.joblib": "518ffc09c92176f29d04c1d63464108e75a417969ac4bea5dddf9c469aa09821",
+        "artifacts/test_predictions.csv": "73c760dc4c5d2df1aac3b3f3eac13f90085ae612705fc4d9bd7a80fc7a37c201",
+        "data/final_labels.csv": "4e612a1b2731d90426f8f8629442002868a30079f6a3aee9b3fb04b1d571bdad",
+        "data/labeled_papers.csv": "f70b78522334a4b7279e6fadffa7e0f681b4e7474cec01307910a133a711b30d"
+      }
+    },
+    {
+      "id": "S13",
+      "name": "S13 docs + Phase 2 matrix",
+      "status": "PASS",
+      "seconds": 0.0,
+      "detail": {
+        "done_bytes": 7084,
+        "matrix_bytes": 5163
+      }
+    },
+    {
+      "id": "S15",
+      "name": "S15 doc numbers == artifacts",
+      "status": "FAIL",
+      "seconds": 0.0,
+      "detail": {
+        "error": "CheckFailure: doc numbers disagree with artifacts: ['DONE fold threshold: missing 0.119', 'DONE strategy val: missing 0.838', 'DONE strategy val: missing 0.972', 'DONE strategy test: missing 0.788']",
+        "traceback": "Traceback (most recent call last):\n  File \"/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/briefs/optimization_review_checks.py\", line 868, in main\n    detail = fn()\n             ^^^^\n  File \"/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/briefs/optimization_review_checks.py\", line 693, in s15_doc_numbers_match_artifacts\n    require(not mismatches, f\"doc numbers disagree with artifacts: {mismatches}\")\n  File \"/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/briefs/optimization_review_checks.py\", line 79, in require\n    raise CheckFailure(message)\nCheckFailure: doc numbers disagree with artifacts: ['DONE fold threshold: missing 0.119', 'DONE strategy val: missing 0.838', 'DONE strategy val: missing 0.972', 'DONE strategy test: missing 0.788']\n"
+      }
+    },
+    {
+      "id": "S14",
+      "name": "protected artifacts unchanged across the suite",
+      "status": "PASS",
+      "detail": {
+        "checked": 8
+      }
+    }
+  ],
+  "negative_controls": [
+    {
+      "control": "S01: one FP audit row removed",
+      "detected": true,
+      "evidence": "fp_audit.csv doc_ids != score-rule FP"
+    },
+    {
+      "control": "S03: heuristic tag rewritten",
+      "detected": true,
+      "evidence": "FP 33785045: empty_abstract mismatch"
+    },
+    {
+      "control": "S06: reported test metric altered",
+      "detected": true,
+      "evidence": "max_f2: test precision mismatch"
+    },
+    {
+      "control": "S07: strategy threshold shifted",
+      "detected": true,
+      "evidence": "max_f2: threshold 0.016851101838052274 != re-derived 0.015851101838052273"
+    },
+    {
+      "control": "S08: bootstrap CI inflated",
+      "detected": true,
+      "evidence": "recall: mean outside CI"
+    },
+    {
+      "control": "S09: fold recall altered",
+      "detected": true,
+      "evidence": "recall: mean not reproducible from folds"
+    },
+    {
+      "control": "S15: documented CI bound altered",
+      "detected": true,
+      "evidence": "doc numbers disagree with artifacts: ['DONE bootstrap: missing 0.963', 'README bootstrap: missing 0.963', 'DONE bootstrap: missing 0.963', 'README bootstrap: missing 0.963', 'DONE fold threshold: missing 0.119', 'DONE strategy val: missing 0.963', 'DONE strategy val: missing 0.838', 'DONE strategy v"
+    },
+    {
+      "control": "S10: encoder entry point invoked directly",
+      "detected": true,
+      "evidence": "ENCODER_CALLED"
+    },
+    {
+      "control": "S10: network audit hook sees a connect",
+      "detected": true,
+      "evidence": "NETWORK_EVENTS=1"
+    }
+  ]
+}

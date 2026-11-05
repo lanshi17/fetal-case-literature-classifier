@@ -1,0 +1,23 @@
+{
+  "labels_rows": 974,
+  "output_rows": 974,
+  "manifest_rows": 974,
+  "overlap_with_manifest": 974,
+  "missing_manifest": [],
+  "with_abstract": 764,
+  "with_fulltext": 974,
+  "without_fulltext": 0,
+  "text_source": {
+    "txt": 768,
+    "pdf": 206,
+    "none": 0
+  },
+  "labels": {
+    "1": 699,
+    "0": 275
+  },
+  "mean_text_chars": 26616.2,
+  "mean_abstract_chars": 1383.4,
+  "pdf_errors": [],
+  "output": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/data/labeled_papers.csv"
+}

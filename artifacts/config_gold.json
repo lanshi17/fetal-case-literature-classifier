@@ -1,0 +1,18 @@
+{
+  "model_path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model_gold.joblib",
+  "threshold": 0.08491619676351547,
+  "review_lower_bound": 0.0,
+  "feature_mode": "B",
+  "feature_dim": 1536,
+  "train_protocol": "gold_forced_into_train",
+  "target_recall": 0.95,
+  "C": 1.0,
+  "gold_path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/data/gold_standard.csv",
+  "data_path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/data/labeled_papers_gold.csv",
+  "holdout_gold_recall": 0.8333333333333334,
+  "holdout_gold_precision": 0.45454545454545453,
+  "deploy_test_recall": 0.9242424242424242,
+  "deploy_test_precision": 0.8776978417266187,
+  "baseline_gold_recall": 0.8333333333333334,
+  "baseline_gold_precision": 0.5769230769230769
+}

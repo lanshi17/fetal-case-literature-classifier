@@ -1,0 +1,116 @@
+{
+  "encoder_family": "pubmedbert",
+  "model": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model.joblib",
+  "config": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/config.json",
+  "metrics": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/metrics.json",
+  "feature_mode": "B",
+  "feature_dim": 1536,
+  "threshold": 0.0951138474047184,
+  "test": {
+    "n": 177,
+    "positives": 130,
+    "negatives": 47,
+    "threshold": 0.0951138474047184,
+    "recall": 0.8923076923076924,
+    "precision": 0.8592592592592593,
+    "f1": 0.8754716981132076,
+    "f2": 0.8854961832061069,
+    "ap": 0.9191869545483919,
+    "roc_auc": 0.8252045826513912,
+    "confusion_matrix": {
+      "tn": 28,
+      "fp": 19,
+      "fn": 14,
+      "tp": 116
+    },
+    "predicted_positive": 135,
+    "mean_score_positive": 0.8478535084219542,
+    "mean_score_negative": 0.3266910756167544
+  },
+  "ablations": {
+    "A": {
+      "n": 177,
+      "positives": 130,
+      "negatives": 47,
+      "threshold": 0.00908861169591546,
+      "recall": 0.9769230769230769,
+      "precision": 0.7791411042944786,
+      "f1": 0.8668941979522184,
+      "f2": 0.9297218155197657,
+      "ap": 0.9140299607056107,
+      "roc_auc": 0.8141571194762685,
+      "confusion_matrix": {
+        "tn": 11,
+        "fp": 36,
+        "fn": 3,
+        "tp": 127
+      },
+      "predicted_positive": 163,
+      "mean_score_positive": 0.8449619144921039,
+      "mean_score_negative": 0.3583130931770434
+    },
+    "B": {
+      "n": 177,
+      "positives": 130,
+      "negatives": 47,
+      "threshold": 0.0951138474047184,
+      "recall": 0.8923076923076924,
+      "precision": 0.8592592592592593,
+      "f1": 0.8754716981132076,
+      "f2": 0.8854961832061069,
+      "ap": 0.9191869545483919,
+      "roc_auc": 0.8252045826513912,
+      "confusion_matrix": {
+        "tn": 28,
+        "fp": 19,
+        "fn": 14,
+        "tp": 116
+      },
+      "predicted_positive": 135,
+      "mean_score_positive": 0.8478535084219542,
+      "mean_score_negative": 0.3266910756167544
+    },
+    "C": {
+      "n": 177,
+      "positives": 130,
+      "negatives": 47,
+      "threshold": 0.09200072288513184,
+      "recall": 0.8923076923076924,
+      "precision": 0.8592592592592593,
+      "f1": 0.8754716981132076,
+      "f2": 0.8854961832061069,
+      "ap": 0.9191166114067857,
+      "roc_auc": 0.8252045826513912,
+      "confusion_matrix": {
+        "tn": 28,
+        "fp": 19,
+        "fn": 14,
+        "tp": 116
+      },
+      "predicted_positive": 135,
+      "mean_score_positive": 0.8475516582843668,
+      "mean_score_negative": 0.32709763159078875
+    }
+  },
+  "full_label_control_test": {
+    "n": 195,
+    "positives": 136,
+    "negatives": 59,
+    "threshold": 0.0468096062541008,
+    "recall": 0.9264705882352942,
+    "precision": 0.8456375838926175,
+    "f1": 0.8842105263157894,
+    "f2": 0.9090909090909091,
+    "ap": 0.902344565521683,
+    "roc_auc": 0.8313185443668993,
+    "confusion_matrix": {
+      "tn": 36,
+      "fp": 23,
+      "fn": 10,
+      "tp": 126
+    },
+    "predicted_positive": 149,
+    "mean_score_positive": 0.8412176355017008,
+    "mean_score_negative": 0.3359551283754025
+  }
+}

@@ -1,0 +1,59 @@
+# Python
+.venv/
+.uv-cache/
+.uv-python/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Local data package (large PDFs/TXT)
+data/fulltext_package/
+data/ahp_wave1/cache/
+data/ahp_wave1/corpus.jsonl
+data/ahp_wave1/cache/
+
+# Model weights / features (re-train or download separately)
+artifacts/features/
+artifacts/smoke/
+artifacts/**/*.joblib
+artifacts/**/*.npz
+artifacts/**/*.pkl
+artifacts/**/*.pt
+artifacts/**/*.safetensors
+artifacts/**/*.bin
+artifacts/finetune/
+artifacts/finetune_fair/*/checkpoint/
+artifacts/best/checkpoint
+artifacts/ahp_wave1/
+artifacts/compare_pubmedbert/
+artifacts/ablation_abcd/*.npz
+artifacts/**/*.log
+
+# Local caches / env / OS
+.cache/
+*.log
+.env
+.env.*
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Hugging Face / torch local caches if ever under repo
+**/models--*/
+huggingface/
+
+# Bulky label dumps / archives
+data/labeled_papers_gold.csv
+pubmedbert/weights.rar
+artifacts/finetune_fair/dora/gold_predictions.csv
+artifacts/finetune_fair/dora/test_predictions.csv
+artifacts/finetune_fair/dora/fn_audit.csv
+artifacts/finetune_fair/dora/fp_audit.csv
+artifacts/finetune_fair/dora/review_queue.csv
+artifacts/finetune_fair/dora/gold_fn.csv
+artifacts/finetune_fair/dora/gold_fp.csv
+artifacts/finetune_fair/dora/test_fn.csv
+artifacts/finetune_fair/dora/test_fp.csv

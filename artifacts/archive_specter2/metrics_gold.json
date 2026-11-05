@@ -1,0 +1,192 @@
+{
+  "generated_at": "2026-11-03T08:47:13.105941+00:00",
+  "gold_stats": {
+    "n_gold": 40,
+    "n_matched": 40,
+    "n_label_flips": 16,
+    "gold_pos": 18,
+    "gold_neg": 22
+  },
+  "feature_mode": "C",
+  "feature_dim": 2306,
+  "working_set_n": 883,
+  "cache": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/features/specter2_mc24_ch3000_n974_339bee2712.npz",
+  "holdout": {
+    "protocol": "train/val on non-gold default-subset; evaluate on curated gold PMIDs",
+    "n_train": 539,
+    "n_val": 135,
+    "n_gold_eval": 40,
+    "n_nongold_test": 169,
+    "threshold": 0.15518157184123993,
+    "val": {
+      "n": 135,
+      "positives": 108,
+      "negatives": 27,
+      "threshold": 0.15518157184123993,
+      "recall": 0.9629629629629629,
+      "precision": 0.8524590163934426,
+      "f1": 0.9043478260869565,
+      "f2": 0.9386281588447654,
+      "ap": 0.9414739940062478,
+      "roc_auc": 0.8192729766803841,
+      "confusion_matrix": {
+        "tn": 9,
+        "fp": 18,
+        "fn": 4,
+        "tp": 104
+      },
+      "predicted_positive": 122,
+      "mean_score_positive": 0.9037517551979464,
+      "mean_score_negative": 0.5319817176921575
+    },
+    "gold_eval": {
+      "n": 40,
+      "positives": 18,
+      "negatives": 22,
+      "threshold": 0.15518157184123993,
+      "recall": 1.0,
+      "precision": 0.5294117647058824,
+      "f1": 0.6923076923076923,
+      "f2": 0.8490566037735849,
+      "ap": 0.4816357505057213,
+      "roc_auc": 0.6060606060606061,
+      "confusion_matrix": {
+        "tn": 6,
+        "fp": 16,
+        "fn": 0,
+        "tp": 18
+      },
+      "predicted_positive": 34,
+      "mean_score_positive": 0.8432806895838844,
+      "mean_score_negative": 0.5797492675920611
+    },
+    "nongold_test": {
+      "n": 169,
+      "positives": 132,
+      "negatives": 37,
+      "threshold": 0.15518157184123993,
+      "recall": 0.9545454545454546,
+      "precision": 0.8235294117647058,
+      "f1": 0.8842105263157894,
+      "f2": 0.9251101321585903,
+      "ap": 0.9444503057349589,
+      "roc_auc": 0.8364045864045864,
+      "confusion_matrix": {
+        "tn": 10,
+        "fp": 27,
+        "fn": 6,
+        "tp": 126
+      },
+      "predicted_positive": 153,
+      "mean_score_positive": 0.9125806581763651,
+      "mean_score_negative": 0.5734553645321253
+    },
+    "gold_label_counts": {
+      "pos": 18,
+      "neg": 22
+    }
+  },
+  "deploy": {
+    "protocol": "gold PMIDs forced into train; val/test from remaining non-gold",
+    "n_train": 579,
+    "n_val": 135,
+    "n_test": 169,
+    "n_gold_in_train": 40,
+    "threshold": 0.024905302561819553,
+    "val": {
+      "n": 135,
+      "positives": 107,
+      "negatives": 28,
+      "threshold": 0.024905302561819553,
+      "recall": 0.9626168224299065,
+      "precision": 0.8879310344827587,
+      "f1": 0.9237668161434978,
+      "f2": 0.9466911764705882,
+      "ap": 0.9764511265846365,
+      "roc_auc": 0.9115487316421896,
+      "confusion_matrix": {
+        "tn": 15,
+        "fp": 13,
+        "fn": 4,
+        "tp": 103
+      },
+      "predicted_positive": 116,
+      "mean_score_positive": 0.8682906434753753,
+      "mean_score_negative": 0.262115966240326
+    },
+    "test": {
+      "n": 169,
+      "positives": 132,
+      "negatives": 37,
+      "threshold": 0.024905302561819553,
+      "recall": 0.9696969696969697,
+      "precision": 0.8366013071895425,
+      "f1": 0.8982456140350877,
+      "f2": 0.9397944199706314,
+      "ap": 0.9339717056998804,
+      "roc_auc": 0.8056920556920557,
+      "confusion_matrix": {
+        "tn": 12,
+        "fp": 25,
+        "fn": 4,
+        "tp": 128
+      },
+      "predicted_positive": 153,
+      "mean_score_positive": 0.8798228055187436,
+      "mean_score_negative": 0.46652691454769546
+    },
+    "gold_in_train_diagnostic": {
+      "n": 40,
+      "positives": 18,
+      "negatives": 22,
+      "threshold": 0.024905302561819553,
+      "recall": 1.0,
+      "precision": 1.0,
+      "f1": 1.0,
+      "f2": 1.0,
+      "ap": 1.0,
+      "roc_auc": 1.0,
+      "confusion_matrix": {
+        "tn": 22,
+        "fp": 0,
+        "fn": 0,
+        "tp": 18
+      },
+      "predicted_positive": 18,
+      "mean_score_positive": 0.9939670562744141,
+      "mean_score_negative": 0.005287010188608706
+    },
+    "note": "gold_in_train_diagnostic is optimistic (same papers seen in training)"
+  },
+  "baseline_on_gold": {
+    "model": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model.joblib",
+    "threshold": 0.1525784656405449,
+    "gold_eval": {
+      "n": 40,
+      "positives": 18,
+      "negatives": 22,
+      "threshold": 0.1525784656405449,
+      "recall": 0.6666666666666666,
+      "precision": 0.4,
+      "f1": 0.5,
+      "f2": 0.5882352941176471,
+      "ap": 0.5341517575689805,
+      "roc_auc": 0.5404040404040403,
+      "confusion_matrix": {
+        "tn": 4,
+        "fp": 18,
+        "fn": 6,
+        "tp": 12
+      },
+      "predicted_positive": 30,
+      "mean_score_positive": 0.6063114229085235,
+      "mean_score_negative": 0.5655549748970027
+    }
+  },
+  "artifacts": {
+    "model_gold": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model_gold.joblib",
+    "model_holdout": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/gold_retrain/model_holdout.joblib",
+    "labeled_papers_gold": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/data/labeled_papers_gold.csv",
+    "predictions": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/gold_retrain/predictions.csv"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "model_path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model.joblib",
+  "encoder_family": "pubmedbert",
+  "primary_head": "head_v3_fair",
+  "threshold": 0.19204701887550127,
+  "review_lower_bound": 0.042047018875501274,
+  "feature_mode": "B",
+  "feature_dim": 1536,
+  "feature_layout": [
+    "mean(all chunks) 768 L2",
+    "mean(first 2 chunks) 768 L2"
+  ],
+  "encoder": {
+    "model_path": "/home/yangzs/.cache/huggingface/hub/models--NeuML--pubmedbert-base-embeddings/snapshots/b79526d6ef3645e0df4530322e266f24c829f5ef",
+    "max_length": 512,
+    "normalize": true,
+    "chunk_tokens": 480,
+    "max_chunks": 12,
+    "keep_first": 2,
+    "pooling": "concat[mean(all), mean(first 2)] L2-normed -> 1536"
+  },
+  "train_subset": "default train fold only (fair head_v3 retrain)",
+  "n_train": 566,
+  "n_val": 140,
+  "n_test": 177,
+  "n_total": 974,
+  "target_recall": 0.95,
+  "C": 10.0,
+  "class_weight": "balanced",
+  "seed": 42,
+  "feature_cache": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/features/pubmedbert_mc12_ct480_n974_a9ccfb8d4b.npz",
+  "shipped_reference": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model_shipped.joblib",
+  "fair_retrain": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/head_v3_fair/metrics.json"
+}

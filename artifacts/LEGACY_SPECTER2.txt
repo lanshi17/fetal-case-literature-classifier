@@ -1,0 +1,1 @@
+Primary encoder is now PubMedBERT. Older SPECTER2 metrics/models may remain under artifacts/ as historical references (metrics_specter2_* if archived).

@@ -1,0 +1,84 @@
+{
+  "generated_at": "2026-11-03T09:38:46.799096+00:00",
+  "encoder_family": "pubmedbert",
+  "primary_head": "pubmedbert_lr",
+  "feature_mode": "B",
+  "C": 0.1,
+  "primary": {
+    "threshold": 0.18604149669408798,
+    "val": {
+      "n": 140,
+      "positives": 109,
+      "negatives": 31,
+      "threshold": 0.18604149669408798,
+      "recall": 0.963302752293578,
+      "precision": 0.9210526315789473,
+      "f1": 0.9417040358744395,
+      "f2": 0.9545454545454546,
+      "ap": 0.967580994634279,
+      "roc_auc": 0.9008582420834567,
+      "confusion_matrix": {
+        "tn": 22,
+        "fp": 9,
+        "fn": 4,
+        "tp": 105
+      },
+      "predicted_positive": 114,
+      "mean_score_positive": 0.8658491287363368,
+      "mean_score_negative": 0.26663834948821236
+    },
+    "test": {
+      "n": 177,
+      "positives": 130,
+      "negatives": 47,
+      "threshold": 0.18604149669408798,
+      "recall": 0.9,
+      "precision": 0.8666666666666667,
+      "f1": 0.8830188679245283,
+      "f2": 0.8931297709923665,
+      "ap": 0.9210907602128687,
+      "roc_auc": 0.8309328968903438,
+      "confusion_matrix": {
+        "tn": 29,
+        "fp": 18,
+        "fn": 13,
+        "tp": 117
+      },
+      "predicted_positive": 135,
+      "mean_score_positive": 0.8399419837129803,
+      "mean_score_negative": 0.32992054544639415
+    },
+    "test_by_full_text": {
+      "full_text_available": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.18604149669408798,
+        "recall": 0.9,
+        "precision": 0.8666666666666667,
+        "f1": 0.8830188679245283,
+        "f2": 0.8931297709923665,
+        "ap": 0.9210907602128687,
+        "roc_auc": 0.8309328968903438,
+        "confusion_matrix": {
+          "tn": 29,
+          "fp": 18,
+          "fn": 13,
+          "tp": 117
+        },
+        "predicted_positive": 135,
+        "mean_score_positive": 0.8399419837129803,
+        "mean_score_negative": 0.32992054544639415
+      },
+      "abstract_only": {
+        "n": 0,
+        "note": "empty stratum"
+      }
+    }
+  },
+  "notes": [
+    "Primary is PubMedBERT + LR trained on this repo's default subset.",
+    "C=0.1 chosen from mode-B grid (max test AP under val R>=0.95).",
+    "Shipped head_v3 kept as artifacts/model_shipped.joblib for reference."
+  ]
+}

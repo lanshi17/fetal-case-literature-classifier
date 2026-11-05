@@ -1,0 +1,435 @@
+{
+  "generated_at": "2026-11-03T09:32:02.684220+00:00",
+  "encoder_family": "pubmedbert",
+  "data": {
+    "path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/data/labeled_papers.csv",
+    "n_rows": 974,
+    "n_default_subset": 883,
+    "n_full_text": 974,
+    "n_abstract_only": 0,
+    "label_counts": {
+      "0": 275,
+      "1": 699
+    }
+  },
+  "split": {
+    "method": "GroupShuffleSplit (group_id=PMID), 64/16/20",
+    "seed": 42,
+    "sizes": {
+      "all": {
+        "train": 623,
+        "val": 156,
+        "test": 195
+      },
+      "default": {
+        "train": 566,
+        "val": 140,
+        "test": 177
+      }
+    },
+    "positives": {
+      "all": {
+        "train": 451,
+        "val": 112,
+        "test": 136
+      },
+      "default": {
+        "train": 439,
+        "val": 109,
+        "test": 130
+      }
+    }
+  },
+  "primary": {
+    "feature_mode": "B",
+    "train_subset": "default (weak=False, label_source!=model)",
+    "threshold": 0.0951138474047184,
+    "val": {
+      "n": 140,
+      "positives": 109,
+      "negatives": 31,
+      "threshold": 0.0951138474047184,
+      "recall": 0.9724770642201835,
+      "precision": 0.9217391304347826,
+      "f1": 0.9464285714285714,
+      "f2": 0.9618874773139746,
+      "ap": 0.9662928972942724,
+      "roc_auc": 0.8999704054453981,
+      "confusion_matrix": {
+        "tn": 22,
+        "fp": 9,
+        "fn": 3,
+        "tp": 106
+      },
+      "predicted_positive": 115,
+      "mean_score_positive": 0.8851153362311963,
+      "mean_score_negative": 0.2578006662473943
+    },
+    "test": {
+      "n": 177,
+      "positives": 130,
+      "negatives": 47,
+      "threshold": 0.0951138474047184,
+      "recall": 0.8923076923076924,
+      "precision": 0.8592592592592593,
+      "f1": 0.8754716981132076,
+      "f2": 0.8854961832061069,
+      "ap": 0.9191869545483919,
+      "roc_auc": 0.8252045826513912,
+      "confusion_matrix": {
+        "tn": 28,
+        "fp": 19,
+        "fn": 14,
+        "tp": 116
+      },
+      "predicted_positive": 135,
+      "mean_score_positive": 0.8478535084219542,
+      "mean_score_negative": 0.3266910756167544
+    },
+    "test_by_full_text": {
+      "full_text_available": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.0951138474047184,
+        "recall": 0.8923076923076924,
+        "precision": 0.8592592592592593,
+        "f1": 0.8754716981132076,
+        "f2": 0.8854961832061069,
+        "ap": 0.9191869545483919,
+        "roc_auc": 0.8252045826513912,
+        "confusion_matrix": {
+          "tn": 28,
+          "fp": 19,
+          "fn": 14,
+          "tp": 116
+        },
+        "predicted_positive": 135,
+        "mean_score_positive": 0.8478535084219542,
+        "mean_score_negative": 0.3266910756167544
+      },
+      "abstract_only": {
+        "n": 0,
+        "note": "empty stratum"
+      }
+    }
+  },
+  "ablations": {
+    "A": {
+      "description": "mean(first 2 chunks) only — title/abstract heavy",
+      "feature_dim": 768,
+      "fit_seconds": 0.13,
+      "threshold": 0.00908861169591546,
+      "val": {
+        "n": 140,
+        "positives": 109,
+        "negatives": 31,
+        "threshold": 0.00908861169591546,
+        "recall": 0.9541284403669725,
+        "precision": 0.8524590163934426,
+        "f1": 0.9004329004329005,
+        "f2": 0.931899641577061,
+        "ap": 0.9516755576664702,
+        "roc_auc": 0.8606096478248002,
+        "confusion_matrix": {
+          "tn": 13,
+          "fp": 18,
+          "fn": 5,
+          "tp": 104
+        },
+        "predicted_positive": 122,
+        "mean_score_positive": 0.8438533079513261,
+        "mean_score_negative": 0.27362465591496155
+      },
+      "test": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.00908861169591546,
+        "recall": 0.9769230769230769,
+        "precision": 0.7791411042944786,
+        "f1": 0.8668941979522184,
+        "f2": 0.9297218155197657,
+        "ap": 0.9140299607056107,
+        "roc_auc": 0.8141571194762685,
+        "confusion_matrix": {
+          "tn": 11,
+          "fp": 36,
+          "fn": 3,
+          "tp": 127
+        },
+        "predicted_positive": 163,
+        "mean_score_positive": 0.8449619144921039,
+        "mean_score_negative": 0.3583130931770434
+      },
+      "test_by_full_text": {
+        "full_text_available": {
+          "n": 177,
+          "positives": 130,
+          "negatives": 47,
+          "threshold": 0.00908861169591546,
+          "recall": 0.9769230769230769,
+          "precision": 0.7791411042944786,
+          "f1": 0.8668941979522184,
+          "f2": 0.9297218155197657,
+          "ap": 0.9140299607056107,
+          "roc_auc": 0.8141571194762685,
+          "confusion_matrix": {
+            "tn": 11,
+            "fp": 36,
+            "fn": 3,
+            "tp": 127
+          },
+          "predicted_positive": 163,
+          "mean_score_positive": 0.8449619144921039,
+          "mean_score_negative": 0.3583130931770434
+        },
+        "abstract_only": {
+          "n": 0,
+          "note": "empty stratum"
+        }
+      }
+    },
+    "B": {
+      "description": "mean(all) || mean(first 2) — PubMedBERT 1536-d",
+      "feature_dim": 1536,
+      "fit_seconds": 1.91,
+      "threshold": 0.0951138474047184,
+      "val": {
+        "n": 140,
+        "positives": 109,
+        "negatives": 31,
+        "threshold": 0.0951138474047184,
+        "recall": 0.9724770642201835,
+        "precision": 0.9217391304347826,
+        "f1": 0.9464285714285714,
+        "f2": 0.9618874773139746,
+        "ap": 0.9662928972942724,
+        "roc_auc": 0.8999704054453981,
+        "confusion_matrix": {
+          "tn": 22,
+          "fp": 9,
+          "fn": 3,
+          "tp": 106
+        },
+        "predicted_positive": 115,
+        "mean_score_positive": 0.8851153362311963,
+        "mean_score_negative": 0.2578006662473943
+      },
+      "test": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.0951138474047184,
+        "recall": 0.8923076923076924,
+        "precision": 0.8592592592592593,
+        "f1": 0.8754716981132076,
+        "f2": 0.8854961832061069,
+        "ap": 0.9191869545483919,
+        "roc_auc": 0.8252045826513912,
+        "confusion_matrix": {
+          "tn": 28,
+          "fp": 19,
+          "fn": 14,
+          "tp": 116
+        },
+        "predicted_positive": 135,
+        "mean_score_positive": 0.8478535084219542,
+        "mean_score_negative": 0.3266910756167544
+      },
+      "test_by_full_text": {
+        "full_text_available": {
+          "n": 177,
+          "positives": 130,
+          "negatives": 47,
+          "threshold": 0.0951138474047184,
+          "recall": 0.8923076923076924,
+          "precision": 0.8592592592592593,
+          "f1": 0.8754716981132076,
+          "f2": 0.8854961832061069,
+          "ap": 0.9191869545483919,
+          "roc_auc": 0.8252045826513912,
+          "confusion_matrix": {
+            "tn": 28,
+            "fp": 19,
+            "fn": 14,
+            "tp": 116
+          },
+          "predicted_positive": 135,
+          "mean_score_positive": 0.8478535084219542,
+          "mean_score_negative": 0.3266910756167544
+        },
+        "abstract_only": {
+          "n": 0,
+          "note": "empty stratum"
+        }
+      }
+    },
+    "C": {
+      "description": "B + 2 lexical auxiliary features",
+      "feature_dim": 1538,
+      "fit_seconds": 1.61,
+      "threshold": 0.09200072288513184,
+      "val": {
+        "n": 140,
+        "positives": 109,
+        "negatives": 31,
+        "threshold": 0.09200072288513184,
+        "recall": 0.9724770642201835,
+        "precision": 0.9217391304347826,
+        "f1": 0.9464285714285714,
+        "f2": 0.9618874773139746,
+        "ap": 0.9660116133026332,
+        "roc_auc": 0.8984906777153003,
+        "confusion_matrix": {
+          "tn": 22,
+          "fp": 9,
+          "fn": 3,
+          "tp": 106
+        },
+        "predicted_positive": 115,
+        "mean_score_positive": 0.8845948095455042,
+        "mean_score_negative": 0.25683730193466775
+      },
+      "test": {
+        "n": 177,
+        "positives": 130,
+        "negatives": 47,
+        "threshold": 0.09200072288513184,
+        "recall": 0.8923076923076924,
+        "precision": 0.8592592592592593,
+        "f1": 0.8754716981132076,
+        "f2": 0.8854961832061069,
+        "ap": 0.9191166114067857,
+        "roc_auc": 0.8252045826513912,
+        "confusion_matrix": {
+          "tn": 28,
+          "fp": 19,
+          "fn": 14,
+          "tp": 116
+        },
+        "predicted_positive": 135,
+        "mean_score_positive": 0.8475516582843668,
+        "mean_score_negative": 0.32709763159078875
+      },
+      "test_by_full_text": {
+        "full_text_available": {
+          "n": 177,
+          "positives": 130,
+          "negatives": 47,
+          "threshold": 0.09200072288513184,
+          "recall": 0.8923076923076924,
+          "precision": 0.8592592592592593,
+          "f1": 0.8754716981132076,
+          "f2": 0.8854961832061069,
+          "ap": 0.9191166114067857,
+          "roc_auc": 0.8252045826513912,
+          "confusion_matrix": {
+            "tn": 28,
+            "fp": 19,
+            "fn": 14,
+            "tp": 116
+          },
+          "predicted_positive": 135,
+          "mean_score_positive": 0.8475516582843668,
+          "mean_score_negative": 0.32709763159078875
+        },
+        "abstract_only": {
+          "n": 0,
+          "note": "empty stratum"
+        }
+      }
+    }
+  },
+  "full_label_control": {
+    "train_subset": "all",
+    "feature_mode": "B",
+    "threshold": 0.0468096062541008,
+    "val": {
+      "n": 156,
+      "positives": 112,
+      "negatives": 44,
+      "threshold": 0.0468096062541008,
+      "recall": 0.9642857142857143,
+      "precision": 0.9,
+      "f1": 0.9310344827586207,
+      "f2": 0.9507042253521126,
+      "ap": 0.9647915862852949,
+      "roc_auc": 0.9212662337662337,
+      "confusion_matrix": {
+        "tn": 32,
+        "fp": 12,
+        "fn": 4,
+        "tp": 108
+      },
+      "predicted_positive": 120,
+      "mean_score_positive": 0.8952240747743677,
+      "mean_score_negative": 0.2291255752373811
+    },
+    "test": {
+      "n": 195,
+      "positives": 136,
+      "negatives": 59,
+      "threshold": 0.0468096062541008,
+      "recall": 0.9264705882352942,
+      "precision": 0.8456375838926175,
+      "f1": 0.8842105263157894,
+      "f2": 0.9090909090909091,
+      "ap": 0.902344565521683,
+      "roc_auc": 0.8313185443668993,
+      "confusion_matrix": {
+        "tn": 36,
+        "fp": 23,
+        "fn": 10,
+        "tp": 126
+      },
+      "predicted_positive": 149,
+      "mean_score_positive": 0.8412176355017008,
+      "mean_score_negative": 0.3359551283754025
+    },
+    "test_by_full_text": {
+      "full_text_available": {
+        "n": 195,
+        "positives": 136,
+        "negatives": 59,
+        "threshold": 0.0468096062541008,
+        "recall": 0.9264705882352942,
+        "precision": 0.8456375838926175,
+        "f1": 0.8842105263157894,
+        "f2": 0.9090909090909091,
+        "ap": 0.902344565521683,
+        "roc_auc": 0.8313185443668993,
+        "confusion_matrix": {
+          "tn": 36,
+          "fp": 23,
+          "fn": 10,
+          "tp": 126
+        },
+        "predicted_positive": 149,
+        "mean_score_positive": 0.8412176355017008,
+        "mean_score_negative": 0.3359551283754025
+      },
+      "abstract_only": {
+        "n": 0,
+        "note": "empty stratum"
+      }
+    }
+  },
+  "encoder_runtime": {
+    "model_path": "/home/yangzs/.cache/huggingface/hub/models--NeuML--pubmedbert-base-embeddings/snapshots/b79526d6ef3645e0df4530322e266f24c829f5ef",
+    "imported": true
+  },
+  "encoding": {
+    "seconds": null,
+    "docs_per_second": null,
+    "mean_chunks_per_doc": null,
+    "imported_from": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/compare_pubmedbert/pubmedbert_features_n974_mc12.npz"
+  },
+  "notes": [
+    "SPECTER2 abandoned; primary encoder is frozen NeuML/pubmedbert-base-embeddings.",
+    "No PubMedBERT fine-tuning; only the logistic head is trained.",
+    "Pooling matches casefilter-head-v3: concat[mean(all), mean(first 2)] -> 1536-d.",
+    "Threshold selected on validation at target recall 0.95.",
+    "GroupShuffleSplit over PMID groups; group_id equals PMID in this dataset."
+  ]
+}

@@ -1,0 +1,143 @@
+pmid,title,design,label,tag,in_test
+14726642,Prenatal sonographic diagnosis of focal musculoskeletal anomalies.,review,0,design:review,True
+17171632,First-trimester combined screening for trisomy 21 in a predominantly Chinese population.,screening/validation,0,design:screening/validation;title_kw,True
+18492228,Multiplex ligation-dependent probe amplification versus karyotyping in prenatal diagnosis: the M.A.K.E. study.,method,0,design:method,False
+19016622,Zygosity and chorionicity in the prognosis of triplet pregnancies: contribution of microsatellites.,cohort,0,design:cohort,False
+20192924,Correlation between serum biochemical markers and early amniocentesis in diagnosis of congenital fetal anomalies.,observational screening cohort,0,design:observational screening cohort,False
+20842178,Rapid testing versus karyotyping in Down's syndrome screening: cost-effectiveness and detection of clinically significant chromosome abnormalities.,screening/validation,0,design:screening/validation,False
+21224326,Non-invasive prenatal assessment of trisomy 21 by multiplexed maternal plasma DNA sequencing: large scale validity study.,,0,title_kw,False
+21249119,Epigenetic-genetic chromosome dosage approach for fetal trisomy 21 detection using an autosomal genetic reference marker.,screening/validation,0,design:screening/validation,False
+22389664,Prenatal detection of aneuploidy and imbalanced chromosomal arrangements by massively parallel sequencing.,method,0,design:method,False
+22471583,Clinical utility of noninvasive fetal trisomy (NIFTY) test--early experience.,screening/validation,0,design:screening/validation,False
+22666469,Noninvasive prenatal diagnosis of fetal trisomy 21 by allelic ratio analysis using targeted massively parallel sequencing of maternal plasma DNA.,screening/validation,0,design:screening/validation;title_kw,False
+23034220,"Early manifestations in a cohort of children prenatally diagnosed with 47,XYY. Role of multidisciplinary counseling for parental guidance and prevention of aggressive behavior.",cohort,0,design:cohort,False
+23198897,Noninvasive Fetal Trisomy (NIFTY) test: an advanced noninvasive prenatal diagnosis methodology for fetal autosomal and sex chromosomal aneuploidies.,screening/validation,0,design:screening/validation;title_kw,False
+23356557,Clinical utility and cost of non-invasive prenatal testing with cfDNA analysis in high-risk women based on a US population.,screening/validation,0,design:screening/validation,False
+24170809,WISECONDOR: detection of fetal aberrations from shallow sequencing maternal plasma based on a within-sample comparison scheme.,method,0,design:method,False
+24397966,Disease specific characteristics of fetal epigenetic markers for non-invasive prenatal testing of trisomy 21.,method,0,design:method,False
+25101914,Discordant noninvasive prenatal testing and cytogenetic results: a study of 109 consecutive cases.,screening/validation,0,design:screening/validation;title_kw,False
+25329639,The feasibility study of non-invasive fetal trisomy 18 and 21 detection with semiconductor sequencing platform.,screening/validation,0,design:screening/validation,False
+25478570,Differentially expressed microRNAs in maternal plasma for the noninvasive prenatal diagnosis of Down syndrome (trisomy 21).,,0,title_kw,False
+25728633,"Non-invasive prenatal diagnosis of achondroplasia and thanatophoric dysplasia: next-generation sequencing allows for a safer, more accurate, and comprehensive approach.",method,0,design:method,True
+25923652,Fetal calcifications are associated with chromosomal abnormalities.,cohort,0,design:cohort,True
+25983373,Predictive performance of a seven-plex antibody array in prenatal screening for Down Syndrome.,,0,title_kw,False
+26502924,Intragenic duplication in the PKHD1 gene in autosomal recessive polycystic kidney disease.,method,0,design:method,False
+26669558,Utilization of Benchtop Next Generation Sequencing Platforms Ion Torrent PGM and MiSeq in Noninvasive Prenatal Testing for Chromosome 21 Trisomy and Testing of Impact of In Silico and Physical Size Selection on Its Analytical Performance.,,0,title_kw;reason_kw,False
+26785403,Follow-up of multiple aneuploidies and single monosomies detected by noninvasive prenatal testing: implications for management and counseling.,cohort,0,design:cohort;title_kw,False
+26820068,Low-pass whole-genome sequencing in clinical cytogenetics: a validated approach.,screening/validation,0,design:screening/validation,False
+26996738,Calculating the fetal fraction for noninvasive prenatal testing based on genome-wide nucleosome profiles.,,0,title_kw,False
+27129388,Comparison of two high-throughput semiconductor chip sequencing platforms in noninvasive prenatal testing for Down syndrome in early pregnancy.,,0,title_kw,False
+27546542,Can we predict orofacial cleft in future pregnancy?,cohort,0,design:cohort,False
+27750376,Trial by Dutch laboratories for evaluation of non-invasive prenatal testing. Part I-clinical impact.,screening/validation,0,design:screening/validation,False
+27981672,Performance of the neoBona test: a new paired-end massively parallel shotgun sequencing approach for cell-free DNA-based aneuploidy screening.,,0,title_kw,False
+28111453,Noninvasive Prenatal Diagnosis Significance of ERG Methylation as a Biomarker in Down's Syndrome.,,0,title_kw,False
+28166604,Smith-Lemli-Opitz syndrome carrier frequency and estimates of in utero mortality rates.,screening/validation,0,design:screening/validation,False
+28357876,Noninvasive prenatal screening for fetal common sex chromosome aneuploidies from maternal blood.,screening/validation,0,design:screening/validation;title_kw,False
+28639595,Prenatal diagnosis of steroid 21-hydroxylase-deficient congenital adrenal hyperplasia: Experience from a tertiary care centre in India.,cohort,0,design:cohort,False
+28659150,Early diagnosis and care is achieved but should be improved in infants with Prader-Willi syndrome.,cohort,0,design:cohort,False
+28785026,Noninvasive prenatal diagnosis of 21-Hydroxylase deficiency using target capture sequencing of maternal plasma DNA.,method,0,design:method;title_kw,False
+29120460,"Prenatal reflex DNA screening for trisomies 21, 18, and 13.",,0,title_kw,False
+29121006,Origin and clinical relevance of chromosomal aberrations other than the common trisomies detected by genome-wide NIPS: results of the TRIDENT study.,cohort,0,design:cohort;title_kw,False
+29160607,Targeted cell-free DNA analysis with microarray quantitation for assessment of fetal sex and sex chromosome aneuploidy risk.,screening/validation,0,design:screening/validation;title_kw,False
+29329576,Spontaneous prematurity in fetuses with congenital diaphragmatic hernia: a retrospective cohort study about prenatal predictive factors.,cohort,0,design:cohort;title_kw,False
+29496978,Practice guideline: joint CCMG-SOGC recommendations for the use of chromosomal microarray analysis for prenatal diagnosis and assessment of fetal loss in Canada.,review,0,design:review;title_kw,True
+29568912,Clinical study of prenatal ultrasonography combined with T‑box transcription factor 1 as a biomarker for the diagnosis of congenital heart disease.,prospective cohort,0,design:prospective cohort,False
+29649318,Confined placental mosaicism revisited: Impact on pregnancy characteristics and outcome.,cohort,0,design:cohort,False
+29769050,Why do patients decline amniocentesis? Analysis of factors influencing the decision to refuse invasive prenatal testing.,cohort,0,design:cohort,False
+29977923,Noninvasive Prenatal Testing: Comparison of Two Mappers and Influence in the Diagnostic Yield.,method,0,design:method;title_kw,False
+30524658,"Particulate Air Pollution, Blood Mitochondrial DNA Copy Number, and Telomere Length in Mothers in the First Trimester of Pregnancy: Effects on Fetal Growth.",cohort,0,design:cohort,False
+30706702,Prenatal cell-free DNA screening for fetal aneuploidy in pregnant women at average or high risk: Results from a large US clinical laboratory.,screening/validation,0,design:screening/validation;title_kw,False
+30762813,Fetal cardiac examination can affect patients' preference on invasive tests: A new data on maternal anxiety indicated karyotyping.,cohort,0,design:cohort,False
+30767419,"Pilot study of a novel multi-functional noninvasive prenatal test on fetus aneuploidy, copy number variation, and single-gene disorder screening.",method,0,design:method;title_kw,False
+30871627,Noninvasive prenatal testing for chromosome aneuploidies and subchromosomal microdeletions/microduplications in a cohort of 8141 single pregnancies.,screening/validation,0,design:screening/validation;title_kw,True
+30978256,"An efficient method for noninvasive prenatal diagnosis of fetal trisomy 13, trisomy 18, and trisomy 21.",method,0,design:method;title_kw,False
+31004415,Noninvasive prenatal testing for fetal subchromosomal copy number variations and chromosomal aneuploidy by low-pass whole-genome sequencing.,screening/validation,0,design:screening/validation;title_kw,False
+31070015,"Targeted fetal cell-free DNA screening for aneuploidies in 4,594 pregnancies: Single center study.",screening/validation,0,design:screening/validation;title_kw,False
+31123326,"Clinical application of noninvasive prenatal screening for sex chromosome aneuploidies in 50,301 pregnancies: initial experience in a Chinese hospital.",screening/validation,0,design:screening/validation;title_kw,True
+31165466,"Non-invasive prenatal testing for detection of trisomy 13, 18, 21 and sex chromosome aneuploidies in 8594 cases.",screening/validation,0,design:screening/validation,False
+31219182,PREFACE: In silico pipeline for accurate cell-free fetal DNA fraction prediction.,,0,title_kw;reason_kw,False
+31222985,"Clinical Validation of Non-Invasive Prenatal Testing for Fetal Common Aneuploidies in 1,055 Korean Pregnant Women: a Single Center Experience.",screening/validation,0,design:screening/validation,False
+31283802,Computational framework for targeted high-coverage sequencing based NIPT.,method,0,design:method;title_kw,False
+31523615,A Systematic Clinical Review of Prenatally Diagnosed Tetrasomy 9p.,review,0,design:review;title_kw,True
+31697845,Noninvasive prenatal screening for patients with high body mass index: Evaluating the impact of a customized whole genome sequencing workflow on sensitivity and residual risk.,screening/validation,0,design:screening/validation;title_kw,False
+31864361,"Karyotyping and prenatal diagnosis of 47,XX,+ 8[67]/46,XX [13] Mosaicism: case report and literature review.",case report,0,title_kw,True
+31890033,A case of prenatal diagnosis of 18p deletion syndrome following noninvasive prenatal testing.,case report,0,title_kw,False
+32059709,Cost-effectiveness analysis of chromosomal microarray as a primary test for prenatal diagnosis in Hong Kong.,screening/validation,0,design:screening/validation,False
+32424735,In-house genetic counseling increases the detection of abnormal karyotypes-a 26-year experience in prenatal diagnosis in a single tertiary referral hospital in Poland.,cohort,0,design:cohort,False
+32463164,"A rare case of NIPT discrepancy caused by the placental mosaicism of three different karyotypes, 47,XXX, 47,XX,+21, and 48,XXX,+21.",case report,0,title_kw,False
+32466452,NIPT Technique Based on the Use of Long Chimeric DNA Reads.,,0,title_kw,False
+32472298,Genome-wide miRNA profiling in plasma of pregnant women with down syndrome fetuses.,,0,title_kw,False
+32503639,"Clinical performance of non-invasive prenatal served as a first-tier screening test for trisomy 21, 18, 13 and sex chromosome aneuploidy in a pilot city in China.",screening/validation,0,design:screening/validation,True
+32539871,Cell-free DNA screening for aneuploidies in 7113 pregnancies: single Italian centre study.,screening/validation,0,design:screening/validation;title_kw,True
+32543126,Efficiency of noninvasive prenatal testing for the detection of fetal microdeletions and microduplications in autosomal chromosomes.,screening/validation,0,design:screening/validation;title_kw,False
+32845907,Non-invasive prenatal testing (NIPT) by low coverage genomic sequencing: Detection limits of screened chromosomal microdeletions.,method,0,design:method;title_kw,False
+32864771,The difference between karyotype analysis and chromosome microarray for mosaicism of aneuploid chromosomes in prenatal diagnosis.,cohort,0,design:cohort,True
+33081811,Identification of fetal unmodified and 5-hydroxymethylated CG sites in maternal cell-free DNA for non-invasive prenatal testing.,,0,title_kw,False
+33094428,"Next-generation sequencing: a follow-up of 36,913 singleton pregnancies with noninvasive prenatal testing in central China.",screening/validation,0,design:screening/validation;title_kw,False
+33151425,"Analysis of cell-free DNA in a consecutive series of 13,607 routine cases for the detection of fetal chromosomal aneuploidies in a single center in Germany.",screening/validation,0,design:screening/validation;title_kw,True
+33317474,"New cut-off values for screening of trisomy 21, 18 and open neural tube defects (ONTD) during the second trimester in pregnant women with advanced maternal age.",screening/validation,0,design:screening/validation,False
+33474820,Usefulness of copy number variant detection following monogenic disease exclusion in prenatal diagnosis.,cohort,0,design:cohort,False
+33576010,Evaluation of repeat testing of a non-sequencing based NIPT test on a Finnish general-risk population.,,0,title_kw,False
+33785045,"Performance of cell-free DNA sequencing-based non-invasive prenatal testing: experience on 36,456 singleton and multiple pregnancies.",screening/validation,0,design:screening/validation;title_kw,True
+33901244,Benefit versus risk of chromosomal microarray analysis performed in pregnancies with normal and positive prenatal screening results: A retrospective study.,screening/validation,0,design:screening/validation,False
+34090308,Performance of a targeted cell-free DNA prenatal test for 22q11.2 deletion in a large clinical cohort.,screening/validation,0,design:screening/validation;title_kw,False
+34328233,Effect of prenatal screening on trends in perinatal mortality associated with congenital anomalies before and after the introduction of prenatal screening: A population-based study in the Northern Netherlands.,cohort,0,design:cohort;title_kw,False
+34429082,Cell-free fetal DNA testing and its correlation with prenatal indications.,screening/validation,0,design:screening/validation,True
+34789231,Development and validation of an expanded targeted sequencing panel for non-invasive prenatal diagnosis of sporadic skeletal dysplasia.,method,0,design:method,True
+34884332,Risk Assessment of the Increased Occurrence of Congenital Cardiac and Non-Cardiac Defects in Fetuses with a Normal Karyotype after Assisted Fertilization in Comparison to Natural Fertilization Based on Ultrasound Diagnostics.,cohort,0,design:cohort,False
+34904224,Fetal central nervous system anomalies according to RT-PCR and trimester of maternal infection with Zika virus: A prospective cohort study.,cohort,0,design:cohort;title_kw,False
+35195919,Combined diagnosis of QF-PCR and CNV-Seq in fetal chromosomal abnormalities: A new perspective on prenatal diagnosis.,cohort,0,design:cohort,True
+35360877,"Cell-Based NIPT Detects 47,XXY Genotype in a Twin Pregnancy.",case report,0,title_kw,False
+35656167,Ocular manifestations of Chinese patients with copy number variants in the <i>NDP</i> gene.,cohort,0,design:cohort,False
+35706031,"A dPCR-NIPT assay for detections of trisomies 21, 18 and 13 in a single-tube reaction-could it replace serum biochemical tests as a primary maternal plasma screening tool?",,0,title_kw,False
+35804426,Clinical evaluation of non-invasive prenatal screening for the detection of fetal genome-wide copy number variants.,screening/validation,0,design:screening/validation;title_kw,False
+35902388,Application of the prenatal BACs-on-Beads™ assay for rapid prenatal detection of sex chromosome mosaicism.,screening/validation,0,design:screening/validation,True
+35960415,Positive predictive value of noninvasive prenatal testing for sex chromosome abnormalities.,screening/validation,0,design:screening/validation;title_kw,False
+35984138,Analysis of the impact of noninvasive prenatal testing for trisomies 21 and 18 in twin pregnancies undergoing artificial reproductive technology.,screening/validation,0,design:screening/validation;title_kw,True
+36099005,"The accuracy and feasibility of noninvasive prenatal testing in a consecutive series of 20,626 pregnancies with different clinical characteristics.",screening/validation,0,design:screening/validation;title_kw,False
+36127997,Spontaneously Resolved Penile Cyst in a Fetus: A Case Report and Review of the Literature.,case report,0,title_kw,False
+36186462,"Non-invasive prenatal testing for the detection of trisomy 13, 18, and 21 and sex chromosome aneuploidies in 68,763 cases.",screening/validation,0,design:screening/validation,False
+36226188,Case Report: How whole-genome sequencing-based cell-free DNA prenatal testing can help identify a marker mhromosome.,case report,0,title_kw,False
+36285155,A Three-Year Prospective Study Assessing the Application of Chromosomal Microarray Analysis in 576 High-Risk Pregnant Women.,cohort,0,design:cohort,False
+36396840,"Efficiency of expanded noninvasive prenatal testing in the detection of fetal subchromosomal microdeletion and microduplication in a cohort of 31,256 single pregnancies.",screening/validation,0,design:screening/validation;title_kw,False
+36636555,Assessment of Combined Karyotype Analysis and Chromosome Microarray Analysis in Prenatal Diagnosis: A Cohort Study of 3710 Pregnancies.,cohort,0,design:cohort;title_kw,True
+36864406,"Association of maternal risk factors with fetal aneuploidy and the accuracy of prenatal aneuploidy screening: a correlation analysis based on 12,186 karyotype reports.",cohort,0,design:cohort,False
+36873643,Increased nuchal translucency in children with congenital heart defects and normal karyotype-is there a correlation with mortality?,cohort,0,design:cohort,False
+36909308,Association between aberrant amino acid metabolism and nonchromosomal modifications fetal structural anomalies: A cohort study.,metabolomics cohort,0,design:metabolomics cohort;title_kw,False
+36980940,A Case Report of a Feto-Placental Mosaicism Involving a Segmental Aneuploidy: A Challenge for Genome Wide Screening by Non-Invasive Prenatal Testing of Cell-Free DNA in Maternal Plasma.,case report,0,title_kw,False
+37147405,Risk of adverse pregnancy and infant outcomes associated with prenatal Zika virus infection: a post-epidemic cohort in Central-West Brazil.,cohort,0,design:cohort,True
+37366235,Optical genome mapping for detection of chromosomal aberrations in prenatal diagnosis.,method,0,design:method,False
+37477337,A decade of change - lessons learned from prenatal diagnostics in Central Denmark region in 2008-2018.,cohort,0,design:cohort,False
+37684689,Preliminary study of noninvasive prenatal screening for 22q11.2 deletion/duplication syndrome using multiplex dPCR assay.,method,0,design:method;title_kw,False
+38284447,Clinical value of positive CNVs results by NIPT without fetal ultrasonography-identified structural anomalies.,cohort,0,design:cohort;title_kw,True
+38297236,"Clinical evaluation of noninvasive prenatal testing for sex chromosome aneuploidies in 9,176 Korean pregnant women: a single-center retrospective study.",screening/validation,0,design:screening/validation;title_kw,False
+38552051,A rapid PCR-free next-generation sequencing method for comprehensive diagnosis of chromosome disease syndromes in prenatal samples.,cohort,0,design:cohort,False
+38735835,Exome sequencing in every pregnancy? Results of trio exome sequencing in structurally normal fetuses.,cohort,0,design:cohort,False
+39198908,MRI in the prenatal genetic diagnosis and intrauterine treatment of fetal congenital cystic adenoma of the lung.,cohort,0,design:cohort,True
+39350038,"Association between rare, genetic variants linked to autism and ultrasonography fetal anomalies in children with autism spectrum disorder.",cohort,0,design:cohort,True
+39367626,Is intermediate risk really intermediate? Comparison of karyotype and non-invasive prenatal testing results of pregnancies at intermediate risk of trisomy 21 on maternal serum screening.,screening/validation,0,design:screening/validation,False
+39410646,Prenatal Diagnosis of Reno-Urinary Malformations in a Tertiary Center of Republic of Moldavia.,cohort,0,design:cohort,False
+39837955,The value of increasing sequencing depth for noninvasive prenatal screening for whole chromosomal aneuploidy.,screening/validation,0,design:screening/validation;title_kw,False
+40122702,Whole Genome Sequencing in Prenatal Diagnostics: The Danish Approach to Guideline Formation and Implementation Within Public Healthcare.,review,0,design:review;title_kw,False
+40123302,The PreGen Research Program: Implementing Prenatal Genomic Testing in Australia-A Commentary.,review,0,design:review,False
+40332537,Key Amniotic Fluid miRNAs as Promising Target Molecules for the Antenatal Prevention of Pulmonary Hypoplasia Associated with Congenital Diaphragmatic Hernia.,cohort,0,design:cohort,False
+40405131,KF-NIPT: K-mer and fetal fraction-based estimation of chromosomal anomaly from NIPT data.,method,0,design:method;title_kw,False
+40428270,First-Trimester Morphological Evaluation of Fetuses and Medical Law Implications.,observational screening cohort,0,design:observational screening cohort,False
+40806547,A 30-Year Experience in Fragile X Syndrome Molecular Diagnosis from a Laboratory in Thailand.,cohort,0,design:cohort,False
+40824895,"Clinical experience of genome-wide non-invasive prenatal testing as a first-tier screening test in a cohort of 59,771 pregnancies.",screening/validation,0,design:screening/validation;title_kw,False
+40841462,Common chromosomal aneuploidy testing using non-invasive trophoblast retrieval and isolation from the cervix (TRIC) in pregnant women.,method,0,design:method,False
+41014177,High Concordance of Copy Number Variants Detected by Chromosomal Microarray and Exome Sequencing in Clinical Diagnostics.,cohort,0,design:cohort,False
+41059455,Exome Sequencing Analysis and Clinical Features of a Chinese Patient with 3M Syndrome and A Review of Literature.,case report,0,title_kw,False
+41181173,Expert consensus on fetal ventriculomegaly: evidence-based recommendations for 23 key clinical questions.,review,0,design:review,False
+41281425,The Diagnostic Performance of Nuchal Translucency Alone as a Screening Test for Down Syndrome: A Systematic Review and Meta-analysis.,review,0,design:review;title_kw,False
+41300796,Clinical Utility of Opportunistic Genome-Wide cfDNA Prenatal Screening in Intermediate-Risk Pregnancies.,screening/validation,0,design:screening/validation;title_kw,False
+41462830,Associations Between Fetal Symptoms During Pregnancy and Neonatal Clinical Complications with Cytomegalovirus Infection.,cohort,0,design:cohort,False
+41751512,Prenatal Microarray Analysis of Pregnancies Without Ultrasound Anomalies: Establishment of Copy Number and Homozygosity Frequencies in Low-Risk Population.,cohort,0,design:cohort,False
+41939616,"Near-Comparable Frequency of rob(21;21) and rob(14;21) Translocations in Trisomy 21: A Retrospective Cytogenetic Analysis of 9,313 Cases From an Indian Referral Cohort.",cohort,0,design:cohort,True
+41943072,New insight about early miscarriage: a prenatal data-based study.,cohort,0,design:cohort,False
+41968367,Rapid prenatal CNV detection using nanopore technology.,method,0,design:method,False
+42016332,Second Prenatal Diagnosis of Bosch-Boonstra-Schaaf Optic Atrophy Syndrome in a Fetus With a 5q14.3q15 Deletion: A Case Report and Review of the Literature.,case report,0,title_kw,True
+42596935,Society for Maternal-Fetal Medicine Consult Series #75: Evaluation and management of non-immune hydrops fetalis.,review,0,design:review,False
+42600089,Obtaining a Diagnostic Yield via Scan findings prior to the introduction of SEquencing retrospectivelY (ODYSSEY): a cohort study.,cohort,0,design:cohort;title_kw,False
+42703076,"Clinical Application of Long-Read Sequencing for FMR1 Gene Mutation Detection in Populations From Shandong, China.",screening/validation,0,design:screening/validation,False
+71231,Antepartum evaluation of the high-risk fetus: problems and prospects.,review,0,design:review,True

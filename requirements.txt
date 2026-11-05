@@ -1,0 +1,28 @@
+# PubMedBERT screening baseline (Python 3.12)
+# Core
+torch>=2.4
+transformers>=4.40
+sentence-transformers>=3.0
+scikit-learn>=1.4
+pandas>=2.0
+numpy>=1.26
+joblib>=1.3
+huggingface_hub>=0.23
+safetensors>=0.4
+peft>=0.14
+accelerate>=0.34
+galore-torch>=1.0
+
+# Data / PDF
+pymupdf>=1.24
+
+# API
+fastapi>=0.110
+pydantic>=2
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+
+# AHP multi-model labeling
+openai>=1.40
+anthropic>=0.40
+google-genai>=1.0

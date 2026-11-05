@@ -1,0 +1,75 @@
+{
+  "model_path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model.joblib",
+  "model_all_path": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/model_all.joblib",
+  "threshold": 0.1525784656405449,
+  "review_lower_bound": 0.002578465640544897,
+  "feature_mode": "C",
+  "feature_dim": 2306,
+  "feature_layout": [
+    "title+abstract CLS 768",
+    "body chunk mean 768",
+    "body chunk max 768",
+    "case density",
+    "variant/test density"
+  ],
+  "encoder": {
+    "base_path": "/data/yangzs/.cache/huggingface/hub/models--allenai--specter2_base/snapshots/3447645e1def9117997203454fa4495937bfbd83",
+    "adapter_name": "allenai/specter2_classification",
+    "max_length": 512,
+    "normalize": true,
+    "max_chars": 3000,
+    "overlap_chars": 400,
+    "max_chunks": 24
+  },
+  "encoder_runtime": {
+    "base_path": "/data/yangzs/.cache/huggingface/hub/models--allenai--specter2_base/snapshots/3447645e1def9117997203454fa4495937bfbd83",
+    "adapter_name": "allenai/specter2_classification",
+    "device": "cpu",
+    "max_length": 512,
+    "normalize": true,
+    "adapter_loaded": true,
+    "adapter_error": "",
+    "active_adapter_setup": "Stack[[CLF]]",
+    "torch_version": "2.15.0+cu132",
+    "cuda_available": false,
+    "device_name": "cpu"
+  },
+  "train_subset": "default (weak=False, label_source!=model)",
+  "n_train": 566,
+  "n_val": 140,
+  "n_test": 177,
+  "n_total": 974,
+  "split": {
+    "method": "GroupShuffleSplit (group_id=PMID), 64/16/20",
+    "seed": 42,
+    "sizes": {
+      "all": {
+        "train": 623,
+        "val": 156,
+        "test": 195
+      },
+      "default": {
+        "train": 566,
+        "val": 140,
+        "test": 177
+      }
+    },
+    "positives": {
+      "all": {
+        "train": 451,
+        "val": 112,
+        "test": 136
+      },
+      "default": {
+        "train": 439,
+        "val": 109,
+        "test": 130
+      }
+    }
+  },
+  "target_recall": 0.95,
+  "C": 1.0,
+  "class_weight": "balanced",
+  "seed": 42,
+  "feature_cache": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/features/specter2_mc24_ch3000_n974_339bee2712.npz"
+}
