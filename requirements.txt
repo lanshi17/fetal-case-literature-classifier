@@ -22,6 +22,9 @@ pydantic>=2
 uvicorn[standard]>=0.29
 python-multipart>=0.0.9
 
+# MCP entry (stdio / streamable-http)
+mcp>=2.0
+
 # AHP multi-model labeling
 openai>=1.40
 anthropic>=0.40

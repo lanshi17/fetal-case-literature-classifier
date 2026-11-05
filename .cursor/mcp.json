@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "fetal-case-screener": {
+      "type": "stdio",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": ["${workspaceFolder}/mcp_server.py"],
+      "env": {
+        "MODEL_BACKEND": "best",
+        "USE_RULES": "1"
+      }
+    }
+  }
+}

@@ -23,6 +23,7 @@
 encoder.py              # 分块编码 / 池化
 rule_layer.py           # 困难负样本规则层
 predict.py / api.py     # 默认走最优解 DoRA+rules
+mcp_server.py           # MCP 入口（stdio / HTTP）
 train.py                # frozen+LR 基线训练
 scripts/
   finetune_chunk_fair.py    # 公平分块 Full / DoRA / GaLore
@@ -76,9 +77,13 @@ export PUBMEDBERT_MODEL_PATH=/path/to/NeuML/pubmedbert-base-embeddings/snapshot
 # API（默认 MODEL_BACKEND=best）
 MODEL_BACKEND=best USE_RULES=1 \
   .venv/bin/uvicorn api:app --host 0.0.0.0 --port 8000 --workers 1
+
+# MCP（默认 stdio；Cursor 见 .cursor/mcp.json）
+MODEL_BACKEND=best USE_RULES=1 .venv/bin/python mcp_server.py
+# 可选 HTTP：.venv/bin/python mcp_server.py --transport streamable-http --port 8765
 ```
 
-说明见 [`artifacts/best/BEST.md`](artifacts/best/BEST.md)。
+MCP 工具：`get_screener_info` / `screen_paper` / `screen_pdf` / `screen_batch`。说明见 [`artifacts/best/BEST.md`](artifacts/best/BEST.md)。
 
 ---
 
