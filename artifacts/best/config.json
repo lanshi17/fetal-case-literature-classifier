@@ -3,10 +3,10 @@
   "description": "Fair chunk-pool DoRA + gold-49 R≥0.95 threshold + hard-negative rule layer",
   "backend": "dora_chunk",
   "created_from": {
-    "train_script": "scripts/finetune_chunk_fair.py --method dora",
+    "train_script": "src/scripts/finetune_chunk_fair.py --method dora",
     "checkpoint": "artifacts/finetune_fair/dora/checkpoint/model.pt",
     "threshold_source": "artifacts/finetune_fair/dora/threshold.json",
-    "rules": "rule_layer.py",
+    "rules": "src/rule_layer.py",
     "gold": "data/gold_standard.csv (n=49)"
   },
   "encoder": {

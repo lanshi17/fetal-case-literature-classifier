@@ -20,28 +20,33 @@
 ## 1. 目录
 
 ```text
-encoder.py              # 分块编码 / 池化
-rule_layer.py           # 困难负样本规则层
-predict.py / api.py     # 默认走最优解 DoRA+rules
-mcp_server.py           # MCP 入口（stdio / HTTP）
-train.py                # frozen+LR 基线训练
-scripts/
-  finetune_chunk_fair.py    # 公平分块 Full / DoRA / GaLore
-  ablation_abcd.py          # 消融 A/B/C/D
-  eval_rule_layer.py        # 规则层评测
-  ahp_label/                # 多模型 AHP 弱标
-  gold_review.py            # 金标审核 UI
-data/
-  labeled_papers.csv        # 974 篇监督标签
-  gold_standard.csv         # 人审金标（当前 49）
-  ahp_wave1/                # AHP 弱标与语料
-artifacts/
-  best/                     # ★ 最优解配置与说明
-  finetune_fair/dora/       # DoRA 权重与阈值
-  rule_layer/               # 规则评测报告
-  ablation_abcd/            # 消融报告
-  model.joblib              # 旧 LR 基线
+src/
+  encoder.py                 # 分块编码 / 池化（冻结 PubMedBERT）
+  rule_layer.py              # 困难负样本规则层
+  predict.py                 # 推理：默认 DoRA+rules，--legacy-lr 走旧基线
+  api.py                     # FastAPI 服务
+  mcp_server.py              # MCP 入口（stdio / sse / streamable-http）
+  train.py                   # frozen + LR 基线训练
+  build_dataset.py           # data/labeled_papers.csv 构建
+  scripts/
+    finetune_chunk_fair.py   # 公平分块微调 Full / DoRA / GaLore（★ 最优解训练器）
+    ablation_abcd.py         # 消融 A/B/C/D
+    eval_rule_layer.py       # 规则层评测
+    gold_review.py           # 金标审核（Web / 终端）
+    export_dora_review.py    # 导出 DoRA 分数与 FN/FP 复核队列
+    ahp_label/               # 多模型 AHP 弱标流水线
+    <历史基线脚本>            # compare_* / retrain_* / eval_hardening / error_audit 等
+docs/
+  ARCHITECTURE.md            # 整体架构、算法设计、数据结构、目录结构
+  briefs/                    # 任务书、评审规格、实验与复盘记录
+data/                        # 标签、语料、全文包（大文件已 gitignore）
+artifacts/                   # 模型权重、阈值、评测产物（脚本写出，勿手工编辑）
+pubmedbert/                  # 上游 casefilter 子项目（独立打包，规则 + 现成 head_v3 权重）
 ```
+
+代码根 `src/` 不是包：模块之间按扁平名互相 import（`from encoder import ...`），脚本用
+`ROOT = Path(__file__).resolve().parents[2]` 定位仓库根，并把 `ROOT/"src"` 加入 `sys.path`。
+因此**所有命令都在仓库根目录执行**。也可 `export PYTHONPATH=src` 后直接 `python -c "import train"`。
 
 ---
 
@@ -65,25 +70,25 @@ export PUBMEDBERT_MODEL_PATH=/path/to/NeuML/pubmedbert-base-embeddings/snapshot
 
 ```bash
 # 单条 / 抽样
-.venv/bin/python predict.py --best --sample 1
-.venv/bin/python predict.py --best --pdf paper.pdf --title "Prenatal case report"
+.venv/bin/python src/predict.py --best --sample 1
+.venv/bin/python src/predict.py --best --pdf paper.pdf --title "Prenatal case report"
 
 # 关闭规则
-.venv/bin/python predict.py --best --no-rules --sample 1
+.venv/bin/python src/predict.py --best --no-rules --sample 1
 
 # 旧 frozen+LR
-.venv/bin/python predict.py --legacy-lr --sample 1
+.venv/bin/python src/predict.py --legacy-lr --sample 1
 
 # API（默认 MODEL_BACKEND=best）
 MODEL_BACKEND=best USE_RULES=1 \
-  .venv/bin/uvicorn api:app --host 0.0.0.0 --port 8000 --workers 1
+  .venv/bin/uvicorn --app-dir src api:app --host 0.0.0.0 --port 8000 --workers 1
 
 # MCP（默认 stdio；Cursor 见 .cursor/mcp.json）
-MODEL_BACKEND=best USE_RULES=1 .venv/bin/python mcp_server.py
-# 可选 HTTP：.venv/bin/python mcp_server.py --transport streamable-http --port 8765
+MODEL_BACKEND=best USE_RULES=1 .venv/bin/python src/mcp_server.py
+# 可选 HTTP：.venv/bin/python src/mcp_server.py --transport streamable-http --port 8765
 ```
 
-MCP 工具：`get_screener_info` / `screen_paper` / `screen_pdf` / `screen_batch`。说明见 [`artifacts/best/BEST.md`](artifacts/best/BEST.md)。
+MCP 工具：`get_screener_info` / `screen_paper` / `screen_pdf` / `screen_batch`。说明见 [`artifacts/best/BEST.md`](artifacts/best/BEST.md)，架构与算法见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
 
 ---
 
@@ -107,22 +112,22 @@ Pipeline 口径：`relevant|review` 计为召回保留（仅 `irrelevant` 为漏
 
 ```bash
 # 数据（全文包就位时）
-.venv/bin/python build_dataset.py
+.venv/bin/python src/build_dataset.py
 
-# 公平分块微调（DoRA / full / galore）
-.venv/bin/python scripts/finetune_chunk_fair.py --method dora --device cuda
+# 公平分块微调（DoRA / full / galore；device 自动 cuda→cpu）
+.venv/bin/python src/scripts/finetune_chunk_fair.py --method dora
 
 # AHP 弱标波次
-bash scripts/ahp_label/run_wave.sh
+bash src/scripts/ahp_label/run_wave.sh
 
 # 消融 A/B/C/D
-.venv/bin/python scripts/ablation_abcd.py --device cuda
+.venv/bin/python src/scripts/ablation_abcd.py --device cuda
 
 # 规则层评测（读已导出的 DoRA 分数）
-.venv/bin/python scripts/eval_rule_layer.py
+.venv/bin/python src/scripts/eval_rule_layer.py
 
 # 金标审核 UI
-.venv/bin/python scripts/gold_review.py --queue fn_fp --port 8765
+.venv/bin/python src/scripts/gold_review.py --queue fn_fp --port 8765
 ```
 
 训练协议摘要：默认子集 train + AHP 硬标入训；val/test 为 seed-42 默认子集；早停看 val AP@0.5；阈值先在 val 上 R≥0.95，再用金标重校准。
