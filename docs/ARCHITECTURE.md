@@ -112,7 +112,7 @@ PubMedBERT 单窗 512 token，病例报告动辄数万字符，直接截断会�
 - **入训扩量**：微调 train 折 = 子集 train 566 + **AHP 硬标 2747**（见 2.6）→ n_train=3313；val/test/gold 永不混入弱标。
 - **两级阈值**（`train.select_threshold`）：候选点取相邻分数中点，选满足 `recall ≥ 0.95` 且 precision 最大者。
   1. val 上选 `0.8793841302394867`；
-  2. 金标 49 重校准为 `0.7619361281394958`（`threshold.json`, `source:"gold_r95"`）。金标此时既是校准集，`gold49_ap_dora=0.762` 应读作校准拟合，test 才是留出。
+  2. 金标 49 重校准为 `0.7619361281394958`（`threshold.json`, `source:"gold_r95"`）。金标此时既是校准集，`gold49_ap_dora=0.762` 应读作校准拟合，test 才是留出。另注意 `rule_layer_metrics.json` 的 `"gold49"` 块实测 n=40（早期导出的 `gold_predictions.csv` 只有 40 行；其余 9 篇仅有分数，见 `gold49_scores_recal.csv` 49 行）。
 
 ### 2.4 决策分档 + 规则层（召回保持的精确率增强）
 
@@ -167,7 +167,7 @@ score < t−0.15       → irrelevant
 | DoRA only | 0.762 | 1.000 | 0.774 | 0.872 | 纯模型 AP 0.8847；Spec 0.37 |
 | DoRA auto 口径（仅 relevant） | 0.762 | 0.854 | 0.835 | 0.844 | 无人工兜底时的下界 |
 | fair head_v3（frozen+LR） | 0.192 | 0.954 | 0.849 | 0.899 | `artifacts/config.json`；gold AP≈0.50，泛化弱 |
-| 金标 49 | 0.762 | 1.000 | 0.581 | 0.735 | DoRA+rules；校准拟合 AP 0.762 |
+| 金标 49（校准集） | 0.762 | 1.000 | 0.581 | 0.735 | DoRA+rules；R/P/F1 实测于其中 40 篇，AP 0.762 为全 49 篇（`gold49_reeval.json`） |
 
 数字出处：`artifacts/best/rule_layer_metrics.json`、`artifacts/finetune_fair/dora/metrics.json`、`artifacts/ablation_abcd/`。硬化证据（bootstrap CI/GroupKFold/阈值策略）见 `artifacts/optimization/`，属上一代 LR 基线。
 
@@ -189,7 +189,7 @@ score < t−0.15       → irrelevant
 
 - `final_labels.csv`：上游标注（974，BOM；含 `reason/quote/prob_v2`），`build_dataset.py` 的输入，勿改。
 - `gold_standard.csv`：人审金标 49 × 16 列（`gold_label∈{0,1,?}`、`gold_reason_code/text`、`reviewer`、`prior_*`、`model_score/decision`），append-only。
-- `ahp_wave1/`：`sample_3000.csv`(17 列分层元数据)、`corpus.jsonl`（`{pmid,title,text}`，gitignore）、`labels_ahp.csv`（12 列：P/label/majority/p_*/vote_*/reasons）、`ahp_config.json`（准则权重 FETAL .168/PHENO .342/GENETIC .383/CASE .107 + 专家权重 + CR）。
+- `ahp_wave1/`：`sample_3000.csv`(18 列分层元数据)、`corpus.jsonl`（`{pmid,title,text}`，gitignore）、`labels_ahp.csv`（12 列：P/label/majority/p_*/vote_*/reasons）、`ahp_config.json`（准则权重 FETAL .168/PHENO .342/GENETIC .383/CASE .107 + 专家权重 + CR）。
 - `fulltext_package/`：`manifest_fulltext.csv`(974×14：PMID…PDF_file/TXT_file/XML_file) + `xml|txt|pdfs/`（gitignore，338MB）。
 
 ### 3.2 特征张量
@@ -221,7 +221,7 @@ score < t−0.15       → irrelevant
  "encoder": {"model_path": <快照绝对路径>, "max_length": 512, "normalize": True,
              "chunk_tokens": 480, "max_chunks": 12, "keep_first": 2, "pooling": "…"},
  "train_subset": "default train fold only (fair head_v3 retrain)",
- "primary_head", "C", "train_cv_auc", "seed", "target_recall", "recipe", "split"}
+ "primary_head", "C", "train_cv_auc", "seed", "target_recall", "recipe"}
 ```
 
 `casefilter-head-v3`（`pubmedbert/weights/head_v3.npz` = 1×1536 coef + intercept，阈值 0.5，无 scaler）经 `ShippedLogisticHead` 适配进同一 bundle 协议，仅作对照。
