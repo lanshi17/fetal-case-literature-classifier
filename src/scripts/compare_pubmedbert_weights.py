@@ -33,6 +33,13 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
+LEGACY_ROOT = ROOT / "pubmedbert"
+if not LEGACY_ROOT.exists():
+    sys.exit(
+        "pubmedbert/ (legacy casefilter subproject) was removed; keeping only the DoRA\n"
+        "final generation. Restore it with:\n"
+        "    git checkout archive/pre-dora-legacy -- pubmedbert\n"
+    )
 sys.path.insert(0, str(ROOT / "pubmedbert" / "src"))
 
 from train import (  # noqa: E402

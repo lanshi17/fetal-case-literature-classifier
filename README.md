@@ -41,8 +41,11 @@ docs/
   briefs/                    # 任务书、评审规格、实验与复盘记录
 data/                        # 标签、语料、全文包（大文件已 gitignore）
 artifacts/                   # 模型权重、阈值、评测产物（脚本写出，勿手工编辑）
-pubmedbert/                  # 上游 casefilter 子项目（独立打包，规则 + 现成 head_v3 权重）
 ```
+
+> 旧代 `pubmedbert/`（独立打包的 `casefilter` 子项目：规则层 + 现成 head_v3 权重）已移除，
+> 本仓库只保留最终代 **DoRA + 规则层**。源码存档在 git tag `archive/pre-dora-legacy`：
+> `git checkout archive/pre-dora-legacy -- pubmedbert`
 
 代码根 `src/` 不是包：模块之间按扁平名互相 import（`from encoder import ...`），脚本用
 `ROOT = Path(__file__).resolve().parents[2]` 定位仓库根，并把 `ROOT/"src"` 加入 `sys.path`。

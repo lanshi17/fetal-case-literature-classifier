@@ -56,6 +56,13 @@ def main() -> None:
     )
     args = ap.parse_args()
 
+    if not args.weights.exists():
+        ap.error(
+            f"weights dir not found: {args.weights}\n"
+            "The legacy pubmedbert/ subproject was removed (only the DoRA final generation is kept).\n"
+            "Restore it with: git checkout archive/pre-dora-legacy -- pubmedbert"
+        )
+
     cfg = json.loads((args.weights / "config.json").read_text())
     z = np.load(args.weights / cfg["head"]["file"])
     coef = z["coef"].astype(np.float64).ravel()

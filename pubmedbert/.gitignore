@@ -1,9 +1,0 @@
-__pycache__/
-*.egg-info/
-.pytest_cache/
-.venv/
-out/
-data/
-*.cache.jsonl
-models/
-weights/

@@ -224,7 +224,7 @@ score < t−0.15       → irrelevant
  "primary_head", "C", "train_cv_auc", "seed", "target_recall", "recipe"}
 ```
 
-`casefilter-head-v3`（`pubmedbert/weights/head_v3.npz` = 1×1536 coef + intercept，阈值 0.5，无 scaler）经 `ShippedLogisticHead` 适配进同一 bundle 协议，仅作对照。
+`casefilter-head-v3`（旧路径 `pubmedbert/weights/head_v3.npz` = 1×1536 coef + intercept，阈值 0.5，无 scaler；该子项目已移除）经 `ShippedLogisticHead` 适配进同一 bundle 协议，仅作对照。
 
 ### 3.4 输出契约（三入口统一 `predict_record` dict）
 
@@ -297,15 +297,14 @@ API：`GET /health`（含 load_error 旁路报告）、`POST /predict`（form/JS
 │   ├── head_v3_fair/  optimize_pubmedbert/  compare_pubmedbert/  finetune/  smoke/
 │   └── archive_specter2/      # 第一代 SPECTER2 归档（LEGACY_SPECTER2.txt）
 │
-├── pubmedbert/                # 独立子项目 casefilter（pyproject + src/casefilter + tests/weights）
-│                              # 仅 compare_*/export_shipped/retrain_head_v3 经 sys.path 借用其 embed/head_v3
+├── (pubmedbert/ 已移除)       # 旧独立子项目 casefilter；源码见 git tag archive/pre-dora-legacy
 └── .cursor/mcp.json           # Cursor MCP：command=.venv/bin/python, args=src/mcp_server.py
 ```
 
 ### 4.1 路径约定（重组后的硬契约）
 1. **仓库根 = cwd**：所有脚本/CLI/服务从仓库根运行（README 与本文所有命令均如此）。
-2. **ROOT 推导**：`src/*.py` 用 `Path(__file__).resolve().parents[1]`；`src/scripts/*.py` 用 `parents[2]`；`src/scripts/ahp_label/*.py` 用 `parents[3]`。ROOT 一律指向仓库根，与 `data/`、`artifacts/`、`pubmedbert/` 拼接——`src` 内部布局改动不影响数据路径。
-3. **import 机制**：根模块间扁平 import（依赖 cwd 或 `src/` 在 `sys.path`）；`src/scripts/*.py` 头部两行引导 `sys.path.insert(0, ROOT/"src")`（+ 需要兄弟脚本时再插 `ROOT/"src"/"scripts"`）；`pubmedbert/src` 按需单独插入。
+2. **ROOT 推导**：`src/*.py` 用 `Path(__file__).resolve().parents[1]`；`src/scripts/*.py` 用 `parents[2]`；`src/scripts/ahp_label/*.py` 用 `parents[3]`。ROOT 一律指向仓库根，与 `data/`、`artifacts/` 拼接——`src` 内部布局改动不影响数据路径。
+3. **import 机制**：根模块间扁平 import（依赖 cwd 或 `src/` 在 `sys.path`）；`src/scripts/*.py` 头部两行引导 `sys.path.insert(0, ROOT/"src")`（+ 需要兄弟脚本时再插 `ROOT/"src"/"scripts"`）。（原 `pubmedbert/src` 随子项目移除，见 tag `archive/pre-dora-legacy`。）
 4. **`artifacts/best/config.json` 只存仓库根相对路径**；旧 generation 的 `metrics*/config*.json` 里有历史绝对路径（`/home|/data/yangzs/...`），是快照记录，重跑脚本会再生成，不必手改。
 5. `.gitignore` 锚点（`data/`、`artifacts/`、`src/**/__pycache__`）均相对仓库根，目录名未变，规则继续生效；`docs/briefs/` 中的历史文档保留迁移前的文字（过程记录不回改）。
 
