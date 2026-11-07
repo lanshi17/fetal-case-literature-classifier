@@ -93,6 +93,129 @@ MODEL_BACKEND=best USE_RULES=1 .venv/bin/python src/mcp_server.py
 
 MCP 工具：`get_screener_info` / `screen_paper` / `screen_pdf` / `screen_batch`。说明见 [`artifacts/best/BEST.md`](artifacts/best/BEST.md)，架构与算法见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
 
+### 3.1 最佳模型用法示例（逐条可跑）
+
+以下输出为本机实跑（`device=cuda`，`thr=0.7619`），可直接对照。
+
+**① 只给标题 + 摘要（一条）**
+
+```bash
+.venv/bin/python src/predict.py --best \
+  --title "Prenatal diagnosis of a 22q11.2 deletion in a fetus with tetralogy of Fallot" \
+  --abstract "A 28-year-old gravida 2 woman whose fetus showed tetralogy of Fallot and increased nuchal translucency at 13 weeks. Amniocentesis was performed; chromosomal microarray revealed a 2.5 Mb deletion at 22q11.2."
+```
+
+```jsonc
+{
+  "doc_id": null,
+  "title": "Prenatal diagnosis of a 22q11.2 deletion in a fetus with tetralogy of Fallot",
+  "decision": "relevant",
+  "model_decision": "relevant",
+  "relevance_score": 0.948522,
+  "threshold": 0.7619361281394958,
+  "review_threshold": 0.611936,
+  "full_text_available": false,
+  "pdf_used": false,
+  "feature_mode": "dora_chunk_1536",
+  "encoder_family": "pubmedbert_dora",
+  "backend": "dora_chunk",
+  "rules_enabled": true,
+  "rules_fired": [],
+  "rules_overridden": false,
+  "rules_protected_by_case": true      // 命中病例线索保护（不改变结论，只阻止误排除）
+}
+```
+
+**② 给全文 PDF（推荐，召回明显更高）**
+
+```bash
+.venv/bin/python src/predict.py --best --pdf paper.pdf --title "Prenatal case report"
+```
+
+摘要常省略用了哪种检测；有全文时 `full_text_available=true`，DoRA 能在 Methods/Results 里找到检测与表型证据。消融 B 显示全文对召回/AP 有明显提升，**生产环境请传全文**。
+
+**③ 批量：CSV / TSV / JSON**
+
+```bash
+# 输入列：doc_id(pmid), title, abstract，可选 text / pdf_path / design
+.venv/bin/python src/predict.py --best --input papers.csv --output out/pred.json
+```
+
+输出形态：**多条 → JSON 数组；结果只剩一条时折叠为单个对象**（`--limit 1` 也如此），下游解析请兼容两种。JSON 输入支持对象数组或 `{"records": [...]}`。也可用 `--json '<单条 JSON>'` 直接喂一条：
+
+```bash
+.venv/bin/python src/predict.py --best \
+  --json '{"doc_id":"x1","title":"Fetal ultrasound anomaly cohort","abstract":"Retrospective cohort of 120 fetuses with increased nuchal translucency; whole exome sequencing performed."}' \
+  --no-json-lines
+```
+
+这条是**规则层生效的典型**：模型给 `0.95116`（判 `relevant`），但命中 `LARGE_PRENATAL_COHORT`（大规模产前筛查队列，非单病例报告），最终：
+
+```jsonc
+{
+  "decision": "irrelevant",          // 规则强制改判
+  "model_decision": "relevant",      // 模型原始判断
+  "relevance_score": 0.95116,
+  "rules_fired": ["LARGE_PRENATAL_COHORT"],
+  "rules_overridden": true
+}
+```
+
+`decision` 与 `model_decision` 不一致 = 规则层改判了，用 `rules_fired` 查原因。
+
+**④ Python 调用（集成到自己的流程）**
+
+```python
+import sys
+sys.path.insert(0, "src")          # 在仓库根目录执行
+from predict import load_predictor
+
+predictor = load_predictor(best=True, use_rules=True)   # device 默认 cuda→cpu
+print(predictor.backend, predictor.threshold)           # dora_chunk 0.7619361281394958
+
+out = predictor.predict_record({
+    "doc_id": "demo-1",
+    "title": "Prenatal diagnosis of a 22q11.2 deletion in a fetus with tetralogy of Fallot",
+    "abstract": "…chromosomal microarray revealed a 2.5 Mb deletion at 22q11.2.",
+    # "text": "...",          # 可选：全文
+    # "pdf_path": "paper.pdf",  # 可选：自动抽文本（相对路径以仓库根为基准）
+})
+print(out["decision"], out["relevance_score"], out["rules_fired"])
+```
+
+常用方法：
+
+| 方法 | 输入 | 返回 |
+|---|---|---|
+| `predict_record(dict)` | `doc_id` / `title` / `abstract` / `text` / `pdf_path` / `design` 任一组合 | 单条结果 dict |
+| `predict_pdf(path, title="", abstract="")` | PDF 路径 | 单条结果 dict（自动抽全文） |
+| `predict_input_file(path, limit=None)` | `.json` / `.csv` / `.tsv` | 结果 dict 列表 |
+
+**⑤ 决策规则（读输出时的关键）**
+
+```text
+score ≥ t (0.7619)                 → relevant
+t − 0.15 (0.6119) ≤ score < t      → review
+score < t − 0.15                   → irrelevant
+之后规则层可强制 irrelevant，或把 relevant 降为 review（病例线索可保护，见 rules_protected_by_case）
+```
+
+评分口径：`relevant` 与 `review` 都算"召回保留"，只有 `irrelevant` 是漏检。下游只想要高置信集合 → 取 `decision == "relevant"`；要保召回 → 取 `decision != "irrelevant"`，再把 `review` 送人工。
+
+**⑥ 常用开关**
+
+```text
+--no-rules         # 关闭规则层，只看模型原始分（对比 / 调试）
+--device cpu       # 强制 CPU（无 GPU 或显存不足）
+--sample 5         # 从 data/labeled_papers.csv 抽前 5 条，冒烟测试
+--limit 100        # 配合 --input，只跑前 N 条
+--output out.json  # 结果落盘（批量建议必带）
+```
+
+> **前提**：`artifacts/finetune_fair/dora/checkpoint/model.pt`（约 440 MB，gitignore，需训练或另行获取）、`artifacts/best/config.json` 与阈值文件，以及编码器快照 `NeuML/pubmedbert-base-embeddings`（可用 `PUBMEDBERT_MODEL_PATH` 指向本地快照）。
+>
+> **耗时参考**（本机 RTX 4060 + cuda）：进程启动+加载约 3.6 s，之后单条标题摘要推理约 6 ms；有全文时按块数线性增长（≤12 块）。CPU 会明显更慢，建议 `--device cpu` 仅用于调试。
+
 ---
 
 ## 4. 主结果（seed=42，默认子集 test n=177）
