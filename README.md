@@ -214,7 +214,7 @@ score < t − 0.15                   → irrelevant
 
 > **前提**：`artifacts/finetune_fair/dora/checkpoint/model.pt`（约 440 MB，gitignore，需训练或另行获取）、`artifacts/best/config.json` 与阈值文件，以及编码器快照 `NeuML/pubmedbert-base-embeddings`（可用 `PUBMEDBERT_MODEL_PATH` 指向本地快照）。
 >
-> **耗时参考**（本机 RTX 4060 + cuda）：进程启动+加载约 3.6 s，之后单条标题摘要推理约 6 ms；有全文时按块数线性增长（≤12 块）。CPU 会明显更慢，建议 `--device cpu` 仅用于调试。
+> **耗时参考**（本机 RTX 4060 + cuda）：进程启动+加载约 4 s（三次实测 3.6–4.6 s，含 CUDA 初始化），之后单条标题摘要推理约 6 ms；有全文时按块数线性增长（≤12 块）。CPU 会明显更慢，建议 `--device cpu` 仅用于调试。
 
 ---
 
