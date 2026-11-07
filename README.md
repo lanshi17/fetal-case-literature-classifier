@@ -216,6 +216,259 @@ score < t − 0.15                   → irrelevant
 >
 > **耗时参考**（本机 RTX 4060 + cuda）：进程启动+加载约 4 s（三次实测 3.6–4.6 s，含 CUDA 初始化），之后单条标题摘要推理约 6 ms；有全文时按块数线性增长（≤12 块）。CPU 会明显更慢，建议 `--device cpu` 仅用于调试。
 
+### 3.2 HTTP API 调用示例
+
+API 只有 3 个路由：`GET /`、`GET /health`、`POST /predict`。交互式文档在 `/docs`。
+
+**① 启动**
+
+```bash
+MODEL_BACKEND=best USE_RULES=1 \
+  .venv/bin/uvicorn --app-dir src api:app --host 127.0.0.1 --port 8000 --workers 1
+```
+
+必须 `--app-dir src`；必须**单 worker**（模型常驻显存，多 worker 会重复加载）。进程起来后 `/health` 返回 `model_loaded:true` 才算就绪 —— 模型是懒加载的，别用端口通不通判断。
+
+```bash
+curl -s http://127.0.0.1:8000/health | python3 -m json.tool
+```
+
+```jsonc
+{
+  "status": "ok",
+  "model_loaded": true,
+  "backend": "dora_chunk",
+  "threshold": 0.7619361281394958,
+  "review_threshold": 0.6119361281394958,
+  "feature_mode": "dora_chunk_1536",
+  "device": "cuda",
+  "rules_enabled": true,
+  "encoder_family": "pubmedbert_dora",
+  "model_path_encoder": "NeuML/pubmedbert-base-embeddings",
+  "max_chunks": 12
+}
+```
+
+**② `POST /predict`（JSON）**
+
+```bash
+curl -s -X POST http://127.0.0.1:8000/predict \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "pmid": "11175621",
+    "title": "Nuchal translucency: an ultrasound marker for fetal chromosomal abnormalities.",
+    "abstract": "Increased nuchal translucency is associated with fetal chromosomal abnormalities."
+  }'
+```
+
+```jsonc
+{
+  "doc_id": "11175621",      // 由 pmid 回填
+  "title": "Nuchal translucency: an ultrasound marker for fetal chromosomal abnormalities.",
+  "decision": "relevant",
+  "model_decision": "relevant",
+  "relevance_score": 0.949265,
+  "threshold": 0.7619361281394958,
+  "review_threshold": 0.611936,
+  "full_text_available": false,
+  "pdf_used": false,
+  "feature_mode": "dora_chunk_1536",
+  "encoder_family": "pubmedbert_dora",
+  "backend": "dora_chunk",
+  "rules_enabled": true,
+  "rules_fired": [],
+  "rules_overridden": false,
+  "rules_protected_by_case": false
+}
+```
+
+JSON body 接受字段：`title` / `abstract` / `text` / `year` / `pmid` / `doc_id` / `pdf_base64`（其余字段被忽略，不会报错）。
+
+**③ `POST /predict`（multipart，传 PDF）**
+
+```bash
+curl -s -X POST http://127.0.0.1:8000/predict \
+  -F 'title=Prenatal case report' \
+  -F 'pdf=@paper.pdf'
+```
+
+表单字段：`title` / `abstract` / `text` / `year` / `pmid` / `doc_id` + 文件 `pdf`（或 `file`）。服务端用 PyMuPDF 抽文本后自动置 `pdf_used=true`；PDF 上限 **30 MB**（`MAX_PDF_BYTES` 可调），超了返回 413。JSON 里也可用 `pdf_base64` 传同样的文件。
+
+**④ Python 客户端**
+
+```python
+import requests
+
+r = requests.post("http://127.0.0.1:8000/predict", json={
+    "pmid": "11175621",
+    "title": "Nuchal translucency: an ultrasound marker for fetal chromosomal abnormalities.",
+    "abstract": "Increased nuchal translucency is associated with fetal chromosomal abnormalities.",
+}, timeout=60)
+r.raise_for_status()
+out = r.json()
+print(out["decision"], out["relevance_score"])
+```
+
+批量就是循环调用；服务端无批接口，别开并发压同一个单 worker 进程（推理是同步的，多线程只会排队）。
+
+**⑤ 错误码**
+
+| 码 | 场景 | 响应 |
+|---|---|---|
+| `400` | JSON 解析失败 / `pdf_base64` 非法 / PDF 抽不出文本 | `{"detail": "invalid JSON: ..."}` 等 |
+| `413` | PDF 超过 `MAX_PDF_BYTES` | `{"detail": "PDF too large"}` |
+| `422` | `title`/`abstract`/`text` 全空且无 PDF | `{"detail": "provide title/abstract/text, ..."}` |
+| `503` | 模型未加载（启动失败） | `{"detail": "model not loaded"}`，先查 `/health` 的 `error` |
+
+**⑥ 就绪探针（写进启动脚本）**
+
+```bash
+until curl -sf http://127.0.0.1:8000/health | grep -q '"status":"ok"'; do sleep 1; done
+```
+
+**⑦ 环境变量**
+
+| 变量 | 默认 | 说明 |
+|---|---|---|
+| `MODEL_BACKEND` | `best` | `best`/`dora` → DoRA；其他 → 旧 frozen+LR |
+| `USE_RULES` | `1` | `0`/`false`/`no`/`off` 关闭规则层 |
+| `DEVICE` | 自动 | `cuda` / `cpu` |
+| `MAX_PDF_BYTES` | `31457280` | PDF 上限（字节） |
+| `PORT` | `8000` | 仅 `python src/api.py` 直启时生效 |
+
+> ⚠️ 默认**无鉴权、无 CORS**，不要直接暴露公网；需要时在前面加反向代理或自行挂 `Depends`。
+
+### 3.3 MCP 调用示例
+
+MCP 面向 Agent（Cursor / Claude Desktop 等）。四个工具：`get_screener_info` / `screen_paper` / `screen_pdf` / `screen_batch`。
+
+**① stdio（推荐，Cursor 已配好）**
+
+仓库自带 `.cursor/mcp.json`，重启 Cursor 后即可用，无需手动启动：
+
+```jsonc
+{
+  "mcpServers": {
+    "fetal-case-screener": {
+      "type": "stdio",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": ["${workspaceFolder}/src/mcp_server.py"],
+      "env": { "MODEL_BACKEND": "best", "USE_RULES": "1" }
+    }
+  }
+}
+```
+
+其他客户端（Claude Desktop 等）把 `command`/`args` 换成同一份绝对路径即可。
+
+**② HTTP 传输（给远程 / 容器内的 Agent）**
+
+```bash
+MODEL_BACKEND=best USE_RULES=1 \
+  .venv/bin/python src/mcp_server.py --transport streamable-http --host 127.0.0.1 --port 8765 --preload
+# 端点：POST http://127.0.0.1:8765/mcp
+# 旧协议：--transport sse（同 host/port，端点 /sse）
+```
+
+`--preload` 在开始接收流量前加载模型（否则首个调用会等约 4 s）。HTTP 端点要带 `Accept: application/json, text/event-stream` 并按 MCP 握手流程走，**不适合直接 curl 调试**，用 MCP 客户端。
+
+> ⚠️ **端口冲突**：MCP 默认 `8765`，正好和 `src/scripts/gold_review.py`（金标审核 UI，默认也是 8765）撞车。两者同时跑会 `Address already in use`，换一个 `--port` 即可。
+
+**③ 工具入参（⚠️ 必须包一层 `params`）**
+
+四个工具里除 `get_screener_info` 无参外，其余三个的 JSON-RPC 参数都要求 `{"params": {...}}`，直接平铺字段会报 `Field required` 校验错：
+
+| 工具 | `params` 内容 |
+|---|---|
+| `get_screener_info` | 无（传 `{}`） |
+| `screen_paper` | `title` / `abstract` / `text` / `pmid` / `design` / `use_rules`（均可选） |
+| `screen_pdf` | `pdf_path`（必填）+ `title` / `abstract` / `use_rules` |
+| `screen_batch` | `papers`（1–20 条，每条 `title`/`abstract`/`text`/`pmid`/`design`）+ `use_rules` |
+
+`use_rules` 传 `true`/`false` 可**单次调用**覆盖环境变量；`design` 是给规则层的体裁提示（如 `review`、`NIPT`）。`screen_batch` 上限硬限制 20 条。
+
+**④ Python 客户端实调**
+
+```python
+import asyncio, os
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+ROOT = "/abs/path/to/this/repo"
+
+async def main():
+    p = StdioServerParameters(
+        command=f"{ROOT}/.venv/bin/python",
+        args=[f"{ROOT}/src/mcp_server.py"],
+        env={**os.environ, "MODEL_BACKEND": "best", "USE_RULES": "1"},
+    )
+    async with stdio_client(p) as (r, w):
+        async with ClientSession(r, w) as s:
+            await s.initialize()
+            print([t.name for t in (await s.list_tools()).tools])
+
+            res = await s.call_tool("screen_paper", {"params": {
+                "pmid": "11175621",
+                "title": "Nuchal translucency: an ultrasound marker for fetal chromosomal abnormalities.",
+                "abstract": "Increased nuchal translucency is associated with fetal chromosomal abnormalities.",
+            }})
+            print(res.content[0].text)      # 就是 predict_record 的 JSON
+
+asyncio.run(main())
+```
+
+实跑结果（与 API 同一条输入，分数一致）：
+
+```jsonc
+{
+  "decision": "relevant",
+  "model_decision": "relevant",
+  "relevance_score": 0.949265,
+  "rules_fired": [],
+  "rules_overridden": false
+}
+```
+
+**⑤ 批量**
+
+```python
+res = await s.call_tool("screen_batch", {"params": {"papers": [
+    {"pmid": "b1", "title": "Prenatal diagnosis of trisomy 21 in a fetus",
+     "abstract": "amniocentesis karyotyping confirmed trisomy 21."},
+    {"pmid": "b2", "title": "Fetal ultrasound anomaly cohort",
+     "abstract": "Retrospective cohort of 120 fetuses with increased nuchal translucency; whole exome sequencing performed."},
+]}})
+```
+
+返回是**带外层包装的对象**，不是裸数组（与 CLI `--input` 不同）：
+
+```jsonc
+{
+  "count": 2,
+  "results": [
+    { "doc_id": "b1", "decision": "relevant", "relevance_score": 0.946756, ... },
+    { "doc_id": "b2", "decision": "irrelevant", "model_decision": "relevant",
+      "rules_fired": ["LARGE_PRENATAL_COHORT"], ... }
+  ]
+}
+```
+
+**⑥ 错误与校验行为**
+
+分两类，客户端处理方式不同：
+
+- **业务错误 → `is_error=false`**，正文是 `{"error": ...}` JSON：
+  - `title`/`abstract`/`text` 全空 → `{"error": "provide at least one of title, abstract, or text", "hint": ...}`
+  - 模型加载失败 → `{"error": "model not loaded: ..."}`，先调 `get_screener_info` 看 `status`
+- **入参校验失败 → `is_error=true`**，正文是纯文本 `Error executing tool screen_paper: 1 validation error ...`（**不是** JSON，直接 `json.loads` 会炸）。触发条件：
+  - 字段平铺未包 `params` → `params: Field required`
+  - 拼错/未声明字段 → `Extra inputs are not permitted`（`extra="forbid"`，防静默丢参）
+  - `screen_batch` 的 `papers` 超过 20 条 → 长度约束失败
+
+**⑦ 环境变量**
+
+`MODEL_BACKEND` / `USE_RULES` / `DEVICE` / `MODEL_PATH`，以及 `MCP_TRANSPORT`（`stdio`/`sse`/`streamable-http`）、`MCP_HOST`、`MCP_PORT` —— 均可用命令行参数覆盖，命令行优先。
+
 ---
 
 ## 4. 主结果（seed=42，默认子集 test n=177）
