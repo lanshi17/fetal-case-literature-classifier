@@ -57,3 +57,16 @@ artifacts/finetune_fair/dora/gold_fn.csv
 artifacts/finetune_fair/dora/gold_fp.csv
 artifacts/finetune_fair/dora/test_fn.csv
 artifacts/finetune_fair/dora/test_fp.csv
+
+# Full corpus screening dumps (large; final case subsets are tracked)
+artifacts/screen_full/results.csv
+artifacts/screen_full/results.jsonl
+artifacts/screen_full/results_case_dora.csv
+artifacts/screen_full/results_with_design.csv
+artifacts/screen_full/case_scores.jsonl
+artifacts/screen_full/relevant.csv
+artifacts/screen_full/review.csv
+artifacts/screen_full/irrelevant.csv
+artifacts/screen_full/case_retained.csv
+artifacts/screen_full/case_relevant.csv
+artifacts/screen_full/case_review.csv

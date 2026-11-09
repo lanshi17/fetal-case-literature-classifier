@@ -1,0 +1,53 @@
+{
+  "definition": {
+    "positive_designs": [
+      "case report",
+      "case series"
+    ],
+    "negative_pattern": "cohort|screening|review|method|validation|registry",
+    "features": "title only (TF-IDF word 1-2gram + logistic regression)",
+    "training_label_counts": {
+      "case_report": 279,
+      "case_series": 96,
+      "negative_designs": 488,
+      "excluded_other_or_missing": 111
+    }
+  },
+  "validation": {
+    "n": 863,
+    "positive": 375,
+    "negative": 488,
+    "auc": 0.9636,
+    "threshold": 0.5,
+    "precision": 0.936,
+    "recall": 0.8587,
+    "f1": 0.8957,
+    "confusion": {
+      "tp": 322,
+      "fp": 22,
+      "fn": 53,
+      "tn": 466
+    }
+  },
+  "counts": {
+    "total": 23378,
+    "by_decision_total": {
+      "relevant": 11999,
+      "review": 1753,
+      "irrelevant": 9626
+    },
+    "by_decision_case": {
+      "relevant": 6916,
+      "review": 835,
+      "irrelevant": 4213
+    },
+    "retained_total": 13752,
+    "retained_case": 7751
+  },
+  "outputs": {
+    "results_with_design": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/screen_full/results_with_design.csv",
+    "case_retained": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/screen_full/case_retained.csv",
+    "case_relevant": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/screen_full/case_relevant.csv",
+    "case_review": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/screen_full/case_review.csv"
+  }
+}

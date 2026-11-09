@@ -1,0 +1,85 @@
+{
+  "fold": 0,
+  "n_train": 608,
+  "n_val": 83,
+  "n_test": 173,
+  "pos_train": 265,
+  "pos_val": 36,
+  "pos_test": 75,
+  "best_epoch": 2,
+  "best_val_ap": 0.9944664902998237,
+  "threshold_f1": 0.6464601159095764,
+  "threshold_p90": 0.5407785177230835,
+  "val_ap": 0.9944664902998237,
+  "test_at_f1_thr": {
+    "n": 173,
+    "positives": 75,
+    "negatives": 98,
+    "threshold": 0.6464601159095764,
+    "recall": 0.92,
+    "precision": 0.9583333333333334,
+    "f1": 0.9387755102040817,
+    "f2": 0.9274193548387096,
+    "ap": 0.9903740069720451,
+    "roc_auc": 0.9923809523809524,
+    "confusion_matrix": {
+      "tn": 95,
+      "fp": 3,
+      "fn": 6,
+      "tp": 69
+    },
+    "predicted_positive": 72,
+    "mean_score_positive": 0.7904241206248601,
+    "mean_score_negative": 0.1969536985365712
+  },
+  "test_at_p90_thr": {
+    "n": 173,
+    "positives": 75,
+    "negatives": 98,
+    "threshold": 0.5407785177230835,
+    "recall": 0.9466666666666667,
+    "precision": 0.9466666666666667,
+    "f1": 0.9466666666666667,
+    "f2": 0.9466666666666667,
+    "ap": 0.9903740069720451,
+    "roc_auc": 0.9923809523809524,
+    "confusion_matrix": {
+      "tn": 94,
+      "fp": 4,
+      "fn": 4,
+      "tp": 71
+    },
+    "predicted_positive": 75,
+    "mean_score_positive": 0.7904241206248601,
+    "mean_score_negative": 0.1969536985365712
+  },
+  "test_ap": 0.9903740069720451,
+  "test_roc_auc": 0.9923809523809524,
+  "elapsed_sec": 640.1,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6103962525529297,
+      "val_ap": 0.9904234955047964,
+      "val_f1_best": 0.9565217391304348
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.32004256330822645,
+      "val_ap": 0.9944664902998237,
+      "val_f1_best": 0.9722222222222222
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.2123000689929253,
+      "val_ap": 0.9929196002725414,
+      "val_f1_best": 0.958904109589041
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.1810440585556391,
+      "val_ap": 0.993045112781955,
+      "val_f1_best": 0.9577464788732394
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "fold": 3,
+  "n_train": 608,
+  "n_val": 83,
+  "n_test": 173,
+  "pos_train": 264,
+  "pos_val": 36,
+  "pos_test": 76,
+  "best_epoch": 2,
+  "best_val_ap": 0.9929665004565031,
+  "threshold_f1": 0.21117079257965088,
+  "threshold_p90": 0.18735837936401367,
+  "val_ap": 0.9929665004565031,
+  "test_at_f1_thr": {
+    "n": 173,
+    "positives": 76,
+    "negatives": 97,
+    "threshold": 0.21117079257965088,
+    "recall": 0.9473684210526315,
+    "precision": 0.8674698795180723,
+    "f1": 0.9056603773584906,
+    "f2": 0.9302325581395349,
+    "ap": 0.9715208650657314,
+    "roc_auc": 0.9717851329354313,
+    "confusion_matrix": {
+      "tn": 86,
+      "fp": 11,
+      "fn": 4,
+      "tp": 72
+    },
+    "predicted_positive": 83,
+    "mean_score_positive": 0.7215337292536309,
+    "mean_score_negative": 0.1803667125935407
+  },
+  "test_at_p90_thr": {
+    "n": 173,
+    "positives": 76,
+    "negatives": 97,
+    "threshold": 0.18735837936401367,
+    "recall": 0.9473684210526315,
+    "precision": 0.8674698795180723,
+    "f1": 0.9056603773584906,
+    "f2": 0.9302325581395349,
+    "ap": 0.9715208650657314,
+    "roc_auc": 0.9717851329354313,
+    "confusion_matrix": {
+      "tn": 86,
+      "fp": 11,
+      "fn": 4,
+      "tp": 72
+    },
+    "predicted_positive": 83,
+    "mean_score_positive": 0.7215337292536309,
+    "mean_score_negative": 0.1803667125935407
+  },
+  "test_ap": 0.9715208650657314,
+  "test_roc_auc": 0.9717851329354313,
+  "elapsed_sec": 634.0,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6083165424826898,
+      "val_ap": 0.9809393206357989,
+      "val_f1_best": 0.935064935064935
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.29777742564482124,
+      "val_ap": 0.9929665004565031,
+      "val_f1_best": 0.972972972972973
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.20664504614021434,
+      "val_ap": 0.987949354734515,
+      "val_f1_best": 0.96
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.17893958434854684,
+      "val_ap": 0.9895819729733039,
+      "val_f1_best": 0.972972972972973
+    }
+  ]
+}

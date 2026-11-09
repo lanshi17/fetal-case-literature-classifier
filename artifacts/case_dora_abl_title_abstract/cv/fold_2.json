@@ -1,0 +1,86 @@
+{
+  "fold": 2,
+  "input_mode": "title_abstract",
+  "n_train": 608,
+  "n_val": 83,
+  "n_test": 173,
+  "pos_train": 265,
+  "pos_val": 36,
+  "pos_test": 75,
+  "best_epoch": 3,
+  "best_val_ap": 1.0,
+  "threshold_f1": 0.2578219175338745,
+  "threshold_p90": 0.22053663432598114,
+  "val_ap": 1.0,
+  "test_at_f1_thr": {
+    "n": 173,
+    "positives": 75,
+    "negatives": 98,
+    "threshold": 0.2578219175338745,
+    "recall": 0.96,
+    "precision": 0.935064935064935,
+    "f1": 0.9473684210526315,
+    "f2": 0.9549071618037135,
+    "ap": 0.9859468570462445,
+    "roc_auc": 0.9839455782312926,
+    "confusion_matrix": {
+      "tn": 93,
+      "fp": 5,
+      "fn": 3,
+      "tp": 72
+    },
+    "predicted_positive": 77,
+    "mean_score_positive": 0.7333507285515467,
+    "mean_score_negative": 0.22334253879225985
+  },
+  "test_at_p90_thr": {
+    "n": 173,
+    "positives": 75,
+    "negatives": 98,
+    "threshold": 0.22053663432598114,
+    "recall": 0.96,
+    "precision": 0.9230769230769231,
+    "f1": 0.9411764705882353,
+    "f2": 0.9523809523809523,
+    "ap": 0.9859468570462445,
+    "roc_auc": 0.9839455782312926,
+    "confusion_matrix": {
+      "tn": 92,
+      "fp": 6,
+      "fn": 3,
+      "tp": 72
+    },
+    "predicted_positive": 78,
+    "mean_score_positive": 0.7333507285515467,
+    "mean_score_negative": 0.22334253879225985
+  },
+  "test_ap": 0.9859468570462445,
+  "test_roc_auc": 0.9839455782312926,
+  "elapsed_sec": 54.5,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6142077851844462,
+      "val_ap": 0.9977664067576348,
+      "val_f1_best": 0.972972972972973
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.520847098607766,
+      "val_ap": 0.9933884660869358,
+      "val_f1_best": 0.9722222222222222
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.35752817860951547,
+      "val_ap": 1.0,
+      "val_f1_best": 1.0
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.3072572475495307,
+      "val_ap": 1.0,
+      "val_f1_best": 1.0
+    }
+  ]
+}

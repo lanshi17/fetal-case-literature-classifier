@@ -1,0 +1,23 @@
+{
+  "total": 23378,
+  "scored": 13752,
+  "by_decision_total": {
+    "relevant": 11999,
+    "review": 1753,
+    "irrelevant": 9626
+  },
+  "by_decision_case": {
+    "relevant": 7239,
+    "review": 809,
+    "irrelevant": 873
+  },
+  "retained_total": 13752,
+  "retained_case": 8048,
+  "retained_case_model": 8019,
+  "explicit_title_overrides": 29,
+  "outputs": {
+    "case_dora_retained": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/screen_full/case_dora_retained.csv",
+    "case_dora_relevant": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/screen_full/case_dora_relevant.csv",
+    "case_dora_review": "/data/yangzs/Projects/02_Reproduction/10_genetic-variant-screening/artifacts/screen_full/case_dora_review.csv"
+  }
+}

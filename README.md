@@ -13,6 +13,8 @@
 | 规则层 | 硬排除 NIPT/大规模筛查、综述/指南、GWAS/数据库等；病例线索保护 |
 | 决策 | `score ≥ t` → relevant；`t−0.15 ≤ score < t` → review；否则 irrelevant；规则可强制排除或降为 review |
 
+另有 **case-only 二阶段模型**（`artifacts/case_dora/`）：在 864 篇 `design` 标签上以同一分块 DoRA 架构判别 `case report / case series`，5 折 test AP **0.987 ± 0.009**、F1 **0.938 ± 0.021**；全量 23,378 篇筛选后保留 13,752，case-only **8,048**。已发布到 Hugging Face：[`lanshi/prenatal-case-dora`](https://huggingface.co/lanshi/prenatal-case-dora)。详见 §3.6 / §4.3。
+
 旧方案 frozen PubMedBERT + LR：`artifacts/model.joblib`（`--legacy-lr`）。SPECTER2 已弃用（`artifacts/archive_specter2/`）。
 
 ---
@@ -24,6 +26,7 @@ src/
   encoder.py                 # 分块编码 / 池化（冻结 PubMedBERT）
   rule_layer.py              # 困难负样本规则层
   predict.py                 # 推理：默认 DoRA+rules，--legacy-lr 走旧基线
+  case_model.py              # case-only DoRA 推理封装（case report / case series）
   api.py                     # FastAPI 服务
   mcp_server.py              # MCP 入口（stdio / sse / streamable-http）
   train.py                   # frozen + LR 基线训练
@@ -34,6 +37,12 @@ src/
     eval_rule_layer.py       # 规则层评测
     gold_review.py           # 金标审核（Web / 终端）
     export_dora_review.py    # 导出 DoRA 分数与 FN/FP 复核队列
+    screen_corpus.py         # 全量 PDF 语料筛选（23k → 三档结果 + 汇总，可断点续跑）
+    filter_case_type.py      # 仅保留 case report / case series（标题级快速分类器）
+    finetune_case_dora.py    # case-only DoRA 训练（design 标签，5 折 CV + 最终模型）
+    case_baselines.py        # 5 折基准/消融（TF-IDF、冻结 PubMedBERT、输入/池化）
+    score_case_corpus.py     # 用 case-only DoRA 对保留集推理，输出最终 case 集合
+    push_to_hf.py            # 上传 case-only 模型包到 Hugging Face Hub
     ahp_label/               # 多模型 AHP 弱标流水线
     <历史基线脚本>            # compare_* / retrain_* / eval_hardening / error_audit 等
 docs/
@@ -469,9 +478,87 @@ res = await s.call_tool("screen_batch", {"params": {"papers": [
 
 `MODEL_BACKEND` / `USE_RULES` / `DEVICE` / `MODEL_PATH`，以及 `MCP_TRANSPORT`（`stdio`/`sse`/`streamable-http`）、`MCP_HOST`、`MCP_PORT` —— 均可用命令行参数覆盖，命令行优先。
 
+### 3.4 全量语料筛选（23k PDF）
+
+`src/scripts/screen_corpus.py` 直接读取 AutomatedPubMed 下载索引与 PDF 全量，逐篇抽全文 →
+DoRA 打分 → 规则层，按 PMID 输出三档结果。PDF 抽取放在隔离子进程（MuPDF 遇到坏文件可能
+段错误），单篇崩溃/超时只会记 `extract_error` 并继续；结果逐批落盘，可断点续跑。
+
+```bash
+# 冒烟 50 篇
+.venv/bin/python src/scripts/screen_corpus.py --limit 50 --out-dir artifacts/screen_smoke
+
+# 全量（默认索引/PDF 目录见脚本常量；中断后原命令重跑即续）
+.venv/bin/python src/scripts/screen_corpus.py --out-dir artifacts/screen_full
+
+# 分片/分段跑（--resume 默认开启，已完成的 PMID 自动跳过）
+.venv/bin/python src/scripts/screen_corpus.py --start 0 --limit 6000
+```
+
+产物在 `--out-dir`：`results.jsonl`/`results.csv`（全量，含分数、规则命中、抽取状态）、
+`relevant.csv`/`review.csv`/`irrelevant.csv`、`summary.json`、`REPORT.md`。
+PDF 无文本（扫描件/抽取失败）仍会用标题打分，并在 `full_text_available` / `ocr_needed` /
+`extract_error` 中标记，不静默丢弃。
+
+### 3.5 仅保留 case 类（case report / case series）
+
+相关性模型判断主题匹配，队列研究也可能高分；这里再做一层研究设计过滤。两种方式：
+
+1. **标题级快速分类**：`filter_case_type.py`，TF-IDF + 逻辑回归，仅用标题，秒级完成；
+2. **case-only DoRA（推荐）**：`finetune_case_dora.py` 用同一分块/池化架构在 `design` 标签上
+   微调，再用 `score_case_corpus.py` 对保留集推理。全文输入，5 折 test AP 0.987 ± 0.009、
+   F1 0.938 ± 0.021，优于标题级分类器（详见 3.6）。
+
+```bash
+.venv/bin/python src/scripts/filter_case_type.py            # 默认阈值 0.5
+.venv/bin/python src/scripts/filter_case_type.py --threshold 0.6
+```
+
+产物（`artifacts/screen_full/`）：`case_retained.csv`（relevant+review 中的 case 类）、
+`case_relevant.csv`、`case_review.csv`、`results_with_design.csv`（全量 + `design_score`）、
+`case_summary.json`、`CASE_ONLY.md`。5 折交叉验证 AUC 0.964，阈值 0.5 时 P 0.936 / R 0.859。
+
+### 3.6 case-only DoRA 训练与推理
+
+目标：`design ∈ {case report, case series}` 为正类，cohort / screening / review / method /
+validation / registry 为负类；缺失或 `other` 不参与训练（864 篇，376 正 / 488 负）。
+架构与相关性模型一致：PubMedBERT + DoRA(r=16, α=32)、480 token × 12 块、1536-d 池化特征。
+
+```bash
+# 5 折 CV（每折独立训练，结果写 artifacts/case_dora/cv/；可按折分段跑）
+.venv/bin/python src/scripts/finetune_case_dora.py --folds 0,1
+.venv/bin/python src/scripts/finetune_case_dora.py --folds 2,3
+.venv/bin/python src/scripts/finetune_case_dora.py --folds 4
+# 用 CV 中位 epoch 在全量 864 篇上训练最终模型
+.venv/bin/python src/scripts/finetune_case_dora.py --final
+
+# 基准与消融（majority / TF-IDF / frozen PubMedBERT / DoRA 输入）
+.venv/bin/python src/scripts/case_baselines.py
+
+# 对保留集（decision != irrelevant）推理，断点续跑
+.venv/bin/python src/scripts/score_case_corpus.py --start 0 --limit 5000
+.venv/bin/python src/scripts/score_case_corpus.py --build-only   # 仅重建汇总
+
+# 上传到 Hugging Face（需先 hf auth login；脚本固定官方 endpoint）
+.venv/bin/python src/scripts/push_to_hf.py --repo-id <user>/prenatal-case-dora --public
+```
+
+最终模型：`artifacts/case_dora/checkpoint/`，阈值 `config.json`（F1 阈值 0.396；
+高精度模式 `threshold_p90=0.350`）。5 折 test AP **0.987 ± 0.009**、F1 **0.938 ± 0.021**；
+OOF AUC **0.970**。推理时若标题显式含 `case report` / `case series`，或 `report of N<100 cases` /
+`series of N<100`，直接保留（避免标注噪声把大样本 case series 学成 cohort），其余按模型阈值。
+全量 13,752 篇保留中判出 **8,048** 篇（relevant 7,239 / review 809；模型直接判 8,019 + 显式线索 29）。
+推理产物：`case_scores.jsonl`、`results_case_dora.csv`、`case_dora_retained.csv`（最终 case 集合）、
+`case_dora_relevant.csv`、`case_dora_review.csv`、`CASE_DORA.md`。
+
+Hugging Face 模型仓库：[`lanshi/prenatal-case-dora`](https://huggingface.co/lanshi/prenatal-case-dora)
+（`model.safetensors`、`config.json`、`modeling_case_dora.py`、模型卡与 CV 指标）。
+
 ---
 
-## 4. 主结果（seed=42，默认子集 test n=177）
+## 4. 主结果
+
+### 4.1 相关性（seed=42，默认子集 test n=177）
 
 Pipeline 口径：`relevant|review` 计为召回保留（仅 `irrelevant` 为漏检）。
 
@@ -485,6 +572,72 @@ Pipeline 口径：`relevant|review` 计为召回保留（仅 `irrelevant` 为漏
 
 更多：[`artifacts/rule_layer/REPORT.md`](artifacts/rule_layer/REPORT.md)、[`artifacts/ablation_abcd/REPORT.md`](artifacts/ablation_abcd/REPORT.md)。
 
+### 4.2 全量语料（23,378 篇）
+
+| 决策 | 篇数 | 占比 |
+|---|---:|---:|
+| relevant | 11,999 | 51.33% |
+| review | 1,753 | 7.50% |
+| irrelevant | 9,626 | 41.18% |
+
+正文抽取成功 23,292 篇；86 篇无正文、114 篇疑似扫描件，均以标题打分并标记，未静默丢弃。
+规则层改判 664 篇，病例线索保护 8,516 篇。产物见 `artifacts/screen_full/`。
+
+### 4.3 case-only（13,752 保留）
+
+| 集合 | 篇数 |
+|---|---:|
+| relevant ∩ case | 7,239 |
+| review ∩ case | 809 |
+| **case-only 合计** | **8,048** |
+| 模型直接判 case | 8,019 |
+| 标题显式 case 线索追加 | 29 |
+
+5 折 test 评估矩阵（阈值由各折内部 val 选取后应用到 test）：
+
+| Fold | Thr | TP | FP | FN | TN | P | R | F1 | AP | AUC |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 0.6465 | 69 | 3 | 6 | 95 | 0.958 | 0.920 | 0.939 | 0.990 | 0.992 |
+| 1 | 0.4327 | 70 | 1 | 5 | 97 | 0.986 | 0.933 | 0.959 | 0.993 | 0.994 |
+| 2 | 0.4080 | 74 | 5 | 1 | 93 | 0.937 | 0.987 | 0.961 | 0.996 | 0.997 |
+| 3 | 0.2112 | 72 | 11 | 4 | 86 | 0.868 | 0.947 | 0.906 | 0.972 | 0.972 |
+| 4 | 0.2449 | 73 | 10 | 2 | 87 | 0.880 | 0.973 | 0.924 | 0.984 | 0.984 |
+| **均值** | — | — | — | — | — | **0.926** | **0.952** | **0.938** | **0.987** | **0.988** |
+
+OOF（部署阈值 0.3962）：TP 356 / FP 22 / FN 20 / TN 466，P 0.942 / R 0.947 / F1 0.944。
+
+与标题级分类器（7,751）重叠 6,910；DoRA 新增 1,138、剔除 841。最终文件：
+`artifacts/screen_full/case_dora_retained.csv`。
+
+### 4.4 基准与消融（case-only，5 折）
+
+同一 5 折划分；阈值在各折内部 val 上选取。AP/F1 为折均值 ± 标准差。
+
+| 方法 | 输入 | AP | AUC | P | R | F1 |
+|---|---|---:|---:|---:|---:|---:|
+| majority | — | — | — | 0.000 | 0.000 | 0.000 |
+| TF-IDF + LR | title | 0.963 ± 0.007 | 0.964 | 0.876 | 0.894 | 0.882 ± 0.018 |
+| TF-IDF + LR | title+abstract | 0.971 ± 0.016 | 0.974 | 0.938 | 0.910 | 0.923 ± 0.027 |
+| frozen PubMedBERT + LR | title | 0.953 ± 0.010 | 0.956 | 0.872 | 0.873 | 0.869 ± 0.029 |
+| frozen PubMedBERT + LR | title+abstract | 0.961 ± 0.020 | 0.965 | 0.910 | 0.896 | 0.902 ± 0.019 |
+| frozen PubMedBERT + LR | full, mean only | 0.968 ± 0.018 | 0.972 | 0.910 | 0.878 | 0.890 ± 0.046 |
+| frozen PubMedBERT + LR | full, single 512 | 0.960 ± 0.016 | 0.961 | 0.892 | 0.899 | 0.894 ± 0.017 |
+| frozen PubMedBERT + LR | full, 12 chunks | 0.971 ± 0.016 | 0.974 | 0.894 | 0.910 | 0.897 ± 0.049 |
+| DoRA | full, 12 chunks | 0.987 ± 0.009 | 0.988 | 0.926 | 0.952 | 0.938 ± 0.021 |
+| DoRA | title+abstract | 0.974 ± 0.008 | 0.975 | 0.916 | 0.936 | 0.926 ± 0.024 |
+
+要点：冻结特征 + LR 已到 AP 0.971；DoRA 微调再 +0.016。DoRA 下全文相对 title+abstract
+增益有限（AP 0.987 vs 0.974；F1 0.938 vs 0.926）；title+abstract TF-IDF 已达 F1 0.923，
+说明设计类型主要由标题/摘要的显式表述决定。池化用 12 块优于 mean-only 与单 512 截断。
+产物：`artifacts/case_dora/BASELINES.md`、`baselines.json`。
+
+### 4.5 架构图
+
+![Quiet Locus architecture](artifacts/canvas/architecture.png)
+
+- PDF：[`artifacts/canvas/architecture.pdf`](artifacts/canvas/architecture.pdf)
+- 设计哲学：[`artifacts/canvas/QUIET_LOCUS.md`](artifacts/canvas/QUIET_LOCUS.md)
+
 ---
 
 ## 5. 训练与复现（可选）
@@ -495,6 +648,13 @@ Pipeline 口径：`relevant|review` 计为召回保留（仅 `irrelevant` 为漏
 
 # 公平分块微调（DoRA / full / galore；device 自动 cuda→cpu）
 .venv/bin/python src/scripts/finetune_chunk_fair.py --method dora
+
+# case-only DoRA（design 标签；分折跑 CV，再用中位 epoch 训最终模型）
+.venv/bin/python src/scripts/finetune_case_dora.py --folds 0,1,2,3,4
+.venv/bin/python src/scripts/finetune_case_dora.py --final
+
+# 基准与消融（majority / TF-IDF / frozen PubMedBERT / DoRA 输入）
+.venv/bin/python src/scripts/case_baselines.py
 
 # AHP 弱标波次
 bash src/scripts/ahp_label/run_wave.sh
@@ -529,3 +689,7 @@ bash src/scripts/ahp_label/run_wave.sh
 - 仅研究用途，非临床决策工具。
 - API 默认无鉴权，请单 worker 加载大模型。
 - 金标规模仍有限（49）；规则偏保守，边界病例依赖 `review` 人工复核。
+- case-only 设计分类器仅用 864 篇 `design` 标签，标签本身存在“大样本 retrospective case series
+  被标成 cohort”的不一致；推理对标题显式 case 线索做保留保护，边界条目仍建议看 `review`
+  档与 `case_score` 人工复核。
+- 全量筛选中有 86 篇无正文、114 篇疑似扫描件，仅用标题打分，相关性与 case 判定置信度偏低。

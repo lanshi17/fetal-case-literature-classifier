@@ -1,0 +1,53 @@
+{
+  "oof_n": 864,
+  "oof_ap": 0.9650050959894999,
+  "oof_roc_auc": 0.9699326386466689,
+  "oof_at_f1_thr": {
+    "n": 864,
+    "positives": 376,
+    "negatives": 488,
+    "threshold": 0.39624494,
+    "recall": 0.9468085106382979,
+    "precision": 0.9417989417989417,
+    "f1": 0.9442970822281167,
+    "f2": 0.9458023379383634,
+    "ap": 0.9650050959894999,
+    "roc_auc": 0.9699326386466689,
+    "confusion_matrix": {
+      "tn": 466,
+      "fp": 22,
+      "fn": 20,
+      "tp": 356
+    },
+    "predicted_positive": 378,
+    "mean_score_positive": 0.7090438741223404,
+    "mean_score_negative": 0.23781444847540986
+  },
+  "oof_at_p90_thr": {
+    "n": 864,
+    "positives": 376,
+    "negatives": 488,
+    "threshold": 0.35017881,
+    "recall": 0.9601063829787234,
+    "precision": 0.9002493765586035,
+    "f1": 0.9292149292149292,
+    "f2": 0.94750656167979,
+    "ap": 0.9650050959894999,
+    "roc_auc": 0.9699326386466689,
+    "confusion_matrix": {
+      "tn": 448,
+      "fp": 40,
+      "fn": 15,
+      "tp": 361
+    },
+    "predicted_positive": 401,
+    "mean_score_positive": 0.7090438741223404,
+    "mean_score_negative": 0.23781444847540986
+  },
+  "fold_test_ap_mean": 0.9868910128957168,
+  "fold_test_ap_std": 0.008620584780311445,
+  "fold_test_f1_mean": 0.9376859182203934,
+  "fold_test_f1_std": 0.02101580232819384,
+  "fold_test_precision_mean": 0.9255891277715605,
+  "fold_test_recall_mean": 0.9521403508771931
+}
