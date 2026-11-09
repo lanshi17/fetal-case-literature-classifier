@@ -21,6 +21,13 @@ vs other study designs (cohort, screening/validation, review, method, registry).
 
 This is a **research artifact**, not a clinical decision tool.
 
+[![GitHub](https://img.shields.io/badge/GitHub-source-181717?logo=github&logoColor=white)](https://github.com/lanshi17/fetal-case-literature-classifier)
+
+## Model Sources
+
+- **Code / training / evaluation:** [github.com/lanshi17/fetal-case-literature-classifier](https://github.com/lanshi17/fetal-case-literature-classifier)
+- **Architecture plate:** [PDF](architecture.pdf) · [Design philosophy](DESIGN_PHILOSOPHY.md)
+
 ## Model details
 
 | Component | Setting |

@@ -1,0 +1,50 @@
+name: Sync model card to Hugging Face
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "artifacts/hf_upload/case_dora/README.md"
+      - "artifacts/canvas/architecture.png"
+      - "artifacts/canvas/architecture.pdf"
+      - "artifacts/canvas/QUIET_LOCUS.md"
+      - ".github/workflows/sync-to-hf.yml"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install client
+        run: pip install "huggingface_hub>=0.23"
+      - name: Upload model card and architecture assets
+        if: ${{ env.HF_TOKEN != '' }}
+        run: |
+          python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          repo = "lanshi/prenatal-case-dora"
+          files = [
+              ("artifacts/hf_upload/case_dora/README.md", "README.md"),
+              ("artifacts/canvas/architecture.png", "architecture.png"),
+              ("artifacts/canvas/architecture.pdf", "architecture.pdf"),
+              ("artifacts/canvas/QUIET_LOCUS.md", "DESIGN_PHILOSOPHY.md"),
+          ]
+          for src, dst in files:
+              api.upload_file(
+                  path_or_fileobj=src,
+                  path_in_repo=dst,
+                  repo_id=repo,
+                  repo_type="model",
+                  commit_message=f"Sync {dst} from GitHub",
+              )
+              print("uploaded", dst)
+          PY
