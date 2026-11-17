@@ -552,7 +552,7 @@ OOF AUC **0.970**。推理时若标题显式含 `case report` / `case series`，
 `case_dora_relevant.csv`、`case_dora_review.csv`、`CASE_DORA.md`。
 
 Hugging Face 模型仓库：[`lanshi/prenatal-case-dora`](https://huggingface.co/lanshi/prenatal-case-dora)
-（`model.safetensors`、`config.json`、`modeling_case_dora.py`、模型卡与 CV 指标）。
+（`model.safetensors`、`config.json`、`modeling_case_dora.py`、模型卡、架构图与 CV 指标）。
 
 ---
 
@@ -633,9 +633,23 @@ OOF（部署阈值 0.3962）：TP 356 / FP 22 / FN 20 / TN 466，P 0.942 / R 0.9
 
 ### 4.5 架构图
 
-![Quiet Locus architecture](artifacts/canvas/architecture.png)
+![Case-only DoRA model architecture](artifacts/canvas/model-architecture.png)
 
-- PDF：[`artifacts/canvas/architecture.pdf`](artifacts/canvas/architecture.pdf)
+单次前向：题目/摘要与全文拼接 → 480 token 切块（≤12 块，前 2 块保留，其余均匀抽样）→
+每块过 PubMedBERT（DoRA 挂在 `query`/`value`，可训 611,330 / 110,093,570 = 0.56%）→
+块向量 masked mean 后取 `L2(mean_all) ‖ L2(mean_first_2)` → 1536-d → 线性头 → `p(case)`。
+训练/推理共用同一分块与池化协议（"fair"）；阈值 0.3962 为 OOF F1 最优点，0.3502 为 P≥0.90 点。
+标题显式含 `case report` / `case series` 的保护规则在语料流水线里，**不在 checkpoint 内**。
+
+系统层面是两个这样的模型串联（设计海报）：
+
+| 阶段 | 模型 | 输入 → 输出 | 阈值 |
+|---|---|---|---|
+| Pass I | 相关性 DoRA + 规则层 | 23,378 篇 → relevant 11,999 / review 1,753 / irrelevant 9,626 | 0.7619 |
+| Pass II | case-only DoRA | 保留 13,752 篇 → case 8,048 / non-case 5,704 | 0.3962 |
+
+- 模型图：[`model-architecture.svg`](artifacts/canvas/model-architecture.svg)（矢量，可改）
+- 系统海报：[`architecture.png`](artifacts/canvas/architecture.png) · [PDF](artifacts/canvas/architecture.pdf)
 - 设计哲学：[`artifacts/canvas/QUIET_LOCUS.md`](artifacts/canvas/QUIET_LOCUS.md)
 
 ---

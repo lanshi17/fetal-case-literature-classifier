@@ -6,6 +6,7 @@ on:
     paths:
       - "artifacts/hf_upload/case_dora/README.md"
       - "artifacts/canvas/architecture.png"
+      - "artifacts/canvas/model-architecture.png"
       - "artifacts/canvas/architecture.pdf"
       - "artifacts/canvas/QUIET_LOCUS.md"
       - ".github/workflows/sync-to-hf.yml"
@@ -35,6 +36,7 @@ jobs:
           files = [
               ("artifacts/hf_upload/case_dora/README.md", "README.md"),
               ("artifacts/canvas/architecture.png", "architecture.png"),
+              ("artifacts/canvas/model-architecture.png", "model-architecture.png"),
               ("artifacts/canvas/architecture.pdf", "architecture.pdf"),
               ("artifacts/canvas/QUIET_LOCUS.md", "DESIGN_PHILOSOPHY.md"),
           ]

@@ -26,7 +26,7 @@ This is a **research artifact**, not a clinical decision tool.
 ## Model Sources
 
 - **Code / training / evaluation:** [github.com/lanshi17/fetal-case-literature-classifier](https://github.com/lanshi17/fetal-case-literature-classifier)
-- **Architecture plate:** [PDF](architecture.pdf) · [Design philosophy](DESIGN_PHILOSOPHY.md)
+- **Model diagram:** [PNG](model-architecture.png) · **System plate:** [PDF](architecture.pdf)
 
 ## Model details
 
@@ -47,9 +47,22 @@ The design labels come from an LLM + review annotation pipeline and contain some
 
 ## Architecture
 
-![Two-pass architecture](architecture.png)
+![Case-only DoRA model architecture](model-architecture.png)
 
-[PDF version](architecture.pdf) · [Design philosophy](DESIGN_PHILOSOPHY.md)
+One document, one forward pass: title/abstract and full text are concatenated, split into
+480-token windows (at most 12; the first 2 are kept, the rest sampled evenly), encoded by
+PubMedBERT with DoRA on `query`/`value`, pooled as `L2(mean_all) ‖ L2(mean_first_2)` into
+1536-d, and classified by a linear head. The same chunking and pooling protocol is used in
+training and inference. Thresholds: **0.3962** = out-of-fold F1 optimum, **0.3502** =
+precision ≥ 0.90.
+
+The corpus pipeline that uses this model is a two-pass system — a relevance DoRA + rule layer
+(threshold 0.7619, 23,378 → 13,752 retained), then this design model (13,752 → 8,048 case):
+
+- [System plate (PNG)](architecture.png) · [PDF](architecture.pdf) · [Design philosophy](DESIGN_PHILOSOPHY.md)
+
+The explicit-title guard (`case report` / `case series` / `report of N<100 cases`) lives in the
+pipeline, **not** in this checkpoint.
 
 ## Evaluation
 
@@ -141,6 +154,9 @@ DoRA-wrapped encoder and pooling exactly as used during training.
 | `model.safetensors` | full model state (encoder + DoRA adapter + classifier) |
 | `config.json` | base model, adapter, chunking, thresholds, CV metrics |
 | `modeling_case_dora.py` | self-contained inference code |
+| `model-architecture.png` | model architecture diagram |
+| `architecture.png`, `architecture.pdf` | system-level two-pass plate |
+| `DESIGN_PHILOSOPHY.md` | design notes behind the plate |
 | `cv_metrics.json`, `report.md` | cross-validation results |
 | `tokenizer.json`, `tokenizer_config.json` | tokenizer snapshot |
 
