@@ -1,80 +1,98 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560" role="img" aria-label="Case-only DoRA model architecture: title and full text to 480-token chunks, PubMedBERT with DoRA, dual mean pooling to 1536 dimensions, linear head and thresholds">
-  <rect width="1000" height="560" fill="#F4F1E8"/>
-  <g font-family="Liberation Sans, DejaVu Sans, Helvetica, Arial, sans-serif" fill="#23211D">
-    <!-- header -->
-    <text x="40" y="44" font-size="10.5" letter-spacing="2.6" fill="#6F6A60">MODEL ARCHITECTURE</text>
-    <text x="40" y="80" font-family="Liberation Serif, DejaVu Serif, Georgia, serif" font-size="32">Case-only DoRA</text>
-    <text x="40" y="103" font-size="12" fill="#6F6A60">case report / case series &#8594; probability, one document at a time</text>
-    <text x="960" y="44" font-size="10.5" text-anchor="end" fill="#6F6A60">lanshi/prenatal-case-dora</text>
-    <text x="960" y="80" font-size="10.5" text-anchor="end" letter-spacing="1.4" fill="#6F6A60">BASE &#183; NeuML/pubmedbert-base-embeddings</text>
-    <line x1="40" y1="118" x2="960" y2="118" stroke="#23211D" stroke-opacity="0.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="860" viewBox="0 0 760 860" role="img" aria-label="Figure 1: Case-only DoRA document classifier architecture">
+  <rect width="760" height="860" fill="#ffffff"/>
+  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif" fill="#111111">
 
-    <!-- stage 01 -->
-    <rect x="40" y="146" width="205" height="164" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
-    <text x="54" y="168" font-size="9.5" letter-spacing="1.4" fill="#8C3A2B">01</text>
-    <text x="54" y="192" font-size="14" font-weight="bold" letter-spacing="0.9">TEXT &#8594; CHUNKS</text>
-    <text x="54" y="217" font-size="12" fill="#6F6A60">title &#183; abstract &#183; full text</text>
-    <text x="54" y="236" font-size="12" fill="#6F6A60">PDF &#8594; text if needed</text>
-    <text x="54" y="255" font-size="12" fill="#6F6A60">480-token windows, &#8804; 12</text>
-    <text x="54" y="274" font-size="12" fill="#6F6A60">first 2 kept, rest sampled</text>
-    <text x="54" y="296" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="11">[n, 480]   n &#8804; 12</text>
+    <!-- ================= output ================= -->
+    <rect x="310" y="40" width="140" height="34" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+    <text x="380" y="62" font-size="12" text-anchor="middle"><tspan font-style="italic">p</tspan>(case)</text>
 
-    <!-- stage 02 -->
-    <rect x="273" y="146" width="205" height="164" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
-    <text x="287" y="168" font-size="9.5" letter-spacing="1.4" fill="#8C3A2B">02</text>
-    <text x="287" y="192" font-size="14" font-weight="bold" letter-spacing="0.9">ENCODER</text>
-    <text x="287" y="217" font-size="12" fill="#6F6A60">PubMedBERT-base, 110M</text>
-    <text x="287" y="236" font-size="12" fill="#6F6A60">DoRA r=16, &#945;=32</text>
-    <text x="287" y="255" font-size="12" fill="#6F6A60">targets query, value</text>
-    <text x="287" y="274" font-size="12" fill="#6F6A60">611,330 trainable (0.56%)</text>
-    <text x="287" y="296" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="11">[n, 480, 768]</text>
+    <text x="468" y="40" font-size="8.5" fill="#555555">decision</text>
+    <text x="468" y="55" font-size="9"><tspan font-style="italic">p</tspan> &#8805; 0.3962 &#8594; case <tspan fill="#555555">(F1-optimal)</tspan></text>
+    <text x="468" y="69" font-size="9"><tspan font-style="italic">p</tspan> &#8805; 0.3502 &#8594; case <tspan fill="#555555">(precision &#8805; 0.90)</tspan></text>
+    <line x1="452" y1="58" x2="464" y2="58" stroke="#999999" stroke-width="0.8"/>
 
-    <!-- stage 03 -->
-    <rect x="506" y="146" width="205" height="164" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
-    <text x="520" y="168" font-size="9.5" letter-spacing="1.4" fill="#8C3A2B">03</text>
-    <text x="520" y="192" font-size="14" font-weight="bold" letter-spacing="0.9">POOL</text>
-    <text x="520" y="217" font-size="12" fill="#6F6A60">masked mean per chunk</text>
-    <text x="520" y="236" font-size="12" fill="#6F6A60">&#8594; one 768-d vector</text>
-    <text x="520" y="255" font-size="12" fill="#6F6A60">L2(mean all chunks)</text>
-    <text x="520" y="274" font-size="12" fill="#6F6A60">&#8214; L2(mean first 2)</text>
-    <text x="520" y="296" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="11">[1536]</text>
+    <!-- ================= softmax ================= -->
+    <rect x="310" y="112" width="140" height="34" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+    <text x="380" y="134" font-size="11" text-anchor="middle">softmax</text>
 
-    <!-- stage 04 -->
-    <rect x="739" y="146" width="221" height="164" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
-    <text x="753" y="168" font-size="9.5" letter-spacing="1.4" fill="#8C3A2B">04</text>
-    <text x="753" y="192" font-size="14" font-weight="bold" letter-spacing="0.9">HEAD &#8594; DECIDE</text>
-    <text x="753" y="217" font-size="12" fill="#6F6A60">Linear 1536 &#8594; 2, softmax</text>
-    <text x="753" y="236" font-size="12" fill="#6F6A60">p &#8805; 0.3962 &#8594; case (F1)</text>
-    <text x="753" y="255" font-size="12" fill="#6F6A60">p &#8805; 0.3502 &#8594; case</text>
-    <text x="753" y="274" font-size="12" fill="#6F6A60">(precision &#8805; 0.90)</text>
-    <text x="753" y="296" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="11">p = softmax[1]</text>
+    <!-- ================= linear head ================= -->
+    <rect x="280" y="164" width="200" height="42" fill="#f5f5f5" stroke="#111111" stroke-width="1.2"/>
+    <text x="380" y="189" font-size="11" text-anchor="middle">Linear (1536 &#8594; 2)</text>
 
-    <!-- arrows -->
-    <g stroke="#23211D" stroke-width="1.3" fill="#23211D">
-      <line x1="245" y1="228" x2="265" y2="228"/><polygon points="273,228 265.5,224.2 265.5,231.8"/>
-      <line x1="478" y1="228" x2="498" y2="228"/><polygon points="506,228 498.5,224.2 498.5,231.8"/>
-      <line x1="711" y1="228" x2="731" y2="228"/><polygon points="739,228 731.5,224.2 731.5,231.8"/>
+    <!-- ================= concat ================= -->
+    <rect x="250" y="224" width="260" height="40" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+    <text x="380" y="248" font-size="10.5" text-anchor="middle">concatenate &#8594; 1536-d</text>
+
+    <!-- ================= pooling ================= -->
+    <rect x="120" y="300" width="220" height="54" fill="#f5f5f5" stroke="#111111" stroke-width="1.2"/>
+    <text x="230" y="321" font-size="10" text-anchor="middle">L2-normalized mean</text>
+    <text x="230" y="337" font-size="10" text-anchor="middle">over all <tspan font-style="italic">n</tspan> chunks</text>
+
+    <rect x="420" y="300" width="220" height="54" fill="#f5f5f5" stroke="#111111" stroke-width="1.2"/>
+    <text x="530" y="321" font-size="10" text-anchor="middle">L2-normalized mean</text>
+    <text x="530" y="337" font-size="10" text-anchor="middle">over the first 2 chunks</text>
+
+    <!-- ================= chunk vectors ================= -->
+    <rect x="225" y="388" width="310" height="46" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+    <text x="380" y="408" font-size="10.5" text-anchor="middle">chunk vectors: <tspan font-style="italic">n</tspan> &#215; 768</text>
+    <text x="380" y="423" font-size="9" text-anchor="middle" fill="#555555">masked mean over tokens, per chunk</text>
+
+    <!-- ================= encoder ================= -->
+    <rect x="235" y="480" width="290" height="160" fill="#f5f5f5" stroke="#111111" stroke-width="1.2"/>
+    <text x="380" y="506" font-size="11.5" text-anchor="middle" font-weight="bold">PubMedBERT encoder</text>
+    <text x="380" y="522" font-size="9" text-anchor="middle" fill="#555555">12 layers &#183; 110M parameters (frozen)</text>
+
+    <rect x="283" y="536" width="210" height="46" fill="#ffffff" stroke="#b5b5b5" stroke-width="1"/>
+    <rect x="274" y="545" width="210" height="46" fill="#ffffff" stroke="#b5b5b5" stroke-width="1"/>
+    <rect x="265" y="554" width="210" height="46" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+    <text x="370" y="581" font-size="9.5" text-anchor="middle">self-attention &#8594; feed-forward</text>
+    <text x="500" y="592" font-size="9" fill="#555555">&#215; 12</text>
+
+    <!-- DoRA annotation -->
+    <path d="M 540 545 L 548 545 L 548 585 L 540 585" fill="none" stroke="#555555" stroke-width="0.9"/>
+    <text x="556" y="540" font-size="9" font-weight="bold" fill="#333333">DoRA adapters</text>
+    <text x="556" y="554" font-size="9" fill="#555555">r = 16, &#945; = 32</text>
+    <text x="556" y="568" font-size="9" fill="#555555">query, value</text>
+    <text x="556" y="582" font-size="9" fill="#555555">611,330 trainable</text>
+    <text x="556" y="596" font-size="9" fill="#555555">(0.56% of 110M)</text>
+
+    <!-- ================= chunking ================= -->
+    <rect x="200" y="668" width="360" height="48" fill="#f5f5f5" stroke="#111111" stroke-width="1.2"/>
+    <text x="380" y="688" font-size="10.5" text-anchor="middle">tokenize &#183; 480-token chunks</text>
+    <text x="380" y="704" font-size="9" text-anchor="middle" fill="#555555"><tspan font-style="italic">n</tspan> &#8804; 12 &#183; first 2 kept, remainder evenly spaced</text>
+
+    <!-- ================= input ================= -->
+    <rect x="210" y="742" width="340" height="44" fill="#f5f5f5" stroke="#111111" stroke-width="1.2"/>
+    <text x="380" y="761" font-size="10.5" text-anchor="middle">title &#183; abstract &#183; full text</text>
+    <text x="380" y="776" font-size="9" text-anchor="middle" fill="#555555">PDF &#8594; extracted text, if provided</text>
+
+    <!-- ================= arrows ================= -->
+    <g stroke="#111111" stroke-width="1.1" fill="#111111">
+      <!-- softmax -> output -->
+      <line x1="380" y1="112" x2="380" y2="79"/><polygon points="380,74 376.5,81 383.5,81"/>
+      <!-- linear -> softmax -->
+      <line x1="380" y1="164" x2="380" y2="151"/><polygon points="380,146 376.5,153 383.5,153"/>
+      <!-- concat -> linear -->
+      <line x1="380" y1="224" x2="380" y2="211"/><polygon points="380,206 376.5,213 383.5,213"/>
+      <!-- pools -> concat -->
+      <line x1="230" y1="300" x2="230" y2="286"/><line x1="530" y1="300" x2="530" y2="286"/>
+      <line x1="230" y1="286" x2="530" y2="286"/>
+      <line x1="380" y1="286" x2="380" y2="269"/><polygon points="380,264 376.5,271 383.5,271"/>
+      <!-- chunk vectors -> pools -->
+      <line x1="380" y1="388" x2="380" y2="370"/><line x1="230" y1="370" x2="530" y2="370"/>
+      <line x1="230" y1="370" x2="230" y2="359"/><polygon points="230,354 226.5,361 233.5,361"/>
+      <line x1="530" y1="370" x2="530" y2="359"/><polygon points="530,354 526.5,361 533.5,361"/>
+      <!-- encoder -> chunk vectors -->
+      <line x1="380" y1="480" x2="380" y2="439"/><polygon points="380,434 376.5,441 383.5,441"/>
+      <!-- chunking -> encoder -->
+      <line x1="380" y1="668" x2="380" y2="645"/><polygon points="380,640 376.5,647 383.5,647"/>
+      <!-- input -> chunking -->
+      <line x1="380" y1="742" x2="380" y2="721"/><polygon points="380,716 376.5,723 383.5,723"/>
     </g>
-    <text x="40" y="338" font-size="11" fill="#6F6A60">one encoder pass per chunk &#8212; all chunks of a document share the batch; same chunking and pooling at train and inference time</text>
-    <line x1="40" y1="356" x2="960" y2="356" stroke="#23211D" stroke-opacity="0.5"/>
 
-    <!-- training -->
-    <text x="40" y="382" font-size="10.5" letter-spacing="2.2" fill="#6F6A60">TRAINING</text>
-    <text x="40" y="408" font-size="12">864 design-labelled papers &#183; 376 case report / case series &#183; 488 other designs</text>
-    <text x="40" y="428" font-size="12">5-fold stratified CV, inner validation split per fold for early stopping and threshold selection</text>
-    <text x="40" y="448" font-size="12">AdamW lr 2e-4 &#183; 4 epochs &#183; batch 2 &#215; grad-accum 4 &#183; clip 1.0 &#183; early stop on val AP</text>
-    <text x="40" y="468" font-size="12">final checkpoint: all 864 rows, 2 epochs (median best epoch across folds)</text>
-
-    <!-- guard -->
-    <rect x="617" y="374" width="343" height="94" fill="none" stroke="#8C3A2B" stroke-dasharray="4 3"/>
-    <text x="631" y="394" font-size="9.5" letter-spacing="1.4" fill="#8C3A2B">OUTSIDE THE CHECKPOINT</text>
-    <text x="631" y="414" font-size="11" fill="#6F6A60">corpus pipeline forces case when the title says</text>
-    <text x="631" y="432" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="10.5">case report | case series | report of N&lt;100 cases</text>
-    <text x="631" y="452" font-size="11" fill="#6F6A60">guards against design-label noise, not part of the model</text>
-
-    <line x1="40" y1="492" x2="960" y2="492" stroke="#23211D" stroke-opacity="0.35"/>
-    <text x="40" y="514" font-size="11" fill="#6F6A60">Metrics: test AP 0.987 &#177; 0.009 &#183; F1 0.938 &#177; 0.021 &#183; OOF AUC 0.970 &#183; OOF AP 0.965</text>
-    <text x="960" y="514" font-size="11" text-anchor="end" fill="#6F6A60">research artifact &#183; not a clinical decision tool</text>
-    <text x="40" y="538" font-size="9.5" letter-spacing="1.6" fill="#6F6A60">TEXT &#183; CHUNK &#183; ENCODE &#183; POOL &#183; CLASSIFY &#183; THRESHOLD</text>
+    <!-- ================= caption ================= -->
+    <line x1="40" y1="800" x2="720" y2="800" stroke="#cccccc" stroke-width="0.8"/>
+    <text x="40" y="818" font-size="9" fill="#333333"><tspan font-weight="bold">Figure 1:</tspan> Case-only DoRA document classifier. The PubMedBERT weights are frozen; only the DoRA adapters and the linear head are trained.</text>
+    <text x="40" y="832" font-size="9" fill="#333333">An explicit title cue (<tspan font-style="italic">case report</tspan> / <tspan font-style="italic">case series</tspan>) overrides the score in the corpus pipeline, outside this model.</text>
   </g>
 </svg>
