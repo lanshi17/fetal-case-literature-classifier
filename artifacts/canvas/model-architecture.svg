@@ -1,113 +1,80 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560" role="img" aria-label="Case-only DoRA model architecture: text to 480-token chunks, PubMedBERT with DoRA, dual mean pooling to 1536 dimensions, linear head, thresholds">
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560" role="img" aria-label="Case-only DoRA model architecture: title and full text to 480-token chunks, PubMedBERT with DoRA, dual mean pooling to 1536 dimensions, linear head and thresholds">
   <rect width="1000" height="560" fill="#F4F1E8"/>
   <g font-family="Liberation Sans, DejaVu Sans, Helvetica, Arial, sans-serif" fill="#23211D">
     <!-- header -->
-    <text x="40" y="44" font-size="10" letter-spacing="2.4" fill="#6F6A60">MODEL ARCHITECTURE</text>
-    <text x="40" y="78" font-family="Liberation Serif, DejaVu Serif, Georgia, serif" font-size="30">Case-only DoRA</text>
-    <text x="40" y="100" font-size="11.5" fill="#6F6A60">case report / case series &#8594; probability, one document at a time</text>
-    <text x="960" y="44" font-size="10" text-anchor="end" fill="#6F6A60">lanshi/prenatal-case-dora</text>
-    <text x="960" y="78" font-size="10" text-anchor="end" letter-spacing="1.6" fill="#6F6A60">BASE &#183; NeuML/pubmedbert-base-embeddings</text>
-    <line x1="40" y1="116" x2="960" y2="116" stroke="#23211D" stroke-opacity="0.5"/>
+    <text x="40" y="44" font-size="10.5" letter-spacing="2.6" fill="#6F6A60">MODEL ARCHITECTURE</text>
+    <text x="40" y="80" font-family="Liberation Serif, DejaVu Serif, Georgia, serif" font-size="32">Case-only DoRA</text>
+    <text x="40" y="103" font-size="12" fill="#6F6A60">case report / case series &#8594; probability, one document at a time</text>
+    <text x="960" y="44" font-size="10.5" text-anchor="end" fill="#6F6A60">lanshi/prenatal-case-dora</text>
+    <text x="960" y="80" font-size="10.5" text-anchor="end" letter-spacing="1.4" fill="#6F6A60">BASE &#183; NeuML/pubmedbert-base-embeddings</text>
+    <line x1="40" y1="118" x2="960" y2="118" stroke="#23211D" stroke-opacity="0.5"/>
 
-    <!-- flow boxes -->
-    <g>
-      <!-- 01 -->
-      <rect x="40" y="140" width="136" height="172" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
-      <text x="52" y="160" font-size="8.5" letter-spacing="1.2" fill="#8C3A2B">01</text>
-      <text x="52" y="182" font-size="12" font-weight="bold" letter-spacing="0.8">INPUT</text>
-      <text x="52" y="204" font-size="9.5" fill="#6F6A60">title &#183; abstract</text>
-      <text x="52" y="220" font-size="9.5" fill="#6F6A60">full text</text>
-      <text x="52" y="236" font-size="9.5" fill="#6F6A60">PDF &#8594; text</text>
-      <text x="52" y="262" font-size="9" fill="#6F6A60">compose</text>
-      <text x="52" y="276" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">title. abstract</text>
-      <text x="52" y="288" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">\n\n + body</text>
+    <!-- stage 01 -->
+    <rect x="40" y="146" width="205" height="164" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
+    <text x="54" y="168" font-size="9.5" letter-spacing="1.4" fill="#8C3A2B">01</text>
+    <text x="54" y="192" font-size="14" font-weight="bold" letter-spacing="0.9">TEXT &#8594; CHUNKS</text>
+    <text x="54" y="217" font-size="12" fill="#6F6A60">title &#183; abstract &#183; full text</text>
+    <text x="54" y="236" font-size="12" fill="#6F6A60">PDF &#8594; text if needed</text>
+    <text x="54" y="255" font-size="12" fill="#6F6A60">480-token windows, &#8804; 12</text>
+    <text x="54" y="274" font-size="12" fill="#6F6A60">first 2 kept, rest sampled</text>
+    <text x="54" y="296" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="11">[n, 480]   n &#8804; 12</text>
 
-      <!-- 02 -->
-      <rect x="200" y="140" width="136" height="172" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
-      <text x="212" y="160" font-size="8.5" letter-spacing="1.2" fill="#8C3A2B">02</text>
-      <text x="212" y="182" font-size="12" font-weight="bold" letter-spacing="0.8">CHUNK</text>
-      <text x="212" y="204" font-size="9.5" fill="#6F6A60">480-token windows</text>
-      <text x="212" y="220" font-size="9.5" fill="#6F6A60">at most 12</text>
-      <text x="212" y="236" font-size="9.5" fill="#6F6A60">first 2 kept</text>
-      <text x="212" y="252" font-size="9.5" fill="#6F6A60">rest evenly spaced</text>
-      <text x="212" y="276" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">[n, 480]</text>
-      <text x="212" y="288" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">n &#8804; 12</text>
+    <!-- stage 02 -->
+    <rect x="273" y="146" width="205" height="164" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
+    <text x="287" y="168" font-size="9.5" letter-spacing="1.4" fill="#8C3A2B">02</text>
+    <text x="287" y="192" font-size="14" font-weight="bold" letter-spacing="0.9">ENCODER</text>
+    <text x="287" y="217" font-size="12" fill="#6F6A60">PubMedBERT-base, 110M</text>
+    <text x="287" y="236" font-size="12" fill="#6F6A60">DoRA r=16, &#945;=32</text>
+    <text x="287" y="255" font-size="12" fill="#6F6A60">targets query, value</text>
+    <text x="287" y="274" font-size="12" fill="#6F6A60">611,330 trainable (0.56%)</text>
+    <text x="287" y="296" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="11">[n, 480, 768]</text>
 
-      <!-- 03 -->
-      <rect x="360" y="140" width="136" height="172" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
-      <text x="372" y="160" font-size="8.5" letter-spacing="1.2" fill="#8C3A2B">03</text>
-      <text x="372" y="182" font-size="12" font-weight="bold" letter-spacing="0.8">ENCODER</text>
-      <text x="372" y="204" font-size="9.5" fill="#6F6A60">PubMedBERT-base</text>
-      <text x="372" y="220" font-size="9.5" fill="#6F6A60">110M params</text>
-      <text x="372" y="236" font-size="9.5" fill="#6F6A60">DoRA r=16, &#945;=32</text>
-      <text x="372" y="252" font-size="9.5" fill="#6F6A60">targets query, value</text>
-      <text x="372" y="276" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">[n, 480, 768]</text>
-      <text x="372" y="288" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">611,330 trainable</text>
+    <!-- stage 03 -->
+    <rect x="506" y="146" width="205" height="164" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
+    <text x="520" y="168" font-size="9.5" letter-spacing="1.4" fill="#8C3A2B">03</text>
+    <text x="520" y="192" font-size="14" font-weight="bold" letter-spacing="0.9">POOL</text>
+    <text x="520" y="217" font-size="12" fill="#6F6A60">masked mean per chunk</text>
+    <text x="520" y="236" font-size="12" fill="#6F6A60">&#8594; one 768-d vector</text>
+    <text x="520" y="255" font-size="12" fill="#6F6A60">L2(mean all chunks)</text>
+    <text x="520" y="274" font-size="12" fill="#6F6A60">&#8214; L2(mean first 2)</text>
+    <text x="520" y="296" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="11">[1536]</text>
 
-      <!-- 04 -->
-      <rect x="520" y="140" width="136" height="172" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
-      <text x="532" y="160" font-size="8.5" letter-spacing="1.2" fill="#8C3A2B">04</text>
-      <text x="532" y="182" font-size="12" font-weight="bold" letter-spacing="0.8">POOL</text>
-      <text x="532" y="204" font-size="9.5" fill="#6F6A60">masked mean</text>
-      <text x="532" y="220" font-size="9.5" fill="#6F6A60">per chunk &#8594; 768-d</text>
-      <text x="532" y="236" font-size="9.5" fill="#6F6A60">L2(mean all)</text>
-      <text x="532" y="252" font-size="9.5" fill="#6F6A60">&#8214; L2(mean first 2)</text>
-      <text x="532" y="276" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">[n, 768] &#8594;</text>
-      <text x="532" y="288" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">[1536]</text>
-
-      <!-- 05 -->
-      <rect x="680" y="140" width="136" height="172" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
-      <text x="692" y="160" font-size="8.5" letter-spacing="1.2" fill="#8C3A2B">05</text>
-      <text x="692" y="182" font-size="12" font-weight="bold" letter-spacing="0.8">HEAD</text>
-      <text x="692" y="204" font-size="9.5" fill="#6F6A60">Linear 1536 &#8594; 2</text>
-      <text x="692" y="220" font-size="9.5" fill="#6F6A60">softmax</text>
-      <text x="692" y="236" font-size="9.5" fill="#6F6A60">class-weighted CE</text>
-      <text x="692" y="252" font-size="9.5" fill="#6F6A60">(training only)</text>
-      <text x="692" y="276" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">[2] logits</text>
-      <text x="692" y="288" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">p(case) = softmax[1]</text>
-
-      <!-- 06 -->
-      <rect x="840" y="140" width="120" height="172" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
-      <text x="852" y="160" font-size="8.5" letter-spacing="1.2" fill="#8C3A2B">06</text>
-      <text x="852" y="182" font-size="12" font-weight="bold" letter-spacing="0.8">DECIDE</text>
-      <text x="852" y="204" font-size="9.5" fill="#6F6A60">p &#8805; 0.3962</text>
-      <text x="852" y="218" font-size="9.5" fill="#6F6A60">case (F1-opt)</text>
-      <text x="852" y="238" font-size="9.5" fill="#6F6A60">p &#8805; 0.3502</text>
-      <text x="852" y="252" font-size="9.5" fill="#6F6A60">case (P &#8805; 0.90)</text>
-      <text x="852" y="276" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">p &#8712; [0, 1]</text>
-      <text x="852" y="288" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">threshold fixed</text>
-    </g>
+    <!-- stage 04 -->
+    <rect x="739" y="146" width="221" height="164" fill="#FBF9F2" stroke="#23211D" stroke-width="1"/>
+    <text x="753" y="168" font-size="9.5" letter-spacing="1.4" fill="#8C3A2B">04</text>
+    <text x="753" y="192" font-size="14" font-weight="bold" letter-spacing="0.9">HEAD &#8594; DECIDE</text>
+    <text x="753" y="217" font-size="12" fill="#6F6A60">Linear 1536 &#8594; 2, softmax</text>
+    <text x="753" y="236" font-size="12" fill="#6F6A60">p &#8805; 0.3962 &#8594; case (F1)</text>
+    <text x="753" y="255" font-size="12" fill="#6F6A60">p &#8805; 0.3502 &#8594; case</text>
+    <text x="753" y="274" font-size="12" fill="#6F6A60">(precision &#8805; 0.90)</text>
+    <text x="753" y="296" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="11">p = softmax[1]</text>
 
     <!-- arrows -->
-    <g stroke="#23211D" stroke-width="1.2" fill="#23211D">
-      <line x1="176" y1="226" x2="193" y2="226"/><polygon points="200,226 193,222.5 193,229.5"/>
-      <line x1="336" y1="226" x2="353" y2="226"/><polygon points="360,226 353,222.5 353,229.5"/>
-      <line x1="496" y1="226" x2="513" y2="226"/><polygon points="520,226 513,222.5 513,229.5"/>
-      <line x1="656" y1="226" x2="673" y2="226"/><polygon points="680,226 673,222.5 673,229.5"/>
-      <line x1="816" y1="226" x2="833" y2="226"/><polygon points="840,226 833,222.5 833,229.5"/>
+    <g stroke="#23211D" stroke-width="1.3" fill="#23211D">
+      <line x1="245" y1="228" x2="265" y2="228"/><polygon points="273,228 265.5,224.2 265.5,231.8"/>
+      <line x1="478" y1="228" x2="498" y2="228"/><polygon points="506,228 498.5,224.2 498.5,231.8"/>
+      <line x1="711" y1="228" x2="731" y2="228"/><polygon points="739,228 731.5,224.2 731.5,231.8"/>
     </g>
+    <text x="40" y="338" font-size="11" fill="#6F6A60">one encoder pass per chunk &#8212; all chunks of a document share the batch; same chunking and pooling at train and inference time</text>
+    <line x1="40" y1="356" x2="960" y2="356" stroke="#23211D" stroke-opacity="0.5"/>
 
-    <!-- annotations -->
-    <text x="356" y="330" font-size="9" fill="#6F6A60">one encoder pass per chunk &#8212; chunks of one document share the batch</text>
-    <line x1="40" y1="350" x2="960" y2="350" stroke="#23211D" stroke-opacity="0.5"/>
+    <!-- training -->
+    <text x="40" y="382" font-size="10.5" letter-spacing="2.2" fill="#6F6A60">TRAINING</text>
+    <text x="40" y="408" font-size="12">864 design-labelled papers &#183; 376 case report / case series &#183; 488 other designs</text>
+    <text x="40" y="428" font-size="12">5-fold stratified CV, inner validation split per fold for early stopping and threshold selection</text>
+    <text x="40" y="448" font-size="12">AdamW lr 2e-4 &#183; 4 epochs &#183; batch 2 &#215; grad-accum 4 &#183; clip 1.0 &#183; early stop on val AP</text>
+    <text x="40" y="468" font-size="12">final checkpoint: all 864 rows, 2 epochs (median best epoch across folds)</text>
 
-    <!-- training block -->
-    <text x="40" y="376" font-size="10" letter-spacing="2" fill="#6F6A60">TRAINING</text>
-    <text x="40" y="400" font-size="10.5">864 design-labelled papers &#183; 376 case report / case series &#183; 488 other designs</text>
-    <text x="40" y="418" font-size="10.5">5-fold stratified CV, inner validation split per fold for early stopping and threshold selection</text>
-    <text x="40" y="436" font-size="10.5">AdamW lr 2e-4 &#183; 4 epochs &#183; batch 2 &#215; grad-accum 4 &#183; clip 1.0 &#183; early stop on val AP</text>
-    <text x="40" y="454" font-size="10.5">final checkpoint: all 864 rows, 2 epochs (median best epoch across folds)</text>
-
-    <!-- guard note -->
-    <rect x="600" y="368" width="360" height="100" fill="none" stroke="#8C3A2B" stroke-dasharray="4 3"/>
-    <text x="614" y="388" font-size="9" letter-spacing="1.4" fill="#8C3A2B">OUTSIDE THE CHECKPOINT</text>
-    <text x="614" y="408" font-size="9.5" fill="#6F6A60">corpus pipeline forces case when the title says</text>
-    <text x="614" y="424" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="8.5">case report | case series | report of N&lt;100 cases</text>
-    <text x="614" y="442" font-size="9.5" fill="#6F6A60">guards against design-label noise, not part of the model</text>
+    <!-- guard -->
+    <rect x="617" y="374" width="343" height="94" fill="none" stroke="#8C3A2B" stroke-dasharray="4 3"/>
+    <text x="631" y="394" font-size="9.5" letter-spacing="1.4" fill="#8C3A2B">OUTSIDE THE CHECKPOINT</text>
+    <text x="631" y="414" font-size="11" fill="#6F6A60">corpus pipeline forces case when the title says</text>
+    <text x="631" y="432" font-family="Liberation Mono, DejaVu Sans Mono, monospace" font-size="10.5">case report | case series | report of N&lt;100 cases</text>
+    <text x="631" y="452" font-size="11" fill="#6F6A60">guards against design-label noise, not part of the model</text>
 
     <line x1="40" y1="492" x2="960" y2="492" stroke="#23211D" stroke-opacity="0.35"/>
-    <text x="40" y="514" font-size="9.5" fill="#6F6A60">Metrics: test AP 0.987 &#177; 0.009 &#183; F1 0.938 &#177; 0.021 &#183; OOF AUC 0.970 &#183; OOF AP 0.965</text>
-    <text x="960" y="514" font-size="9.5" text-anchor="end" fill="#6F6A60">research artifact &#183; not a clinical decision tool</text>
-    <text x="40" y="536" font-size="9" letter-spacing="1.5" fill="#6F6A60">TITLE &#183; CHUNK &#183; ENCODE &#183; POOL &#183; CLASSIFY &#183; THRESHOLD</text>
+    <text x="40" y="514" font-size="11" fill="#6F6A60">Metrics: test AP 0.987 &#177; 0.009 &#183; F1 0.938 &#177; 0.021 &#183; OOF AUC 0.970 &#183; OOF AP 0.965</text>
+    <text x="960" y="514" font-size="11" text-anchor="end" fill="#6F6A60">research artifact &#183; not a clinical decision tool</text>
+    <text x="40" y="538" font-size="9.5" letter-spacing="1.6" fill="#6F6A60">TEXT &#183; CHUNK &#183; ENCODE &#183; POOL &#183; CLASSIFY &#183; THRESHOLD</text>
   </g>
 </svg>
