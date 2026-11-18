@@ -1,0 +1,975 @@
+pmid,design,design_class
+11175621,diagnostic validation cohort (230 fetuses),validation
+11218737,,unclear
+11850602,case series,case_series
+12646976,case report,case_report
+12923343,case report,case_report
+14726642,review,review
+15201497,,unclear
+15716609,,unclear
+15861490,,unclear
+16007253,,unclear
+17171632,screening/validation,validation
+17178751,,unclear
+18331649,case series,case_series
+18492228,method,method
+18831729,case report,case_report
+18955803,,case_report
+18989383,other,unclear
+19016622,cohort,cohort
+19335188,case report,case_report
+20192924,observational screening cohort,screening
+20592907,case report,case_report
+20842178,screening/validation,validation
+20864786,case report,case_report
+20949031,,unclear
+20949666,other,unclear
+21092404,,unclear
+21203572,case report,case_report
+21224326,,unclear
+21249119,screening/validation,validation
+21356074,case report,case_report
+2141994,,unclear
+21513565,case report,case_report
+21533146,,unclear
+21674836,,unclear
+21748316,,unclear
+21975797,cohort,cohort
+22281937,,unclear
+22389664,method,method
+22471583,screening/validation,validation
+22666469,screening/validation,validation
+22747519,case report,case_report
+22815955,,unclear
+22919524,case report,case_report
+23034220,cohort,cohort
+23047142,,unclear
+23056970,case report,case_report
+23113216,case report,case_report
+23133763,case report,case_report
+23198897,screening/validation,validation
+23330029,case series,case_series
+23356557,screening/validation,validation
+23401814,case series,case_series
+23408600,case series,case_series
+23678296,cohort,cohort
+23748066,case series,case_series
+23968558,case report,case_report
+24024055,case report,case_report
+24066117,,unclear
+24170809,method,method
+24220582,case report,case_report
+24312358,,unclear
+24397966,method,method
+24505343,cohort,cohort
+24554804,retrospective cohort of 299 amniocenteses,cohort
+24558408,other,unclear
+24564681,prospective cohort,cohort
+24625828,,unclear
+24735551,case report,case_report
+24826207,case report,case_report
+25075572,cohort,cohort
+25075585,case report,case_report
+25101914,screening/validation,validation
+25114813,case report,case_report
+25215544,cohort,cohort
+25298785,case report,case_report
+25329639,screening/validation,validation
+25388684,cohort,cohort
+25389503,,unclear
+25478570,,unclear
+25530804,cohort,cohort
+25543334,cohort,cohort
+25699192,case report,case_report
+25728633,method,method
+25883716,,unclear
+25884925,cohort,cohort
+25923536,case report,case_report
+25923652,cohort,cohort
+25983373,,unclear
+26064910,cohort,cohort
+26260800,case series,screening
+26294991,case report,case_report
+26346617,case report,case_report
+26387684,,unclear
+26493543,,unclear
+26502924,method,method
+26605098,,unclear
+26669558,,unclear
+26670660,case report,case_report
+26673632,cohort,cohort
+26691006,,unclear
+26729329,case series,case_series
+26743561,other,unclear
+26765738,,unclear
+26785403,cohort,cohort
+26820068,screening/validation,validation
+26862157,cohort,cohort
+26996738,,unclear
+27042674,,unclear
+27090801,case series,case_series
+27107169,,unclear
+27110565,,unclear
+27129388,,unclear
+27167625,,unclear
+27168972,cohort,cohort
+27176606,,unclear
+27194416,case report,case_report
+27322245,case report,case_report
+27433940,case series,case_series
+27453244,case report,case_report
+27515011,cohort,cohort
+27546542,cohort,cohort
+27550507,other,unclear
+27568096,other,unclear
+27684831,retrospective cohort,cohort
+27750376,screening/validation,validation
+27846804,cohort,cohort
+27888703,cohort,cohort
+27981672,,unclear
+27994858,case report,case_report
+28056489,other,unclear
+28111453,,unclear
+28154732,case report,case_report
+28166604,screening/validation,validation
+28207948,cohort,cohort
+28220983,case series,case_series
+28256057,case report,case_report
+28306738,,unclear
+28322033,cohort,cohort
+28357876,screening/validation,validation
+28413694,case report,case_report
+28440418,case report,case_report
+28565842,cohort,cohort
+28639595,cohort,cohort
+28650953,case report,case_report
+28659150,cohort,cohort
+28674770,,unclear
+28723764,cohort,cohort
+28726807,cohort,cohort
+28771243,case series,case_series
+28785026,method,method
+28817112,case report,case_report
+28868271,case report,case_report
+28944865,cohort,cohort
+29046733,case report,case_report
+29093756,case report,case_report
+29096039,case series,case_series
+29115496,case series,case_series
+29118296,case report,case_report
+29120460,,unclear
+29121006,cohort,cohort
+29137034,case series,case_series
+29160607,screening/validation,validation
+29164604,cohort,cohort
+29210307,other,unclear
+29219113,,unclear
+29299063,case report,case_report
+29329576,cohort,cohort
+29487873,national registry cohort,registry
+29496978,review,review
+29553041,case report,case_report
+29568912,prospective cohort,cohort
+29610688,case report,case_report
+29642139,cohort,cohort
+29649318,cohort,cohort
+29695406,,unclear
+29769050,cohort,cohort
+29858378,case report,case_report
+29955609,case report,case_report
+29977923,method,method
+30133550,cohort,cohort
+30142861,cohort,cohort
+30177949,case series,case_series
+30187503,case series,cohort
+30198518,cohort,cohort
+30231296,case report,case_report
+30266093,cohort,cohort
+30293990,cohort,cohort
+30334587,cohort,cohort
+30359267,cohort,cohort
+30393848,cohort,cohort
+30399107,cohort,cohort
+30431620,cohort,cohort
+30508919,cohort,cohort
+30510841,cohort,cohort
+30517156,,unclear
+30519285,cohort,cohort
+30524658,cohort,cohort
+30544381,case report,case_report
+30558042,cohort,cohort
+30581852,case report,case_report
+30633228,cohort,cohort
+30706183,cohort,cohort
+30706702,screening/validation,validation
+30712880,cohort,cohort
+30714504,cohort,cohort
+30717698,cohort,cohort
+30762813,cohort,cohort
+30767419,method,method
+30818867,cohort,cohort
+30851085,,unclear
+30871627,screening/validation,validation
+30924894,,unclear
+30946338,case series,case_series
+30978256,method,method
+31004415,screening/validation,validation
+31004418,cohort,cohort
+31019836,case series,case_series
+31040167,cohort,cohort
+31059048,case report,case_report
+31060568,cohort,cohort
+31061472,,unclear
+31070015,screening/validation,validation
+31092881,,unclear
+31096510,case series,case_series
+31115529,case report,case_report
+31119896,,unclear
+31123319,cohort,cohort
+31123326,screening/validation,validation
+31165466,screening/validation,validation
+31196198,case report,case_report
+31209990,cohort,cohort
+31219182,,unclear
+31222985,screening/validation,validation
+31283802,method,method
+31297990,case report,case_report
+31299979,case series,case_series
+31304847,case report,case_report
+31312255,cohort,cohort
+31319890,case report,case_report
+31334199,case report,case_report
+31391865,cohort,cohort
+31422728,cohort,cohort
+31428121,cohort,cohort
+31430300,,unclear
+31493343,,unclear
+31497069,case series,case_series
+31499577,case report,case_report
+31523615,review,review
+31617258,case report,case_report
+31626103,retrospective cohort,cohort
+31638247,case report,case_report
+31684971,,unclear
+31690017,,unclear
+31697845,screening/validation,validation
+31697852,cohort,cohort
+31756055,case report,case_report
+31762079,cohort,cohort
+31770195,case report,case_report
+31827621,case series,case_series
+31840411,case report,case_report
+31864361,case report,case_report
+31867191,cohort,cohort
+31890033,case report,case_report
+31898422,case series,case_series
+31910817,case report,case_report
+31929729,case report,case_report
+31944387,case series,case_series
+31962312,other,unclear
+31998409,cohort,cohort
+32000445,cohort,cohort
+32055256,case report,case_report
+32059709,screening/validation,validation
+32067421,case series,screening
+32080128,case report,case_report
+32100971,case report,case_report
+32149439,cohort,cohort
+32158503,case series,screening
+32185046,case report,case_report
+32282607,cohort supplement with per-fetus tables,cohort
+32333414,cohort,cohort
+32341573,cohort,cohort
+32342531,cohort,cohort
+32386509,case report,case_report
+32392875,case series,case_series
+32424735,cohort,cohort
+32438493,screening/validation,validation
+32463164,case report,case_report
+32466452,,unclear
+32472298,,unclear
+32483189,cohort,cohort
+32484578,cohort,cohort
+32500674,case series,case_series
+32503639,screening/validation,validation
+32514314,case series,case_series
+32539871,screening/validation,validation
+32543076,case report,case_report
+32543126,screening/validation,validation
+32625247,case report,case_report
+32627857,cohort,cohort
+32627967,case report,case_report
+32631433,case report,case_report
+32643293,case report,case_report
+32651932,cohort,cohort
+32682435,case report,case_report
+32702826,case report,case_report
+32712620,cohort,cohort
+32736662,,unclear
+32767744,cohort,cohort
+32779773,cohort,cohort
+32779812,cohort,cohort
+32794475,case report,case_report
+32805723,cohort,cohort
+32845907,method,method
+32855656,case report,case_report
+32864771,cohort,cohort
+32881366,case report,case_report
+32904152,case report,case_report
+32908864,cohort,cohort
+32917147,case report,case_report
+32934329,cohort,cohort
+32935260,cohort,cohort
+32981126,cohort,cohort
+33019446,case report,case_report
+33030252,case report,case_report
+33067800,cohort,cohort
+33081203,case report,case_report
+33081811,,unclear
+33094428,screening/validation,validation
+33151425,screening/validation,validation
+33167762,cohort,cohort
+33187827,case report,case_report
+33193741,case report,case_report
+33198662,cohort,cohort
+33201576,cohort,cohort
+33247184,cohort,cohort
+33249554,cohort,cohort
+33255631,cohort,cohort
+33311808,case report,case_report
+33317474,screening/validation,validation
+33318309,case series,case_series
+33435955,cohort,cohort
+33442022,cohort,cohort
+33456614,case report,case_report
+33474820,cohort,cohort
+33498637,cohort,cohort
+33509128,cohort,cohort
+33520070,case report,case_report
+33545980,case series,case_series
+33576010,,unclear
+33602166,cohort,cohort
+33615614,cohort,cohort
+33632221,cohort,cohort
+33638605,case report,case_report
+33639402,other,unclear
+33671041,case report,case_report
+33674646,,unclear
+33692422,cohort,cohort
+33713577,case report,case_report
+33717247,case report,case_report
+33724704,case report,case_report
+33733630,case series,case_series
+33750440,case report,case_report
+33757501,case series,case_series
+33763271,case report,case_report
+33784964,cohort,cohort
+33785045,screening/validation,validation
+33800913,cohort,cohort
+33816069,case series,case_series
+33817732,case report,case_report
+33859509,cohort,cohort
+33868367,cohort,cohort
+33889037,cohort,cohort
+33901244,screening/validation,validation
+33950970,case series,case_series
+33951332,cohort,cohort
+34000999,case report,case_report
+34006293,case report,case_report
+34011095,cohort,cohort
+34014041,case report,case_report
+34016078,case report,case_report
+34042265,cohort,cohort
+34045891,cohort,cohort
+34073864,case report,case_report
+34079909,cohort,cohort
+34084500,case report,case_report
+34084776,cohort,cohort
+34090308,screening/validation,validation
+34147104,case report,case_report
+34163268,cohort,cohort
+34193122,case series,case_series
+34238233,cohort,cohort
+34242293,cohort,cohort
+34283385,cohort,cohort
+34285428,cohort,cohort
+34328233,cohort,cohort
+34356094,case series,case_series
+34358384,cohort,cohort
+34367232,cohort,cohort
+34374610,cohort,cohort
+34376197,case report,case_report
+34384376,case report,case_report
+34391089,,unclear
+34393503,cohort,cohort
+34405543,case series,case_series
+34411415,cohort,cohort
+34429082,screening/validation,validation
+34434471,case report,case_report
+34449543,,unclear
+34480426,cohort,cohort
+34486251,cohort,cohort
+34548956,case report,case_report
+34567078,cohort,cohort
+34569664,case series,case_series
+34582123,case report,case_report
+34587985,case series,case_series
+34611884,cohort,cohort
+34630509,case report,case_report
+34643287,cohort,cohort
+34679516,case report,case_report
+34722424,cohort,cohort
+34733861,cohort,cohort
+34746047,case report,case_report
+34764685,cohort,cohort
+34773875,cohort,cohort
+34789173,case report,case_report
+34789231,method,method
+34853893,cohort,cohort
+34884332,cohort,cohort
+34904224,cohort,cohort
+34914080,case report,case_report
+34918667,case report,case_report
+34946839,case report,case_report
+34946970,cohort,cohort
+34958143,cohort,cohort
+34980134,cohort,cohort
+34983622,cohort,cohort
+35016623,prospective cohort,cohort
+35027977,case report,case_report
+35045821,cohort,cohort
+35047609,case report,case_report
+35060501,,unclear
+35071484,cohort,cohort
+35081921,case report,case_report
+35089945,,unclear
+35093090,case report,case_report
+35096007,cohort,cohort
+35123446,case report,case_report
+35130326,,unclear
+35192596,case series,case_series
+35195919,cohort,cohort
+35197665,cohort,cohort
+35205290,case report,case_report
+35207307,cohort,cohort
+35209905,case report,case_report
+35229910,cohort,cohort
+35241061,case report,case_report
+35259700,case report,case_report
+35291955,cohort,cohort
+35338537,case series,case_series
+35354480,cohort,cohort
+35360877,case report,case_report
+35397568,cohort,cohort
+35401667,case report,case_report
+35428251,case series,case_series
+35456496,cohort,cohort
+35463886,case report,case_report
+35482990,case report,case_report
+35506549,case series,case_series
+35506821,cohort,cohort
+35562572,cohort,cohort
+35571012,cohort,cohort
+35578003,cohort,cohort
+35610593,case report,case_report
+35627109,cohort,cohort
+35651933,cohort,cohort
+35656167,cohort,cohort
+35706031,,unclear
+35711925,cohort,cohort
+35713440,case series,case_series
+35722491,cohort,cohort
+35765027,,unclear
+35783302,cohort,cohort
+35791503,,case_series
+35804426,screening/validation,validation
+35806855,case report,case_report
+35806909,cohort,cohort
+35843586,case series,case_series
+35865016,case report,case_report
+35887945,case report,case_report
+35893076,case report,case_report
+35902388,screening/validation,validation
+35941965,case report,case_report
+35960415,screening/validation,validation
+35984138,screening/validation,validation
+36011653,cohort,cohort
+36034547,case series,case_series
+36035112,case report,case_report
+36046039,case report,case_report
+36092864,case report,case_report
+36099005,screening/validation,validation
+36099538,cohort,cohort
+36105084,case report,case_report
+36113068,case report,case_report
+36127997,case report,case_report
+36131268,case report,case_report
+36140741,cohort,cohort
+36140791,,unclear
+36151134,cohort,cohort
+36168972,case report,case_report
+36186462,screening/validation,validation
+36226188,case report,case_report
+36260644,retrospective cohort,cohort
+36276971,case report,case_report
+36281281,case report,case_report
+36285155,cohort,cohort
+36292572,case series,case_series
+36307859,cohort,cohort
+36316869,case series,case_series
+36316881,case report,case_report
+36329475,case report,case_report
+36333674,cohort,cohort
+36352425,cohort,cohort
+36360323,cohort,cohort
+36386834,case report,case_report
+36386837,case report,case_report
+36396840,screening/validation,validation
+36397455,case report,case_report
+36398477,cohort,cohort
+36451403,cohort,cohort
+36457118,cohort,cohort
+36464758,,unclear
+36471906,cohort,cohort
+36476185,cohort,cohort
+36504316,,unclear
+36523456,cohort,cohort
+36538006,case report,case_report
+36544138,case series,case_series
+36544198,case report,case_report
+36553323,case report,case_report
+36553497,cohort,cohort
+36553582,case series,cohort
+36554045,cohort,cohort
+36602560,cohort,cohort
+36609239,,case_report
+36636555,cohort,cohort
+36653756,cohort,cohort
+36684682,cohort,cohort
+36687456,case report,case_report
+36703098,cohort,cohort
+36725972,cohort,cohort
+36734119,case report,case_report
+36743908,case report,case_report
+36755227,cohort,cohort
+36761008,case report,case_report
+36765363,cohort,cohort
+36797717,cohort,cohort
+36800618,case report,case_report
+36814213,case report,case_report
+36854820,cohort,cohort
+36859260,case report,case_report
+36864406,cohort,cohort
+36873643,cohort,cohort
+36890431,case report,case_report
+36900003,cohort,cohort
+36902683,case report,case_report
+36909308,metabolomics cohort,cohort
+36923788,cohort,cohort
+36961397,cohort,cohort
+36980940,case report,case_report
+36980994,cohort,cohort
+37000066,case report,case_report
+37009295,case series,case_series
+37013593,cohort,cohort
+37013606,cohort,cohort
+37035737,cohort,cohort
+37065765,cohort,cohort
+37106349,case report,case_report
+37107671,case report,case_report
+37120754,case report,case_report
+37123790,case report,case_report
+37147405,cohort,cohort
+37168803,case report,case_report
+37243546,cohort,cohort
+37248535,cohort,cohort
+37284664,case series,case_series
+37337789,case series,case_series
+37366235,method,method
+37396033,cohort,cohort
+37422671,cohort,cohort
+37422672,case report,case_report
+37477337,cohort,cohort
+37477678,,unclear
+37485807,case report,case_report
+37497277,cohort,cohort
+37535131,cohort,cohort
+37592254,case report,case_report
+37600658,cohort,cohort
+37612587,case series,case_series
+37628571,cohort,cohort
+37684689,method,method
+37692779,cohort,cohort
+37752660,other,unclear
+37758165,case report,case_report
+37759207,case series,case_series
+37761271,,case_report
+37766479,cohort,cohort
+37795247,cohort,cohort
+37823350,case series,case_series
+37875969,cohort,cohort
+37880672,,unclear
+37880936,case series,case_series
+37895220,cohort,cohort
+37908008,cohort,cohort
+37928238,case report,case_report
+37930140,case report,case_report
+37942256,case report,case_report
+37951870,cohort,cohort
+37980516,cohort,cohort
+37986075,cohort,cohort
+38020944,cohort,cohort
+38025018,case report,case_report
+38027951,cohort,cohort
+38028032,case report,case_report
+38034493,case report,case_report
+38073519,case report,case_report
+38115160,cohort,cohort
+38135736,,unclear
+38172840,cohort,cohort
+38202188,cohort,cohort
+38214746,case report,case_report
+38255008,case series,case_series
+38259626,case series,case_series
+38273042,cohort,cohort
+38280885,,unclear
+38284444,case report,case_report
+38284447,cohort,cohort
+38297236,screening/validation,validation
+38302905,cohort,cohort
+38318287,cohort,cohort
+38369506,case report,case_report
+38421226,case report,case_report
+38440102,case report,case_report
+38457559,case series,case_series
+38494511,cohort,cohort
+38550721,case report,case_report
+38552051,cohort,cohort
+38576814,case report,case_report
+38580914,cohort,cohort
+38585583,case report,case_report
+38606258,case report,case_report
+38634212,case series,case_series
+38649697,cohort,cohort
+38666931,cohort,cohort
+38687434,other,unclear
+38735835,cohort,cohort
+38784233,,unclear
+38815555,cohort,cohort
+38846960,cohort,cohort
+38849204,case series,case_series
+38849481,case series (10),case_series
+38957807,case series,case_series
+38987582,cohort,cohort
+38994932,case report,case_report
+39009665,cohort,cohort
+39039444,cohort,cohort
+39062246,cohort,cohort
+39064047,screening/validation,validation
+39080034,cohort,cohort
+39085968,cohort,cohort
+39161407,cohort,cohort
+39169438,cohort,cohort
+39175064,cohort,cohort
+39198908,cohort,cohort
+39200946,cohort,cohort
+39239799,cohort,cohort
+39251974,cohort,cohort
+39262391,case series,screening
+39268082,case series,case_series
+39268228,case report,case_report
+39347350,case report,case_report
+39350038,cohort,cohort
+39350129,case report,case_report
+39356042,cohort,cohort
+39359128,cohort,cohort
+39363392,cohort,cohort
+39367626,screening/validation,validation
+39369703,retrospective cohort,cohort
+39390395,cohort,cohort
+39399712,case series,case_series
+39410589,cohort,cohort
+39410646,cohort,cohort
+39425694,case series,case_series
+39444480,cohort,cohort
+39444647,case report,case_report
+39502218,cohort,cohort
+39516223,cohort,cohort
+39521787,cohort,cohort
+39572407,other,unclear
+39575462,case report,case_report
+39587524,cohort,cohort
+39596574,case series,case_series
+39596664,case report,case_report
+39624702,case report,case_report
+39630792,case report,case_report
+39641285,case series,case_series
+39648848,cohort,cohort
+39654217,cohort,cohort
+39681544,cohort,cohort
+39696561,,unclear
+39701139,,unclear
+39707235,cohort,cohort
+39725884,case report,case_report
+39826115,,unclear
+39831619,cohort,cohort
+39837955,screening/validation,validation
+39840309,cohort,cohort
+39877340,case report,case_report
+39881416,case series,case_series
+39887707,cohort,cohort
+39889153,case report,case_report
+39890866,cohort,cohort
+39899060,cohort,cohort
+39945447,cohort,cohort
+39960922,cohort,cohort
+39962853,cohort,cohort
+39976347,case report,case_report
+39991384,case report,case_report
+39994565,cohort,cohort
+40017000,cohort,cohort
+40035361,cohort,cohort
+40041231,case series,cohort
+40041233,case report,case_report
+40041235,case report,case_report
+40041274,case report,case_report
+40122702,review,review
+40123302,review,review
+40129811,case report,case_report
+40135965,other,unclear
+40143423,case report,case_report
+40146239,other,unclear
+40149550,case series,case_series
+40150114,cohort,cohort
+40188065,cohort,cohort
+40192178,cohort,cohort
+40195522,cohort,cohort
+40211337,cohort,cohort
+40229386,cohort,cohort
+40229547,case series,case_series
+40237608,case report,case_report
+40241902,cohort,cohort
+40243207,cohort,cohort
+40301840,cohort,cohort
+40317787,case report,case_report
+40332537,cohort,cohort
+40352787,case report,case_report
+40361748,case report,case_report
+40380151,,unclear
+40386307,case report,case_report
+40392900,cohort,cohort
+40403082,cohort,cohort
+40405131,method,method
+40428270,observational screening cohort,screening
+40428369,cohort,cohort
+40462392,cohort,cohort
+40481473,case report,case_report
+40489580,,unclear
+40491565,cohort,cohort
+40500351,cohort,cohort
+40507736,case series,case_series
+40518536,cohort,cohort
+40520226,case report,case_report
+40521769,case report,case_report
+40524352,case report,case_report
+40528522,cohort,cohort
+40530359,case report,case_report
+40531760,cohort,cohort
+40595133,cohort,cohort
+40603987,cohort,cohort
+40616234,cohort,cohort
+40670315,cohort,cohort
+40684108,cohort,cohort
+40703902,case series,case_series
+40709701,other,unclear
+40722537,case report,case_report
+40740247,case report,case_report
+40761308,,case_report
+40781288,case report,case_report
+40790240,case series,case_series
+40797307,cohort,cohort
+40798945,case series,case_series
+40804693,cohort,cohort
+40806547,cohort,cohort
+40809379,case report,case_report
+40817209,case series,case_series
+40824895,screening/validation,validation
+40832109,cohort,cohort
+40841462,method,method
+40844101,cohort,cohort
+40864624,case report,case_report
+40870028,cohort,cohort
+40890635,cohort,cohort
+40893545,case report,case_report
+40893934,cohort,cohort
+40894389,cohort,cohort
+40909434,cohort,cohort
+40927362,cohort,cohort
+40930097,case series,case_series
+40941617,cohort,cohort
+40966236,cohort,cohort
+40984682,cohort,cohort
+40992929,cohort,cohort
+40993696,cohort,cohort
+41003474,case series,case_series
+41014177,cohort,cohort
+41029435,,case_series
+41053595,cohort,cohort
+41059455,case report,case_report
+41070225,case series,case_series
+41089214,case series,case_series
+41099604,,unclear
+41104258,case report,case_report
+41108211,cohort,cohort
+41111707,case report,case_report
+41146295,cohort,cohort
+41150639,retrospective cohort,cohort
+41153384,cohort,cohort
+41181173,review,review
+41186686,cohort,cohort
+41199213,cohort,cohort
+41199647,cohort,cohort
+41216287,case report,case_report
+41216289,case report,case_report
+41225654,case series,case_series
+41225980,case report,case_report
+41238796,cohort,cohort
+41239616,case report,case_report
+41258163,cohort,cohort
+41267400,cohort,cohort
+41272990,cohort,cohort
+41281425,review,review
+41286677,case series,case_series
+41298113,other,unclear
+41300796,screening/validation,validation
+41317100,case report,case_report
+41317105,cohort,cohort
+41327724,cohort,cohort
+41331848,case report,case_report
+41353713,case series,case_series
+41367618,cohort,cohort
+41370217,case report,case_report
+41388734,cohort,cohort
+41398945,cohort,cohort
+41398988,cohort,cohort
+41402700,cohort,cohort
+41417372,cohort,cohort
+41423712,case report,case_report
+41426592,case report,case_report
+41436988,cohort,cohort
+41457519,cohort,cohort
+41461890,cohort,cohort
+41462830,cohort,cohort
+41464097,case report,case_report
+41465157,case report,case_report
+41477812,case report,case_report
+41486082,cohort,cohort
+41494975,cohort,case_series
+41503326,case report,case_report
+41521034,cohort,cohort
+41521983,,unclear
+41526847,cohort,cohort
+41555917,case report,case_report
+41555925,cohort,cohort
+41584385,case report,case_report
+41595457,cohort,cohort
+41595474,case report,case_report
+41598247,case report,case_report
+41608206,cohort,cohort
+41620759,case report,case_report
+41622244,case series,case_series
+41629874,cohort,cohort
+41634881,cohort,cohort
+41639648,cohort,cohort
+41641134,case report,case_report
+41658772,case report,case_report
+41690709,cohort,cohort
+41710465,case series,case_series
+41714291,cohort,cohort
+41716663,case report,case_report
+41723443,cohort,cohort
+41727820,case report,case_report
+41738333,case series,case_series
+41749371,other,unclear
+41751512,cohort,cohort
+41751555,case series,cohort
+41751559,cohort,cohort
+41751618,cohort,cohort
+41761011,case series,case_series
+41768201,case series,case_series
+41775679,cohort,cohort
+41811399,other,unclear
+41821338,cohort,cohort
+41828453,case report,case_report
+41848878,cohort,cohort
+41858965,case report,case_report
+41859717,cohort,cohort
+41862935,cohort,cohort
+41863018,cohort,cohort
+41868040,cohort,cohort
+41897562,cohort,cohort
+41906976,cohort,cohort
+41939616,cohort,cohort
+41943072,cohort,cohort
+41947371,cohort,cohort
+41952427,case report,case_report
+41953134,cohort,cohort
+41960707,cohort,cohort
+41965611,case report,case_report
+41965835,case report,case_report
+41968367,method,method
+41974762,cohort,cohort
+41984209,cohort,cohort
+41999034,case report,case_report
+42002830,case report,case_report
+42009805,retrospective cohort,cohort
+42016332,case report,case_report
+42017141,,case_report
+42032740,case report,case_report
+42035033,cohort,cohort
+42040609,case report,case_report
+42067806,cohort,cohort
+42082986,case report,case_report
+42108507,cohort,cohort
+42110001,case report,case_report
+42116066,other,case_report
+42137573,case report,case_report
+42181563,cohort,cohort
+42186005,case report,case_report
+42205458,cohort,cohort
+42210665,case report,case_report
+42230359,cohort,cohort
+42249814,cohort,cohort
+42260801,case series,case_series
+42286522,cohort,cohort
+42290850,cohort,cohort
+42297386,case report,case_report
+42394496,cohort,cohort
+42410591,case report,case_report
+42427124,case report,case_report
+42443849,cohort,cohort
+42471198,cohort,cohort
+42482245,case report,case_report
+42487276,case report,case_report
+42495255,case report,case_report
+42504639,cohort,cohort
+42561194,retrospective cohort,cohort
+42566411,cohort,cohort
+42577704,case report,case_report
+42596935,review,review
+42600089,cohort,cohort
+42607148,case report,case_report
+42609877,case report,case_report
+42634394,cohort,cohort
+42681615,cohort,cohort
+42682406,case report,case_report
+42683127,cohort,cohort
+42697554,cohort,cohort
+42703076,screening/validation,validation
+42713383,case report,case_report
+42751320,case series,case_series
+42769703,cohort,cohort
+42795903,case series,case_series
+71231,review,review
+7877951,cohort,cohort
+7943022,,unclear

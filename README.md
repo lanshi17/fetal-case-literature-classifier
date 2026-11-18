@@ -707,8 +707,8 @@ mean test AP 略高。默认仍用 NeuML（与已发布阈值/权重连续）；
 | review | 9 | 0.250 |
 | unclear | 110 | 0.503 |
 
-9 类 macro-F1 **0.419**；二分类把“case series vs cohort”的边界问题掩盖了。
-`design` 规则映射不是专家重标注，`screening`/`registry` 支持样本 <5，暂不可学。
+9 类 macro-F1 **0.419**（套用审计 overlay 后 0.445）；二分类把“case series vs cohort”的边界
+问题掩盖了。`design` 规则映射不是专家重标注，`screening`/`registry` 支持样本 <5，暂不可学。
 
 **边界标签审计**（`artifacts/label_audit/`）：结构规则筛出 26 行冲突，AI 首轮判定
 8 条应补充（被排除的 case report/series）、8 条应改标（大样本 case series 实为 cohort/screening）、

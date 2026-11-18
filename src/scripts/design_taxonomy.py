@@ -48,9 +48,21 @@ def classify(design: str) -> str:
 
 
 def main() -> None:
-    OUT.mkdir(parents=True, exist_ok=True)
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--overlay", type=Path, default=None, help="adjudication.csv with pmid/suggested_design/action")
+    ap.add_argument("--out", type=Path, default=OUT)
+    args = ap.parse_args()
+    args.out.mkdir(parents=True, exist_ok=True)
     df = pd.read_csv(DATA, low_memory=False, dtype={"pmid": str})
     df["design_class"] = df["design"].map(classify)
+    if args.overlay:
+        ov = pd.read_csv(args.overlay, dtype={"pmid": str})
+        ov = ov[ov["action"].isin(["add", "relabel"])]
+        mp = dict(zip(ov["pmid"], ov["suggested_design"]))
+        hit = df["pmid"].isin(mp)
+        df.loc[hit, "design_class"] = df.loc[hit, "pmid"].map(mp)
+        print(f"overlay applied to {int(hit.sum())} rows")
     counts = df["design_class"].value_counts().to_dict()
 
     z = np.load(FEATURES, allow_pickle=True)
@@ -91,8 +103,8 @@ def main() -> None:
         "binary_case_vs_other": {"precision": b_p, "recall": b_r, "f1": 2 * b_p * b_r / max(b_p + b_r, 1e-9)},
         "note": "rule-based design_class bootstrap, not expert re-annotation",
     }
-    (OUT / "metrics.json").write_text(json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8")
-    df[["pmid", "design", "design_class"]].to_csv(OUT / "taxonomy.csv", index=False)
+    (args.out / "metrics.json").write_text(json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8")
+    df[["pmid", "design", "design_class"]].to_csv(args.out / "taxonomy.csv", index=False)
 
     lines = [
         "# Design taxonomy (bootstrap)",
@@ -107,7 +119,7 @@ def main() -> None:
         v = metrics["per_class"][name]
         lines.append(f"| {name} | {v['support']} | {v['precision']:.3f} | {v['recall']:.3f} | {v['f1']:.3f} |")
     lines += ["", "Rules: " + " > ".join(f"`{k}`" for k, _ in RULES) + " > `unclear` (missing/other)."]
-    (OUT / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (args.out / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
 
 

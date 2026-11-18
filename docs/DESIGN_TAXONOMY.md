@@ -34,6 +34,10 @@ Frozen 1536-d document features + multinomial logistic regression, 5-fold strati
 | weighted-F1 | 0.726 |
 | binary case vs other (same features) | P 0.838 / R 0.883 / F1 0.860 |
 
+With the first-pass audit overlay (`artifacts/label_audit/adjudication.csv`, 17 add/relabel rows):
+macro-F1 **0.445**, weighted-F1 0.737, binary P 0.847 / R 0.907 / F1 0.876. The overlay is
+AI-proposed and not applied to the source labels.
+
 Per class: case_report F1 0.828, cohort 0.844, case_series **0.421**, validation 0.521,
 method 0.400, review 0.250, unclear 0.503. `screening` (n=2) and `registry` (n=1) are not
 learnable at this support.
@@ -51,5 +55,5 @@ learnable at this support.
 
 ## Files
 
-- `src/scripts/design_taxonomy.py` — mapping + CV
+- `src/scripts/design_taxonomy.py` — mapping + CV (`--overlay` applies an adjudication CSV)
 - `artifacts/design_taxonomy/{metrics.json,report.md,taxonomy.csv}`
