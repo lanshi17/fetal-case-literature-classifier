@@ -6,7 +6,7 @@
 
 | 组件 | 设定 |
 |------|------|
-| 编码器 | PubMedBERT `microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext`（经 `NeuML/pubmedbert-base-embeddings` 封装），块长 480、最多 12 块，保留前 2 块 |
+| 编码器 | PubMedBERT 架构，上游 `microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext`；实际训练/推理加载 `NeuML/pubmedbert-base-embeddings`（SentenceTransformer 微调版），块长 480、最多 12 块，保留前 2 块 |
 | 文档特征 | `L2(mean_all) ‖ L2(mean_first_2)` → **1536-d** |
 | 适配器 | DoRA（r=16, α=32，`query`/`value`）+ 线性分类头 |
 | 阈值 | **0.7619**（金标 49 篇上 R≥0.95 重校准） |

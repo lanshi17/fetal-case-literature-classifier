@@ -26,7 +26,7 @@
     "short_threshold": 0.75
   },
   "provenance": {
-    "base_model": "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
+    "architecture": "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
     "training_weights": "NeuML/pubmedbert-base-embeddings"
   },
   "target_precision": 0.9,

@@ -1,6 +1,6 @@
 ---
 license: apache-2.0
-base_model: microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext
+base_model: NeuML/pubmedbert-base-embeddings
 library_name: pytorch
 pipeline_tag: text-classification
 tags:
@@ -32,8 +32,8 @@ This is a **research artifact**, not a clinical decision tool.
 
 | Component | Setting |
 |---|---|
-| Base encoder | [`microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext`](https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext) (PubMedBERT) |
-| Training weights | [`NeuML/pubmedbert-base-embeddings`](https://huggingface.co/NeuML/pubmedbert-base-embeddings), SentenceTransformer packaging of the same encoder |
+| Base architecture | [`microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext`](https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext) (PubMedBERT, MIT) |
+| Training weights | [`NeuML/pubmedbert-base-embeddings`](https://huggingface.co/NeuML/pubmedbert-base-embeddings), SentenceTransformer fine-tune of that encoder (Apache-2.0); the direct parent of this checkpoint |
 | Adapter | DoRA (PEFT), r=16, α=32, target `query` / `value` |
 | Document encoding | 480-token chunks, max 12 chunks, keep first 2; `L2(mean_all) ‖ L2(mean_first_2)` → 1536-d |
 | Head | linear 1536 → 2 |
