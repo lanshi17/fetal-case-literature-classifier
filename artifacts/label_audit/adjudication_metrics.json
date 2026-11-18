@@ -1,0 +1,22 @@
+{
+  "n_relabelled": 9,
+  "ap_before": 0.9650050959894999,
+  "ap_after": 0.9660686402854245,
+  "auc_before": 0.9699326386466689,
+  "auc_after": 0.9712791875393502,
+  "f1_before": 0.9442970822281167,
+  "f1_after": 0.9397590361445782,
+  "p_after": 0.9285714285714286,
+  "r_after": 0.9512195121951219,
+  "n_excluded_case_cue": 8,
+  "proposed_additions": {
+    "18955803": "case_report",
+    "35791503": "case_series",
+    "36609239": "case_report",
+    "37761271": "case_report",
+    "40761308": "case_report",
+    "42017141": "case_report",
+    "42116066": "case_report",
+    "41029435": "case_series"
+  }
+}

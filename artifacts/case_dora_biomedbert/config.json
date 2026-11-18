@@ -87,5 +87,9 @@
   "provenance": {
     "training_weights": "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
     "local_path": ".cache/models/biomedbert-base"
+  },
+  "calibration": {
+    "temperature": 0.4435,
+    "source": "OOF temperature scaling"
   }
 }

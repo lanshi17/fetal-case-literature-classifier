@@ -1,0 +1,27 @@
+pmid,current_design,suggested_design,action
+18955803,,case_report,add
+35791503,,case_series,add
+36609239,,case_report,add
+37761271,,case_report,add
+40761308,,case_report,add
+42017141,,case_report,add
+42116066,other,case_report,add
+41029435,,case_series,add
+26260800,case series,screening,relabel
+40041231,case series,cohort,relabel
+32158503,case series,screening,relabel
+32067421,case series,screening,relabel
+36553582,case series,cohort,relabel
+30187503,case series,cohort,relabel
+39262391,case series,screening,relabel
+41751555,case series,cohort,relabel
+41494975,cohort,case_series,relabel
+41710465,case series,case_series,confirm
+33545980,case series,case_series,confirm
+34587985,case series,case_series,confirm
+38259626,case series,case_series,confirm
+42795903,case series,case_series,confirm
+35229910,cohort,cohort,confirm
+41267400,cohort,cohort,confirm
+41761011,case series,case_series,confirm
+41716663,case report,case_report,confirm
