@@ -1,0 +1,90 @@
+{
+  "name": "case_dora_chunk",
+  "description": "case report / case series vs cohort/screening/review/method, DoRA chunk-pool",
+  "created_at": "2026-11-18T04:51:17.469686+00:00",
+  "encoder": {
+    "model_id": "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
+    "model_path": ".cache/models/biomedbert-base",
+    "chunk_tokens": 480,
+    "max_chunks": 12,
+    "keep_first": 2,
+    "feature": "L2(mean_all) || L2(mean_first_2) -> 1536-d"
+  },
+  "adapter": {
+    "type": "DoRA",
+    "r": 16,
+    "alpha": 32,
+    "target_modules": [
+      "query",
+      "value"
+    ]
+  },
+  "threshold": 0.43467876,
+  "threshold_p90": 0.391392485,
+  "evidence": {
+    "min_tokens": 128,
+    "short_threshold": 0.75
+  },
+  "target_precision": 0.9,
+  "final_epochs": 3,
+  "cv_metrics": {
+    "oof_n": 864,
+    "oof_ap": 0.9740021210571943,
+    "oof_roc_auc": 0.9756332839204744,
+    "oof_at_f1_thr": {
+      "n": 864,
+      "positives": 376,
+      "negatives": 488,
+      "threshold": 0.43467876,
+      "recall": 0.9441489361702128,
+      "precision": 0.9441489361702128,
+      "f1": 0.9441489361702128,
+      "f2": 0.9441489361702128,
+      "ap": 0.9740021210571943,
+      "roc_auc": 0.9756332839204744,
+      "confusion_matrix": {
+        "tn": 467,
+        "fp": 21,
+        "fn": 21,
+        "tp": 355
+      },
+      "predicted_positive": 376,
+      "mean_score_positive": 0.7461945020478724,
+      "mean_score_negative": 0.1943730884918033
+    },
+    "oof_at_p90_thr": {
+      "n": 864,
+      "positives": 376,
+      "negatives": 488,
+      "threshold": 0.391392485,
+      "recall": 0.9521276595744681,
+      "precision": 0.9017632241813602,
+      "f1": 0.926261319534282,
+      "f2": 0.9416096791162546,
+      "ap": 0.9740021210571943,
+      "roc_auc": 0.9756332839204744,
+      "confusion_matrix": {
+        "tn": 449,
+        "fp": 39,
+        "fn": 18,
+        "tp": 358
+      },
+      "predicted_positive": 397,
+      "mean_score_positive": 0.7461945020478724,
+      "mean_score_negative": 0.1943730884918033
+    },
+    "fold_test_ap_mean": 0.9821410387689999,
+    "fold_test_ap_std": 0.009931596570806474,
+    "fold_test_f1_mean": 0.9429110677964934,
+    "fold_test_f1_std": 0.024119173810342093,
+    "fold_test_precision_mean": 0.9298979708649331,
+    "fold_test_recall_mean": 0.9574385964912281
+  },
+  "paths": {
+    "checkpoint_dir": "artifacts/case_dora_biomedbert/checkpoint"
+  },
+  "provenance": {
+    "training_weights": "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
+    "local_path": ".cache/models/biomedbert-base"
+  }
+}

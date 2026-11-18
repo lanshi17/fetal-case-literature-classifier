@@ -658,6 +658,27 @@ OOF（部署阈值 0.3962）：TP 356 / FP 22 / FN 20 / TN 466，P 0.942 / R 0.9
 - 系统海报：[`architecture.png`](artifacts/canvas/architecture.png) · [PDF](artifacts/canvas/architecture.pdf)
 - 设计哲学：[`artifacts/canvas/QUIET_LOCUS.md`](artifacts/canvas/QUIET_LOCUS.md)
 
+### 4.6 编码器替换：NeuML vs BiomedBERT
+
+同一 864 篇 `design` 标签、同一 5 折（seed=42）、同超参与分块，只换编码器：
+`NeuML/pubmedbert-base-embeddings`（SentenceTransformer 微调版）对比原始
+`microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext`。
+产物：`artifacts/case_dora_biomedbert/`（checkpoint、CV、`COMPARE.md`）。
+
+| 指标 | NeuML | BiomedBERT | Δ |
+|---|---:|---:|---:|
+| 5 折 test AP | 0.987 ± 0.009 | 0.982 ± 0.010 | −0.005 |
+| 5 折 test AUC | 0.988 ± 0.009 | 0.986 ± 0.007 | −0.002 |
+| OOF AP | 0.9650 | 0.9740 | +0.0090 |
+| OOF AUC | 0.9699 | 0.9756 | +0.0057 |
+| OOF F1（每折 val 阈值） | 0.937 | 0.942 | +0.005 |
+| OOF F1（各自 OOF 阈值） | 0.944 | 0.944 | 0.000 |
+
+配对 bootstrap ΔAP 95% CI **−0.002 … +0.022**（含 0）；McNemar（每折 val 阈值）p=0.45。
+结论：**无统计显著差异**，两者互有胜负——BiomedBERT 的 OOF AP/AUC 略高，NeuML 的 5 折
+mean test AP 略高。默认仍用 NeuML（与已发布阈值/权重连续）；需要从规范上游 MIT 权重
+（BiomedBERT）复现时用 `artifacts/case_dora_biomedbert/`，其阈值 0.4347。
+
 ---
 
 ## 5. 训练与复现（可选）

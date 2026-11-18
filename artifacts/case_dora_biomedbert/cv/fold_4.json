@@ -1,0 +1,86 @@
+{
+  "fold": 4,
+  "input_mode": "full",
+  "n_train": 608,
+  "n_val": 84,
+  "n_test": 172,
+  "pos_train": 264,
+  "pos_val": 37,
+  "pos_test": 75,
+  "best_epoch": 4,
+  "best_val_ap": 0.9956685719843612,
+  "threshold_f1": 0.32374176383018494,
+  "threshold_p90": 0.16115079820156097,
+  "val_ap": 0.9956685719843612,
+  "test_at_f1_thr": {
+    "n": 172,
+    "positives": 75,
+    "negatives": 97,
+    "threshold": 0.32374176383018494,
+    "recall": 0.96,
+    "precision": 0.9230769230769231,
+    "f1": 0.9411764705882353,
+    "f2": 0.9523809523809523,
+    "ap": 0.985784304035435,
+    "roc_auc": 0.9844673539518901,
+    "confusion_matrix": {
+      "tn": 91,
+      "fp": 6,
+      "fn": 3,
+      "tp": 72
+    },
+    "predicted_positive": 78,
+    "mean_score_positive": 0.8271274178226788,
+    "mean_score_negative": 0.14312126994440236
+  },
+  "test_at_p90_thr": {
+    "n": 172,
+    "positives": 75,
+    "negatives": 97,
+    "threshold": 0.16115079820156097,
+    "recall": 0.96,
+    "precision": 0.8674698795180723,
+    "f1": 0.9113924050632911,
+    "f2": 0.9399477806788512,
+    "ap": 0.985784304035435,
+    "roc_auc": 0.9844673539518901,
+    "confusion_matrix": {
+      "tn": 86,
+      "fp": 11,
+      "fn": 3,
+      "tp": 72
+    },
+    "predicted_positive": 83,
+    "mean_score_positive": 0.8271274178226788,
+    "mean_score_negative": 0.14312126994440236
+  },
+  "test_ap": 0.985784304035435,
+  "test_roc_auc": 0.9844673539518901,
+  "elapsed_sec": 631.9,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6862738999096971,
+      "val_ap": 0.9781437435324474,
+      "val_f1_best": 0.9459459459459459
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.41584108902239486,
+      "val_ap": 0.9926847000815704,
+      "val_f1_best": 0.9736842105263158
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.22437760042712876,
+      "val_ap": 0.9938991012959717,
+      "val_f1_best": 0.96
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.18683348407380676,
+      "val_ap": 0.9956685719843612,
+      "val_f1_best": 0.9736842105263158
+    }
+  ]
+}

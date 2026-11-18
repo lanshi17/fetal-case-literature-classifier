@@ -1,0 +1,86 @@
+{
+  "fold": 3,
+  "input_mode": "full",
+  "n_train": 608,
+  "n_val": 83,
+  "n_test": 173,
+  "pos_train": 264,
+  "pos_val": 36,
+  "pos_test": 76,
+  "best_epoch": 3,
+  "best_val_ap": 0.9865285642052409,
+  "threshold_f1": 0.20143476128578186,
+  "threshold_p90": 0.20143476128578186,
+  "val_ap": 0.9865285642052409,
+  "test_at_f1_thr": {
+    "n": 173,
+    "positives": 76,
+    "negatives": 97,
+    "threshold": 0.20143476128578186,
+    "recall": 0.9605263157894737,
+    "precision": 0.8588235294117647,
+    "f1": 0.906832298136646,
+    "f2": 0.9383033419023136,
+    "ap": 0.9780350430744145,
+    "roc_auc": 0.9787032013022245,
+    "confusion_matrix": {
+      "tn": 85,
+      "fp": 12,
+      "fn": 3,
+      "tp": 73
+    },
+    "predicted_positive": 85,
+    "mean_score_positive": 0.7821739173837399,
+    "mean_score_negative": 0.15556237408795306
+  },
+  "test_at_p90_thr": {
+    "n": 173,
+    "positives": 76,
+    "negatives": 97,
+    "threshold": 0.20143476128578186,
+    "recall": 0.9605263157894737,
+    "precision": 0.8588235294117647,
+    "f1": 0.906832298136646,
+    "f2": 0.9383033419023136,
+    "ap": 0.9780350430744145,
+    "roc_auc": 0.9787032013022245,
+    "confusion_matrix": {
+      "tn": 85,
+      "fp": 12,
+      "fn": 3,
+      "tp": 73
+    },
+    "predicted_positive": 85,
+    "mean_score_positive": 0.7821739173837399,
+    "mean_score_negative": 0.15556237408795306
+  },
+  "test_ap": 0.9780350430744145,
+  "test_roc_auc": 0.9787032013022245,
+  "elapsed_sec": 625.3,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6808321289718151,
+      "val_ap": 0.9459250938865486,
+      "val_f1_best": 0.8947368421052632
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.3878673172408813,
+      "val_ap": 0.9793738810589302,
+      "val_f1_best": 0.958904109589041
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.22088754238364727,
+      "val_ap": 0.9865285642052409,
+      "val_f1_best": 0.9473684210526315
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.1764935415336176,
+      "val_ap": 0.9859188081076798,
+      "val_f1_best": 0.935064935064935
+    }
+  ]
+}

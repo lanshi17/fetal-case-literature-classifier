@@ -171,7 +171,9 @@ def train_model(
     device: torch.device,
     *,
     seed: int,
+    epochs: int | None = None,
 ) -> tuple[Any, dict[str, Any]]:
+    n_epochs = int(epochs or args.epochs)
     torch.manual_seed(seed)
     np.random.seed(seed)
 
@@ -192,7 +194,7 @@ def train_model(
         collate_fn=lambda b: collate_examples(b, tokenizer, args.max_length),
     )
     steps_per_epoch = max(1, math.ceil(len(loader) / max(args.grad_accum, 1)))
-    total_steps = steps_per_epoch * args.epochs
+    total_steps = steps_per_epoch * n_epochs
     sched = get_linear_schedule_with_warmup(
         opt, int(total_steps * args.warmup_ratio), total_steps
     )
@@ -204,7 +206,7 @@ def train_model(
     patience = 0
     t0 = time.time()
 
-    for epoch in range(1, args.epochs + 1):
+    for epoch in range(1, n_epochs + 1):
         model.train()
         running, n_seen = 0.0, 0
         opt.zero_grad(set_to_none=True)
@@ -258,7 +260,7 @@ def train_model(
                 patience += 1
         history.append(entry)
         print(
-            f"  epoch {epoch}/{args.epochs} loss={entry['train_loss']:.4f}"
+            f"  epoch {epoch}/{n_epochs} loss={entry['train_loss']:.4f}"
             + (f" val_ap={entry['val_ap']:.4f} val_f1={entry['val_f1_best']:.4f}" if val else ""),
             flush=True,
         )
@@ -381,7 +383,7 @@ def train_final(
     print(f"final: training on {len(examples)} rows for {epochs} epochs", flush=True)
     t0 = time.time()
     model, info = train_model(
-        examples, None, tokenizer, model_path, args, device, seed=args.seed
+        examples, None, tokenizer, model_path, args, device, seed=args.seed, epochs=epochs
     )
     ckpt = out_dir / "checkpoint"
     ckpt.mkdir(parents=True, exist_ok=True)
@@ -424,7 +426,7 @@ def train_final(
         "description": "case report / case series vs cohort/screening/review/method, DoRA chunk-pool",
         "created_at": datetime.now(timezone.utc).isoformat(),
         "encoder": {
-            "model_id": "NeuML/pubmedbert-base-embeddings",
+            "model_id": args.model_id or args.model or "NeuML/pubmedbert-base-embeddings",
             "model_path": model_path,
             "chunk_tokens": args.max_length,
             "max_chunks": 12,
@@ -500,7 +502,8 @@ def main() -> None:
     ap.add_argument("--input-mode", choices=["full", "title_abstract", "title"], default="full")
     ap.add_argument("--limit", type=int, default=None, help="subsample for smoke tests")
     ap.add_argument("--device", type=str, default=None)
-    ap.add_argument("--model", type=str, default=None)
+    ap.add_argument("--model", type=str, default=None, help="encoder id or local dir (default NeuML/pubmedbert-base-embeddings)")
+    ap.add_argument("--model-id", type=str, default=None, help="metadata id recorded in config when --model is a local dir")
     args = ap.parse_args()
 
     device = torch.device(
@@ -522,6 +525,7 @@ def main() -> None:
     y = np.asarray([e.label for e in examples], dtype=int)
     print(f"loaded {len(examples)} rows: {stats}", flush=True)
 
+    args.out_dir = args.out_dir.expanduser().resolve()
     args.out_dir.mkdir(parents=True, exist_ok=True)
     if args.folds:
         for fold in [int(x) for x in args.folds.split(",") if x.strip() != ""]:
