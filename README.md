@@ -633,11 +633,12 @@ OOF（部署阈值 0.3962）：TP 356 / FP 22 / FN 20 / TN 466，P 0.942 / R 0.9
 
 ### 4.5 架构图
 
-![Case-only DoRA model architecture](artifacts/canvas/model-architecture.png)
+![Figure 1: PubMedBERT + DoRA case-report classifier](artifacts/canvas/model-architecture.png)
 
 单次前向：题目/摘要与全文拼接 → 480 token 切块（≤12 块，前 2 块保留，其余均匀抽样）→
-每块过 PubMedBERT（DoRA 挂在 `query`/`value`，可训 611,330 / 110,093,570 = 0.56%）→
-块向量 masked mean 后取 `L2(mean_all) ‖ L2(mean_first_2)` → 1536-d → 线性头 → `p(case)`。
+每块过 PubMedBERT（DoRA 挂在 `query`/`value`，可训 611,330 / 110,093,570 = 0.56%，
+其中 DoRA 608,256 + 分类头 3,074）→ 块向量 masked mean 后取 `L2(mean_all) ‖ L2(mean_first_2)`
+→ 1536-d → 线性头 → `p(case)`。
 训练/推理共用同一分块与池化协议（"fair"）；阈值 0.3962 为 OOF F1 最优点，0.3502 为 P≥0.90 点。
 标题显式含 `case report` / `case series` 的保护规则在语料流水线里，**不在 checkpoint 内**。
 

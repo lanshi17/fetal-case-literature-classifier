@@ -36,7 +36,7 @@ This is a **research artifact**, not a clinical decision tool.
 | Adapter | DoRA (PEFT), r=16, α=32, target `query` / `value` |
 | Document encoding | 480-token chunks, max 12 chunks, keep first 2; `L2(mean_all) ‖ L2(mean_first_2)` → 1536-d |
 | Head | linear 1536 → 2 |
-| Trainable params | 611,330 / 110,093,570 (0.56%) |
+| Trainable params | 611,330 / 110,093,570 (0.56%): 608,256 DoRA + 3,074 head |
 | Decision threshold | **0.3962** (F1-optimal on out-of-fold scores) |
 | High-precision threshold | **0.3502** (P ≥ 0.90) |
 
