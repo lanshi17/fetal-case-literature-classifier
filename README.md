@@ -752,6 +752,20 @@ mean test AP 略高。默认仍用 NeuML（与已发布阈值/权重连续）；
 了训练集文档；但**各折阈值相差 2.6 倍**，校准误差 0.15，部署时必须按语料重选阈值/做温度缩放。
 产物：`artifacts/case_dora_external/SUMMARY.md`。
 
+### 4.9 结构化分块与 Attention Pooling（冻结编码器）
+
+同一 864 篇、同一 5 折，只改文档表示（冻结 PubMedBERT + LR / 小型 attention head）：
+
+| 表示 | AP | F1 |
+|---|---:|---:|
+| flat：`L2(mean_all) ‖ L2(mean_first2)` 1536-d | 0.977 ± 0.013 | 0.918 ± 0.030 |
+| section：Title/Abstract、Methods、Results、Discussion 分段池化，3072-d | **0.980 ± 0.012** | 0.917 ± 0.029 |
+| attention：chunk 级注意力池化，768-d | 0.969 ± 0.014 | 0.886 ± 0.055 |
+
+章节感知特征只 +0.003 AP（噪声内，F1 持平），attention pooling 在 864 篇上反而更差。
+**当前 DoRA 全文方案（AP 0.987）仍明显更好**；分块策略不是瓶颈，数据/标签才是。
+产物：`artifacts/case_structured_pooling/`。
+
 ---
 
 ## 5. 训练与复现（可选）

@@ -77,7 +77,23 @@ Nine rule-derived design classes, frozen features + multinomial LR, 5-fold: macr
 
 Files: `artifacts/design_taxonomy/`, `docs/DESIGN_TAXONOMY.md`.
 
-## 6. Limits
+## 6. Structured pooling (frozen features)
+
+Same 864 papers / 5 folds; only the document representation changes (LR on flat/section features,
+small attention head on chunk vectors).
+
+| representation | AP | F1 |
+|---|---:|---:|
+| flat 1536-d | 0.977 ± 0.013 | 0.918 ± 0.030 |
+| section 3072-d | 0.980 ± 0.012 | 0.917 ± 0.029 |
+| attention 768-d | 0.969 ± 0.014 | 0.886 ± 0.055 |
+
+Section-aware encoding gives no material gain over flat pooling, and attention pooling is worse at
+this sample size. The end-to-end DoRA model (AP 0.987) remains the best configuration.
+
+Files: `artifacts/case_structured_pooling/`, `src/scripts/case_structured_pooling.py`.
+
+## 7. Limits
 
 - Temporal and journal splits share the same `design` label pipeline; they test corpus shift, not
   label correctness.
