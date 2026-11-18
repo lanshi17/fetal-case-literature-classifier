@@ -6,7 +6,7 @@
 
 | 组件 | 设定 |
 |------|------|
-| 编码器 | NeuML `pubmedbert-base-embeddings`，块长 480、最多 12 块，保留前 2 块 |
+| 编码器 | PubMedBERT `microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext`（经 `NeuML/pubmedbert-base-embeddings` 封装），块长 480、最多 12 块，保留前 2 块 |
 | 文档特征 | `L2(mean_all) ‖ L2(mean_first_2)` → **1536-d** |
 | 适配器 | DoRA（r=16, α=32，`query`/`value`）+ 线性分类头 |
 | 阈值 | **0.7619**（金标 49 篇上 R≥0.95 重校准） |
@@ -549,7 +549,12 @@ OOF AUC **0.970**。推理时若标题显式含 `case report` / `case series`，
 `series of N<100`，直接保留（避免标注噪声把大样本 case series 学成 cohort），其余按模型阈值。
 全量 13,752 篇保留中判出 **8,048** 篇（relevant 7,239 / review 809；模型直接判 8,019 + 显式线索 29）。
 推理产物：`case_scores.jsonl`、`results_case_dora.csv`、`case_dora_retained.csv`（最终 case 集合）、
-`case_dora_relevant.csv`、`case_dora_review.csv`、`CASE_DORA.md`。
+`case_dora_relevant.csv`、`case_dora_review.csv`、`case_dora_insufficient.csv`、`CASE_DORA.md`。
+
+短文本保护（`config.json.evidence`）：输入 < 128 token 时，`case` 需 p ≥ 0.75；p 落在
+[0.396, 0.75) 记 `insufficient`，不判 case，随流水线写入 `case_dora_insufficient.csv` 复核；
+p ≥ 0.75 的短标题仍判 case，标题显式 `case report` / `case series` 直接判 case。上面的 8,048
+是启用前的快照，`--build-only` 重算会把这类短文本转出（estimates from `text_chars`，约占 0.04%）。
 
 Hugging Face 模型仓库：[`lanshi/prenatal-case-dora`](https://huggingface.co/lanshi/prenatal-case-dora)
 （`model.safetensors`、`config.json`、`modeling_case_dora.py`、模型卡、架构图与 CV 指标）。

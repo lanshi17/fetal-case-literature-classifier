@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "artifacts/hf_upload/case_dora/README.md"
+      - "artifacts/hf_upload/case_dora/config.json"
+      - "artifacts/hf_upload/case_dora/modeling_case_dora.py"
       - "artifacts/canvas/architecture.png"
       - "artifacts/canvas/model-architecture.png"
       - "artifacts/canvas/architecture.pdf"
@@ -35,6 +37,8 @@ jobs:
           repo = "lanshi/prenatal-case-dora"
           files = [
               ("artifacts/hf_upload/case_dora/README.md", "README.md"),
+              ("artifacts/hf_upload/case_dora/config.json", "config.json"),
+              ("artifacts/hf_upload/case_dora/modeling_case_dora.py", "modeling_case_dora.py"),
               ("artifacts/canvas/architecture.png", "architecture.png"),
               ("artifacts/canvas/model-architecture.png", "model-architecture.png"),
               ("artifacts/canvas/architecture.pdf", "architecture.pdf"),

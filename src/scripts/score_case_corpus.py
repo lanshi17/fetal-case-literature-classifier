@@ -5,11 +5,12 @@ Default: score only retained rows (``decision != irrelevant``), because the
 final case set is retained ∩ case.  Results stream to JSONL and resume by PMID.
 
 Outputs (``--out-dir``, default ``artifacts/screen_full``):
-    case_scores.jsonl         pmid / case_score / case_decision per doc
+    case_scores.jsonl         pmid / case_score / n_tokens / case_decision per doc
     results_case_dora.csv     screening rows joined with case scores
     case_dora_retained.csv    retained AND case (final case-only set)
     case_dora_relevant.csv    relevant AND case
     case_dora_review.csv      review AND case
+    case_dora_insufficient.csv  retained but < min_tokens in the ambiguous band
     CASE_DORA.md              summary
 
 Usage
@@ -95,14 +96,18 @@ def score_pending(args: argparse.Namespace) -> None:
             with out.open("a", encoding="utf-8") as f:
                 for d, s in zip(docs, scores):
                     explicit = bool(EXPLICIT_CASE_RE.search(str(d.get("title") or "")))
-                    model_decision = pred.decide(float(s))
+                    n_tokens = pred.count_tokens(d["title"], d["text"])
+                    model_decision = pred.decide(float(s), n_tokens=n_tokens)
                     rec = {
                         "pmid": d["pmid"],
                         "case_score": round(float(s), 6),
-                        "case_decision": "case" if explicit or model_decision == "case" else "non-case",
+                        "n_tokens": n_tokens,
+                        "evidence_sufficient": n_tokens >= pred.min_tokens,
+                        "case_decision": "case" if explicit else model_decision,
                         "case_decision_model": model_decision,
+                        "case_decision_raw": pred.decide(float(s)),
                         "explicit_case_title": explicit,
-                        "case_decision_p90": pred.decide(float(s), p90=True),
+                        "case_decision_p90": "case" if explicit else pred.decide(float(s), p90=True, n_tokens=n_tokens),
                     }
                     f.write(json.dumps(rec, ensure_ascii=False) + "\n")
                 f.flush()
@@ -114,33 +119,72 @@ def score_pending(args: argparse.Namespace) -> None:
 
 
 def build_outputs(args: argparse.Namespace) -> None:
+    from case_model import guarded_decision
+
+    cfg = json.loads(args.config.read_text(encoding="utf-8"))
+    ev = cfg.get("evidence", {})
+    min_tokens = int(ev.get("min_tokens", 128))
+    short_threshold = float(ev.get("short_threshold", 0.75))
+    thr = float(cfg["threshold"])
+    thr_p90 = float(cfg.get("threshold_p90", thr))
+
     df = pd.read_csv(args.results, dtype={"pmid": str})
     done = load_done(args.out_dir / "case_scores.jsonl")
     if not done:
         raise SystemExit("no case_scores.jsonl rows")
     scores = pd.DataFrame(done.values())
+    if "n_tokens" not in scores.columns:
+        scores["n_tokens"] = np.nan
     if "explicit_case_title" not in scores.columns:
         scores["explicit_case_title"] = False
-    if "case_decision_model" not in scores.columns:
-        scores["case_decision_model"] = scores["case_decision"]
-    scores = scores[
-        ["pmid", "case_score", "case_decision", "case_decision_model", "explicit_case_title", "case_decision_p90"]
-    ]
+    scores = scores[["pmid", "case_score", "n_tokens", "explicit_case_title"]]
     merged = df.merge(scores, on="pmid", how="left")
+
+    # Rows scored before the evidence guard existed have no n_tokens; derive a
+    # conservative estimate from text_chars (English ~4 chars/token).
+    chars = pd.to_numeric(merged.get("text_chars"), errors="coerce")
+    merged["n_tokens"] = pd.to_numeric(merged["n_tokens"], errors="coerce").fillna((chars / 4).round())
+    merged["evidence_sufficient"] = merged["n_tokens"] >= min_tokens
+
     explicit = merged["title"].fillna("").str.contains(EXPLICIT_CASE_RE)
     merged["explicit_case_title"] = merged["explicit_case_title"].fillna(False) | explicit
+
+    scored = merged["case_score"].notna()
+    merged["case_decision_model"] = None
+    merged["case_decision_p90"] = None
+    for col, p90 in (("case_decision_model", False), ("case_decision_p90", True)):
+        merged.loc[scored, col] = [
+            guarded_decision(
+                float(s),
+                int(n) if pd.notna(n) else None,
+                threshold=thr,
+                threshold_p90=thr_p90,
+                min_tokens=min_tokens,
+                short_threshold=short_threshold,
+                p90=p90,
+            )
+            for s, n in zip(merged.loc[scored, "case_score"], merged.loc[scored, "n_tokens"])
+        ]
+
     merged["case_decision"] = np.where(
-        merged["explicit_case_title"], "case", merged["case_decision"]
+        merged["explicit_case_title"], "case", merged["case_decision_model"]
     )
     merged.to_csv(args.out_dir / "results_case_dora.csv", index=False)
 
     case = merged[merged["case_decision"] == "case"]
-    retained = case[case["decision"] != "irrelevant"].sort_values("relevance_score", ascending=False)
+    retained = case[case["decision"] != "irrelevant"].sort_values(
+        by="relevance_score", ascending=False
+    )
     retained.to_csv(args.out_dir / "case_dora_retained.csv", index=False)
     for decision, name in (("relevant", "case_dora_relevant.csv"), ("review", "case_dora_review.csv")):
         case[case["decision"] == decision].sort_values(
-            "relevance_score", ascending=False
+            by="relevance_score", ascending=False
         ).to_csv(args.out_dir / name, index=False)
+
+    insufficient = merged[
+        (merged["case_decision"] == "insufficient") & (merged["decision"] != "irrelevant")
+    ].sort_values(by="relevance_score", ascending=False)
+    insufficient.to_csv(args.out_dir / "case_dora_insufficient.csv", index=False)
 
     by_decision_total = merged["decision"].value_counts().to_dict()
     by_decision_case = case["decision"].value_counts().to_dict()
@@ -152,11 +196,15 @@ def build_outputs(args: argparse.Namespace) -> None:
         "retained_total": int((merged["decision"] != "irrelevant").sum()),
         "retained_case": int(len(retained)),
         "retained_case_model": int(((merged["decision"] != "irrelevant") & (merged["case_decision_model"] == "case")).sum()),
-        "explicit_title_overrides": int(((merged["decision"] != "irrelevant") & merged["explicit_case_title"] & (merged["case_decision_model"] == "non-case")).sum()),
+        "retained_insufficient": int(len(insufficient)),
+        "min_evidence_tokens": min_tokens,
+        "short_threshold": short_threshold,
+        "explicit_title_overrides": int(((merged["decision"] != "irrelevant") & merged["explicit_case_title"] & (merged["case_decision_model"] != "case")).sum()),
         "outputs": {
             "case_dora_retained": str(args.out_dir / "case_dora_retained.csv"),
             "case_dora_relevant": str(args.out_dir / "case_dora_relevant.csv"),
             "case_dora_review": str(args.out_dir / "case_dora_review.csv"),
+            "case_dora_insufficient": str(args.out_dir / "case_dora_insufficient.csv"),
         },
     }
     (args.out_dir / "case_dora_summary.json").write_text(
@@ -179,6 +227,9 @@ def build_outputs(args: argparse.Namespace) -> None:
         "",
         f"其中模型判 case {summary['retained_case_model']:,} 篇；标题显式写 case report / case series "
         f"的追加 {summary['explicit_title_overrides']:,} 篇（含 report of N<100 cases / series of N<100 表述）。",
+        "",
+        f"短文本保护：< {summary['min_evidence_tokens']} token 的文档需 p ≥ {summary['short_threshold']:.2f} 才判 case；"
+        f"阈值到该线之间的 {summary['retained_insufficient']:,} 篇标为 insufficient，进入 `case_dora_insufficient.csv` 复核。",
         "",
         "最终文件：`case_dora_retained.csv`（相关性保留 ∩ case）。",
         "",

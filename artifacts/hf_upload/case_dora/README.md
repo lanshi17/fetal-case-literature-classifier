@@ -1,6 +1,6 @@
 ---
 license: apache-2.0
-base_model: NeuML/pubmedbert-base-embeddings
+base_model: microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext
 library_name: pytorch
 pipeline_tag: text-classification
 tags:
@@ -32,13 +32,15 @@ This is a **research artifact**, not a clinical decision tool.
 
 | Component | Setting |
 |---|---|
-| Base encoder | [`NeuML/pubmedbert-base-embeddings`](https://huggingface.co/NeuML/pubmedbert-base-embeddings) |
+| Base encoder | [`microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext`](https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext) (PubMedBERT) |
+| Training weights | [`NeuML/pubmedbert-base-embeddings`](https://huggingface.co/NeuML/pubmedbert-base-embeddings), SentenceTransformer packaging of the same encoder |
 | Adapter | DoRA (PEFT), r=16, α=32, target `query` / `value` |
 | Document encoding | 480-token chunks, max 12 chunks, keep first 2; `L2(mean_all) ‖ L2(mean_first_2)` → 1536-d |
 | Head | linear 1536 → 2 |
 | Trainable params | 611,330 / 110,093,570 (0.56%): 608,256 DoRA + 3,074 head |
 | Decision threshold | **0.3962** (F1-optimal on out-of-fold scores) |
 | High-precision threshold | **0.3502** (P ≥ 0.90) |
+| Short-input guard | below **128 tokens** a `case` call needs **p ≥ 0.75**; 0.396–0.75 → `insufficient` |
 
 Training labels: 864 papers with an existing `design` annotation (376 case report / case series,
 488 cohort / screening / review / method / validation / registry; 110 missing or “other” excluded).
@@ -141,7 +143,13 @@ out = clf.score(
 )
 print(out)
 # {'case_score': 0.93, 'case_decision': 'case',
-#  'case_decision_p90': 'case', 'threshold': 0.396..., ...}
+#  'case_decision_p90': 'case', 'n_tokens': 212, 'evidence_sufficient': True,
+#  'threshold': 0.396..., 'threshold_p90': 0.350..., 'n_chunks': 1}
+
+# Fragments shorter than 128 tokens do not get a binary call:
+out = clf.score(title="Fetal genetic testing was performed after ultrasound detection of a cardiac anomaly.")
+# {'case_score': 0.5994, 'case_decision': 'insufficient', 'n_tokens': 13,
+#  'evidence_sufficient': False, ...}
 ```
 
 `modeling_case_dora.py` is included in this repository and implements the chunking,
@@ -172,6 +180,9 @@ DoRA-wrapped encoder and pooling exactly as used during training.
   are retained by a rule, independent of this model.
 - **Truncation**: very long articles are sampled to 12 chunks (first 2 + evenly spaced),
   so evidence in unsampled sections is not seen.
+- **Short inputs**: below 128 tokens the design signal is unreliable. Such inputs are scored but
+  need p ≥ 0.75 for `case`; scores in [0.396, 0.75) return `insufficient` instead of `case`, and
+  the corpus pipeline routes them to `case_dora_insufficient.csv` for human review.
 
 ## License
 

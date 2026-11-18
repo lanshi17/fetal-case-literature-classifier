@@ -21,6 +21,14 @@
   },
   "threshold": 0.39624494,
   "threshold_p90": 0.35017881,
+  "evidence": {
+    "min_tokens": 128,
+    "short_threshold": 0.75
+  },
+  "provenance": {
+    "base_model": "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
+    "training_weights": "NeuML/pubmedbert-base-embeddings"
+  },
   "target_precision": 0.9,
   "final_epochs": 2,
   "cv_metrics": {

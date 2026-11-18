@@ -29,6 +29,31 @@ MAX_CHUNKS = 12
 KEEP_FIRST = 2
 EMBED_DIM = 768
 
+# Short fragments carry no study-design evidence: require a stricter score
+# below this token count and abstain in the band between the two bars.
+DEFAULT_MIN_TOKENS = 128
+DEFAULT_SHORT_THRESHOLD = 0.75
+
+
+def guarded_decision(
+    prob: float,
+    n_tokens: int,
+    *,
+    threshold: float,
+    threshold_p90: float,
+    min_tokens: int = DEFAULT_MIN_TOKENS,
+    short_threshold: float = DEFAULT_SHORT_THRESHOLD,
+    p90: bool = False,
+) -> str:
+    thr = threshold_p90 if p90 else threshold
+    if n_tokens < min_tokens:
+        if prob >= short_threshold:
+            return "case"
+        if prob < thr:
+            return "non-case"
+        return "insufficient"
+    return "case" if prob >= thr else "non-case"
+
 
 def compose_document_text(title: str, abstract: str, text: str) -> str:
     head = ". ".join(x for x in [str(title or "").strip(), str(abstract or "").strip()] if x)
@@ -148,6 +173,9 @@ class CaseDoraPredictor:
         self.threshold = float(config["threshold"])
         self.threshold_p90 = float(config.get("threshold_p90", self.threshold))
         self.chunk_tokens = int(config.get("encoder", {}).get("chunk_tokens", CHUNK_TOKENS))
+        evidence = config.get("evidence", {})
+        self.min_tokens = int(evidence.get("min_tokens", DEFAULT_MIN_TOKENS))
+        self.short_threshold = float(evidence.get("short_threshold", DEFAULT_SHORT_THRESHOLD))
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device).eval()
 
@@ -170,6 +198,7 @@ class CaseDoraPredictor:
 
     def score(self, title: str = "", text: str = "", *, abstract: str = "") -> dict[str, Any]:
         doc = compose_document_text(title, abstract, text)
+        n_tokens = len(self.tokenizer(doc, add_special_tokens=False, truncation=False)["input_ids"])
         chunks = chunk_text(doc, self.tokenizer, chunk_tokens=self.chunk_tokens)
         enc = self.tokenizer(
             chunks,
@@ -191,8 +220,25 @@ class CaseDoraPredictor:
             prob = float(F.softmax(logits, dim=-1)[0, 1].detach().cpu())
         return {
             "case_score": round(prob, 6),
-            "case_decision": "case" if prob >= self.threshold else "non-case",
-            "case_decision_p90": "case" if prob >= self.threshold_p90 else "non-case",
+            "case_decision": guarded_decision(
+                prob,
+                n_tokens,
+                threshold=self.threshold,
+                threshold_p90=self.threshold_p90,
+                min_tokens=self.min_tokens,
+                short_threshold=self.short_threshold,
+            ),
+            "case_decision_p90": guarded_decision(
+                prob,
+                n_tokens,
+                threshold=self.threshold,
+                threshold_p90=self.threshold_p90,
+                min_tokens=self.min_tokens,
+                short_threshold=self.short_threshold,
+                p90=True,
+            ),
+            "n_tokens": n_tokens,
+            "evidence_sufficient": n_tokens >= self.min_tokens,
             "threshold": self.threshold,
             "threshold_p90": self.threshold_p90,
             "n_chunks": len(chunks),
