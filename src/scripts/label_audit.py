@@ -71,6 +71,15 @@ def main() -> None:
     cols = ["pmid", "title", "year", "design", "label", "score", "series_size", "case_cue", "cohort_cue", "review_flags"]
     queue[cols].to_csv(OUT / "review_queue.csv", index=False, encoding="utf-8")
 
+    # Boundary annotation sheet: every case series + a deterministic cohort sample + flags.
+    cohort = df[is_cohort].sample(n=min(100, int(is_cohort.sum())), random_state=42)
+    boundary = pd.concat([df[is_cs], cohort, queue]).drop_duplicates("pmid").sort_values("pmid")
+    boundary = boundary[cols + ["label"]].copy()
+    boundary["annotator_design"] = ""
+    boundary["annotator_confidence"] = ""
+    boundary["annotator_notes"] = ""
+    boundary.to_csv(OUT / "boundary_set.csv", index=False, encoding="utf-8")
+
     med = df.loc[is_cs & (df["series_size"] > 0), "series_size"].median()
     med = 0.0 if pd.isna(med) else float(med)
     metrics = {
