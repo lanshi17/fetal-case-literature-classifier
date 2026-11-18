@@ -42,6 +42,12 @@ src/
     finetune_case_dora.py    # case-only DoRA 训练（design 标签，5 折 CV + 最终模型）
     case_baselines.py        # 5 折基准/消融（TF-IDF、冻结 PubMedBERT、输入/池化）
     score_case_corpus.py     # 用 case-only DoRA 对保留集推理，输出最终 case 集合
+    case_external_eval.py    # 时间外推 / 期刊 GroupKFold 外部验证
+    calibrate_case_model.py  # ECE/Brier、温度缩放/isotonic、拒识带
+    case_structured_pooling.py # 章节感知分块 + Attention Pooling 对照
+    design_taxonomy.py       # 9 类设计标签 bootstrap（可套审计 overlay）
+    label_audit.py           # case report/series 边界审计与复核队列
+    compare_case_models.py   # 两个编码器/模型的配对对比
     push_to_hf.py            # 上传 case-only 模型包到 Hugging Face Hub
     ahp_label/               # 多模型 AHP 弱标流水线
     <历史基线脚本>            # compare_* / retrain_* / eval_hardening / error_audit 等
