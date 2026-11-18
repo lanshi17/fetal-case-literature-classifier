@@ -47,6 +47,15 @@ Label noise in the *case series* band **does not inflate** the reported ranking 
 F1 by −0.005. The larger issue is coverage: 8 case reports were excluded from training because
 `design` was missing/`other`.
 
+## Impact if the 8 excluded case reports/series are added
+
+Scores from the released model (CPU): 7 of 8 score `case` (0.922–0.934); the 20-case
+retrospective series `41029435` scores **0.322** (`non-case`). Full overlay (872 rows, 377
+positives): AP **0.9671**, AUC **0.9714**, P 0.930 / R 0.950 / F1 **0.940**, versus
+0.9650 / 0.9699 / 0.9443 on the original 864. Adding the excluded positives barely moves the
+ranking and exposes one real failure mode: small retrospective case series with cohort-like
+wording.
+
 ## Next step
 
 An expert reviews these 26 rows (≈1–2 h). Confirmed rows go into a `design_audit` overlay, then the
