@@ -1,0 +1,82 @@
+{
+  "protocol": "journal_cv",
+  "fold": 0,
+  "n_train": 608,
+  "n_val": 83,
+  "n_test": 173,
+  "pos_test": 55,
+  "best_epoch": 2,
+  "threshold_f1": 0.23086394369602203,
+  "threshold_p90": 0.18341729044914246,
+  "test_ap": 0.9702467499899291,
+  "test_roc_auc": 0.9824345146379044,
+  "test_at_f1_thr": {
+    "n": 173,
+    "positives": 55,
+    "negatives": 118,
+    "threshold": 0.23086394369602203,
+    "recall": 0.9090909090909091,
+    "precision": 0.8620689655172413,
+    "f1": 0.8849557522123894,
+    "f2": 0.8992805755395683,
+    "ap": 0.9702467499899291,
+    "roc_auc": 0.9824345146379044,
+    "confusion_matrix": {
+      "tn": 110,
+      "fp": 8,
+      "fn": 5,
+      "tp": 50
+    },
+    "predicted_positive": 58,
+    "mean_score_positive": 0.7121566246856342,
+    "mean_score_negative": 0.17249772369356478
+  },
+  "test_at_shared_thr": {
+    "n": 173,
+    "positives": 55,
+    "negatives": 118,
+    "threshold": 0.39624494,
+    "recall": 0.8727272727272727,
+    "precision": 0.9230769230769231,
+    "f1": 0.897196261682243,
+    "f2": 0.8823529411764706,
+    "ap": 0.9702467499899291,
+    "roc_auc": 0.9824345146379044,
+    "confusion_matrix": {
+      "tn": 114,
+      "fp": 4,
+      "fn": 7,
+      "tp": 48
+    },
+    "predicted_positive": 52,
+    "mean_score_positive": 0.7121566246856342,
+    "mean_score_negative": 0.17249772369356478
+  },
+  "elapsed_sec": 625.4,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6730139889803372,
+      "val_ap": 0.9948773108786291,
+      "val_f1_best": 0.9743589743589743
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.3515707280878958,
+      "val_ap": 0.9993589743589744,
+      "val_f1_best": 0.9873417721518988
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.22048102892739208,
+      "val_ap": 0.9966214969251407,
+      "val_f1_best": 0.9873417721518988
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.18956565435387587,
+      "val_ap": 0.9966214969251407,
+      "val_f1_best": 0.9873417721518988
+    }
+  ]
+}

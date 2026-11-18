@@ -1,0 +1,82 @@
+{
+  "protocol": "journal_cv",
+  "fold": 1,
+  "n_train": 608,
+  "n_val": 83,
+  "n_test": 173,
+  "pos_test": 92,
+  "best_epoch": 2,
+  "threshold_f1": 0.3308592438697815,
+  "threshold_p90": 0.3019329309463501,
+  "test_ap": 0.9882380377194947,
+  "test_roc_auc": 0.9845679012345678,
+  "test_at_f1_thr": {
+    "n": 173,
+    "positives": 92,
+    "negatives": 81,
+    "threshold": 0.3308592438697815,
+    "recall": 0.967391304347826,
+    "precision": 0.9081632653061225,
+    "f1": 0.9368421052631579,
+    "f2": 0.9549356223175965,
+    "ap": 0.9882380377194947,
+    "roc_auc": 0.9845679012345678,
+    "confusion_matrix": {
+      "tn": 72,
+      "fp": 9,
+      "fn": 3,
+      "tp": 89
+    },
+    "predicted_positive": 98,
+    "mean_score_positive": 0.7728090299212415,
+    "mean_score_negative": 0.21541119504857947
+  },
+  "test_at_shared_thr": {
+    "n": 173,
+    "positives": 92,
+    "negatives": 81,
+    "threshold": 0.39624494,
+    "recall": 0.967391304347826,
+    "precision": 0.9175257731958762,
+    "f1": 0.9417989417989417,
+    "f2": 0.956989247311828,
+    "ap": 0.9882380377194947,
+    "roc_auc": 0.9845679012345678,
+    "confusion_matrix": {
+      "tn": 73,
+      "fp": 8,
+      "fn": 3,
+      "tp": 89
+    },
+    "predicted_positive": 97,
+    "mean_score_positive": 0.7728090299212415,
+    "mean_score_negative": 0.21541119504857947
+  },
+  "elapsed_sec": 631.0,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.674477156153635,
+      "val_ap": 0.9933155080213903,
+      "val_f1_best": 0.9850746268656716
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.39167166962043237,
+      "val_ap": 0.9947418113211589,
+      "val_f1_best": 0.9714285714285714
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.21680334158927986,
+      "val_ap": 0.9935408711749855,
+      "val_f1_best": 0.9855072463768116
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.17878572508006504,
+      "val_ap": 0.9916968002132674,
+      "val_f1_best": 0.9714285714285714
+    }
+  ]
+}

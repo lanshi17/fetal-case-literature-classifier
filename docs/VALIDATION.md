@@ -37,6 +37,18 @@ Files: `artifacts/case_dora_external/temporal/`, `artifacts/case_dora_calibratio
 Ranking is stable across journals; thresholds and calibration are not. Files:
 `artifacts/case_dora_external/journal_cv/`, `artifacts/case_dora_external/SUMMARY.md`.
 
+## 1c. Encoder generalization (NeuML vs BiomedBERT)
+
+| protocol | NeuML AP / F1 | BiomedBERT AP / F1 |
+|---|---|---|
+| temporal (≤2019 → ≥2020) | **0.987 / 0.939** | 0.965 / 0.839 |
+| journal GroupKFold (mean) | **0.986 / 0.925** | 0.985 / 0.923 |
+| journal pooled OOF | 0.977 / 0.927 | 0.980 / 0.927 |
+
+BiomedBERT's in-domain OOF advantage does not survive the temporal shift; journal folds are a
+tie. The probability-average ensemble adds +0.004 AP on journal pooled OOF and nothing on temporal.
+NeuML remains the single deployed model.
+
 ## 2. Calibration
 
 | model | ECE | Brier | after temperature | after isotonic |

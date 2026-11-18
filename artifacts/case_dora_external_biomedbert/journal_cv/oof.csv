@@ -1,0 +1,865 @@
+pmid,y,score,fold,protocol,year,journal
+11175621,0,0.15111506,0,journal_cv,2001,Sao Paulo Med J
+14726642,0,0.64174485,0,journal_cv,2003,Korean J Radiol
+18492228,0,0.16173449,0,journal_cv,2008,BMC Pregnancy Childbirth
+20192924,0,0.1501013,0,journal_cv,2010,Bosn J Basic Med Sci
+21203572,1,0.79809386,0,journal_cv,2010,PLoS One
+21249119,0,0.1521549,0,journal_cv,2010,PLoS One
+21356074,1,0.8390271,0,journal_cv,2011,Orphanet J Rare Dis
+21975797,0,0.15330699,0,journal_cv,2012,Hum Genet
+22389664,0,0.14727218,0,journal_cv,2012,PLoS One
+22666469,0,0.15185814,0,journal_cv,2012,PLoS One
+23330029,1,0.16661216,0,journal_cv,2012,Pan Afr Med J
+24505343,0,0.16134644,0,journal_cv,2014,PLoS One
+24564681,0,0.15000723,0,journal_cv,2014,BMC Pregnancy Childbirth
+25075585,1,0.82407063,0,journal_cv,2014,Sao Paulo Med J
+25329639,0,0.15174969,0,journal_cv,2014,PLoS One
+25388684,0,0.15387124,0,journal_cv,2015,Sao Paulo Med J
+25884925,0,0.15535934,0,journal_cv,2015,BMC Pregnancy Childbirth
+25923652,0,0.15899062,0,journal_cv,2015,PLoS One
+26862157,0,0.40315425,0,journal_cv,2016,J Med Genet
+27322245,1,0.8199681,0,journal_cv,2016,Int J Mol Sci
+27433940,1,0.1689134,0,journal_cv,2016,PLoS One
+27453244,1,0.4441122,0,journal_cv,2016,Chin Med J (Engl)
+28154732,1,0.5950999,0,journal_cv,2016,Pan Afr Med J
+28357876,0,0.14837675,0,journal_cv,2017,J Int Med Res
+28650953,1,0.81723595,0,journal_cv,2017,Med Sci Monit
+28659150,0,0.14719592,0,journal_cv,2017,Orphanet J Rare Dis
+29329576,0,0.15102698,0,journal_cv,2018,BMC Pregnancy Childbirth
+29496978,0,0.16041772,0,journal_cv,2018,J Med Genet
+29649318,0,0.1499384,0,journal_cv,2018,PLoS One
+29769050,0,0.15621656,0,journal_cv,2018,BMC Pregnancy Childbirth
+30266093,0,0.15653442,0,journal_cv,2018,Genome Med
+30717698,0,0.15701044,0,journal_cv,2019,BMC Pregnancy Childbirth
+30818867,0,0.16921028,0,journal_cv,2019,Med Sci (Basel)
+30871627,0,0.1629613,0,journal_cv,2019,Hum Genomics
+30978256,0,0.15052979,0,journal_cv,2019,PLoS One
+31040167,0,0.15519297,0,journal_cv,2019,J Med Genet
+31283802,0,0.15201876,0,journal_cv,2019,PLoS One
+31304847,1,0.83879036,0,journal_cv,2020,J Int Med Res
+31422728,0,0.15365511,0,journal_cv,2019,J Int Med Res
+31929729,1,0.83597183,0,journal_cv,2019,Curr Genomics
+32059709,0,0.15978472,0,journal_cv,2020,BMC Pregnancy Childbirth
+32185046,1,0.8389401,0,journal_cv,2020,Clin Case Rep
+32424735,0,0.15125865,0,journal_cv,2020,J Assist Reprod Genet
+32503639,0,0.15014005,0,journal_cv,2020,Hum Genomics
+32712620,0,0.15280537,0,journal_cv,2020,Med Sci Monit
+32845907,0,0.14895844,0,journal_cv,2020,PLoS One
+33094428,0,0.15203911,0,journal_cv,2020,J Assist Reprod Genet
+33167762,0,0.16015351,0,journal_cv,2020,J Int Med Res
+33198662,0,0.15179501,0,journal_cv,2020,BMC Pregnancy Childbirth
+33317474,0,0.15219721,0,journal_cv,2020,BMC Pregnancy Childbirth
+33456614,1,0.8284991,0,journal_cv,2020,J Med Life
+33509128,0,0.15259047,0,journal_cv,2021,BMC Pregnancy Childbirth
+33520070,1,0.46835208,0,journal_cv,2021,Pan Afr Med J
+33602166,0,0.15188025,0,journal_cv,2021,BMC Pregnancy Childbirth
+33784964,0,0.15144596,0,journal_cv,2021,BMC Pregnancy Childbirth
+33901244,0,0.15676636,0,journal_cv,2021,PLoS One
+34000999,1,0.83136266,0,journal_cv,2021,BMC Pregnancy Childbirth
+34016078,1,0.8292911,0,journal_cv,2021,BMC Pregnancy Childbirth
+34084500,1,0.8345647,0,journal_cv,2021,Clin Case Rep
+34238233,0,0.1564949,0,journal_cv,2021,BMC Pregnancy Childbirth
+34242293,0,0.15419716,0,journal_cv,2021,PLoS One
+34328233,0,0.16025648,0,journal_cv,2021,Paediatr Perinat Epidemiol
+34384376,1,0.83685446,0,journal_cv,2021,BMC Pregnancy Childbirth
+34429082,0,0.15038402,0,journal_cv,2021,BMC Pregnancy Childbirth
+34789173,1,0.8294755,0,journal_cv,2021,BMC Pregnancy Childbirth
+34853893,0,0.29605713,0,journal_cv,2022,Hum Genet
+34983622,0,0.1510708,0,journal_cv,2022,Orphanet J Rare Dis
+35016623,0,0.1514008,0,journal_cv,2022,BMC Pregnancy Childbirth
+35027977,1,0.84003323,0,journal_cv,2021,J Med Life
+35045821,0,0.1520037,0,journal_cv,2022,BMC Pregnancy Childbirth
+35071484,0,0.15198077,0,journal_cv,2021,Ann Transl Med
+35123446,1,0.65875876,0,journal_cv,2022,BMC Pregnancy Childbirth
+35291955,0,0.1471677,0,journal_cv,2022,BMC Pregnancy Childbirth
+35428251,1,0.19754112,0,journal_cv,2022,BMC Pregnancy Childbirth
+35562572,0,0.16453032,0,journal_cv,2022,NPJ Genom Med
+35610593,1,0.83323044,0,journal_cv,2022,BMC Pregnancy Childbirth
+35804426,0,0.15078379,0,journal_cv,2022,Orphanet J Rare Dis
+36011653,0,0.14745209,0,journal_cv,2022,Int J Environ Res Public Health
+36046039,1,0.7057107,0,journal_cv,2022,Front Oncol
+36113068,1,0.8384993,0,journal_cv,2022,J Int Med Res
+36168972,1,0.84008735,0,journal_cv,2023,Acta Med Port
+36260644,0,0.15276845,0,journal_cv,2022,PLoS One
+36307859,0,0.15230902,0,journal_cv,2022,Genome Med
+36333674,0,0.15358001,0,journal_cv,2022,BMC Pregnancy Childbirth
+36352425,0,0.37281263,0,journal_cv,2022,Orphanet J Rare Dis
+36457118,0,0.15048134,0,journal_cv,2022,Hum Genomics
+36476185,0,0.22787116,0,journal_cv,2022,BMC Pregnancy Childbirth
+36553323,1,0.83393574,0,journal_cv,2022,Children (Basel)
+36653756,0,0.20465888,0,journal_cv,2023,BMC Pregnancy Childbirth
+36703098,0,0.15619163,0,journal_cv,2023,BMC Pregnancy Childbirth
+36755227,0,0.15139955,0,journal_cv,2023,BMC Pregnancy Childbirth
+36814213,1,0.83031183,0,journal_cv,2023,BMC Pregnancy Childbirth
+36864406,0,0.15376183,0,journal_cv,2023,BMC Pregnancy Childbirth
+36890431,1,0.82380736,0,journal_cv,2023,BMC Cardiovasc Disord
+37106349,1,0.8398085,0,journal_cv,2023,BMC Pregnancy Childbirth
+37422671,0,0.23822105,0,journal_cv,2023,BMC Pregnancy Childbirth
+37684689,0,0.15628153,0,journal_cv,2023,Orphanet J Rare Dis
+37758165,1,0.8384334,0,journal_cv,2023,Eur J Med Genet
+37759207,1,0.82877946,0,journal_cv,2023,Orphanet J Rare Dis
+37875969,0,0.4140412,0,journal_cv,2023,Orphanet J Rare Dis
+37951870,0,0.1516942,0,journal_cv,2023,BMC Pregnancy Childbirth
+38028032,1,0.83775085,0,journal_cv,2023,Clin Case Rep
+38172840,0,0.23007208,0,journal_cv,2024,BMC Pregnancy Childbirth
+38297236,0,0.15358706,0,journal_cv,2024,BMC Pregnancy Childbirth
+38302905,0,0.15074615,0,journal_cv,2024,BMC Pregnancy Childbirth
+38421226,1,0.3170464,0,journal_cv,2023,Rev Colomb Obstet Ginecol
+38440102,1,0.834007,0,journal_cv,2024,Case Rep Womens Health
+38580914,0,0.15158845,0,journal_cv,2024,BMC Pregnancy Childbirth
+38585583,1,0.83733034,0,journal_cv,2024,Clin Case Rep
+38849204,1,0.82127273,0,journal_cv,2024,J Med Genet
+39039444,0,0.22453126,0,journal_cv,2024,BMC Pregnancy Childbirth
+39062246,0,0.28113183,0,journal_cv,2024,Children (Basel)
+39175064,0,0.15022267,0,journal_cv,2024,Orphanet J Rare Dis
+39198908,0,0.14836021,0,journal_cv,2024,J Cardiothorac Surg
+39251974,0,0.15099509,0,journal_cv,2024,BMC Pregnancy Childbirth
+39350038,0,0.1586259,0,journal_cv,2024,J Neurodev Disord
+39390395,0,0.15641935,0,journal_cv,2024,BMC Pregnancy Childbirth
+39587524,0,0.15277614,0,journal_cv,2024,BMC Pregnancy Childbirth
+39648848,0,0.14985907,0,journal_cv,2024,J Int Med Res
+39707235,0,0.16215336,0,journal_cv,2024,BMC Pregnancy Childbirth
+39725884,1,0.83285326,0,journal_cv,2024,BMC Pregnancy Childbirth
+39994565,0,0.15230049,0,journal_cv,2025,BMC Pregnancy Childbirth
+40188065,0,0.15080619,0,journal_cv,2025,Hum Genomics
+40332537,0,0.15206973,0,journal_cv,2025,Int J Mol Sci
+40392900,0,0.15482017,0,journal_cv,2025,PLoS One
+40403082,0,0.15939152,0,journal_cv,2025,PLoS One
+40684108,0,0.15947601,0,journal_cv,2025,BMC Pregnancy Childbirth
+40781288,1,0.8387075,0,journal_cv,2025,BMC Pregnancy Childbirth
+40790240,1,0.78345084,0,journal_cv,2025,Orphanet J Rare Dis
+40797307,0,0.15416537,0,journal_cv,2025,BMC Pregnancy Childbirth
+40804693,0,0.15524077,0,journal_cv,2025,Orphanet J Rare Dis
+40806547,0,0.15302351,0,journal_cv,2025,Int J Mol Sci
+40817209,1,0.29875624,0,journal_cv,2025,BMC Pregnancy Childbirth
+40824895,0,0.15271966,0,journal_cv,2025,PLoS One
+40890635,0,0.18278594,0,journal_cv,2025,BMC Pregnancy Childbirth
+40966236,0,0.1509297,0,journal_cv,2025,PLoS One
+40993696,0,0.15228334,0,journal_cv,2025,Orphanet J Rare Dis
+41003474,1,0.8114936,0,journal_cv,2025,Reports (MDPI)
+41053595,0,0.15400499,0,journal_cv,2025,BMC Pregnancy Childbirth
+41146295,0,0.15341027,0,journal_cv,2025,BMC Res Notes
+41150639,0,0.14917713,0,journal_cv,2025,PLoS One
+41199213,0,0.15289684,0,journal_cv,2025,BMC Pregnancy Childbirth
+41225654,1,0.47519898,0,journal_cv,2025,Hum Genomics
+41258163,0,0.15652217,0,journal_cv,2025,Hum Genomics
+41286677,1,0.4386789,0,journal_cv,2025,BMC Pregnancy Childbirth
+41398945,0,0.16148739,0,journal_cv,2025,BMC Pregnancy Childbirth
+41436988,0,0.14752425,0,journal_cv,2025,BMC Pregnancy Childbirth
+41462830,0,0.1468688,0,journal_cv,2025,Children (Basel)
+41526847,0,0.15413165,0,journal_cv,2026,BMC Pregnancy Childbirth
+41584385,1,0.8222107,0,journal_cv,2026,Clin Case Rep
+41620759,1,0.8341034,0,journal_cv,2026,Hum Genomics
+41629874,0,0.15356156,0,journal_cv,2026,BMC Pregnancy Childbirth
+41634881,0,0.15018101,0,journal_cv,2026,Hum Genomics
+41639648,0,0.1516515,0,journal_cv,2026,BMC Pregnancy Childbirth
+41690709,0,0.14862436,0,journal_cv,2026,J Med Genet
+41738333,1,0.16174038,0,journal_cv,2026,Ultrasound J
+41828453,1,0.6852084,0,journal_cv,2026,Int J Mol Sci
+41858965,1,0.8375134,0,journal_cv,2025,Pan Afr Med J
+41863018,0,0.15930797,0,journal_cv,2026,Hum Genomics
+41968367,0,0.15177894,0,journal_cv,2026,BMC Res Notes
+42016332,1,0.8377123,0,journal_cv,2026,Clin Case Rep
+42035033,0,0.47244576,0,journal_cv,2026,BMC Pregnancy Childbirth
+42067806,0,0.15371475,0,journal_cv,2026,BMC Pregnancy Childbirth
+42108507,0,0.15013255,0,journal_cv,2026,Hum Genomics
+42186005,1,0.83552504,0,journal_cv,2026,BMC Pregnancy Childbirth
+42286522,0,0.20506708,0,journal_cv,2026,BMC Pregnancy Childbirth
+42297386,1,0.836573,0,journal_cv,2026,J Int Med Res
+42410591,1,0.8411489,0,journal_cv,2026,BMC Pregnancy Childbirth
+42443849,0,0.15068974,0,journal_cv,2026,BMC Pregnancy Childbirth
+42566411,0,0.155469,0,journal_cv,2026,PLoS One
+42607148,1,0.83973557,0,journal_cv,2026,J Int Med Res
+42681615,0,0.14928325,0,journal_cv,2026,BMC Pregnancy Childbirth
+42751320,1,0.1564242,0,journal_cv,2026,J Med Life
+11850602,1,0.81106925,1,journal_cv,2002,J Korean Med Sci
+12923343,1,0.81369996,1,journal_cv,2003,J Korean Med Sci
+19016622,0,0.15269029,1,journal_cv,2008,Twin Res Hum Genet
+19335188,1,0.81225294,1,journal_cv,2009,Twin Res Hum Genet
+20592907,1,0.8112578,1,journal_cv,2010,J Korean Med Sci
+20864786,1,0.81561846,1,journal_cv,2010,Ann Saudi Med
+23113216,1,0.81723523,1,journal_cv,2012,Iran J Public Health
+24735551,1,0.7914199,1,journal_cv,2014,Mol Cytogenet
+25101914,0,0.15147454,1,journal_cv,2015,Genet Med
+25298785,1,0.6590663,1,journal_cv,2014,Mol Cytogenet
+25530804,0,0.5371474,1,journal_cv,2014,Mol Cytogenet
+26673632,0,0.15224549,1,journal_cv,2013,J Ultrason
+26820068,0,0.16512184,1,journal_cv,2016,Genet Med
+28322033,0,0.17139287,1,journal_cv,2017,Ultrasonography
+28565842,0,0.14807436,1,journal_cv,2017,Exp Ther Med
+28726807,0,0.15565951,1,journal_cv,2018,Genet Med
+28771243,1,0.8106234,1,journal_cv,2018,Genet Med
+28817112,1,0.7856997,1,journal_cv,2018,Genet Med
+29093756,1,0.80133617,1,journal_cv,2017,Mol Cytogenet
+29121006,0,0.15652941,1,journal_cv,2018,Genet Med
+29299063,1,0.8123098,1,journal_cv,2017,Mol Cytogenet
+29858378,1,0.81654334,1,journal_cv,2018,Cold Spring Harb Mol Case Stud
+30231296,1,0.79971987,1,journal_cv,2018,Rev Bras Ginecol Obstet
+30293990,0,0.18753028,1,journal_cv,2019,Genet Med
+30519285,0,0.15889652,1,journal_cv,2018,Mol Cytogenet
+30524658,0,0.17730127,1,journal_cv,2018,Oxid Med Cell Longev
+30706702,0,0.15085605,1,journal_cv,2019,Mol Genet Genomic Med
+30767419,0,0.16604373,1,journal_cv,2019,Mol Genet Genomic Med
+31004415,0,0.15281914,1,journal_cv,2019,Mol Genet Genomic Med
+31004418,0,0.16391928,1,journal_cv,2019,Mol Genet Genomic Med
+31060568,0,0.15741774,1,journal_cv,2019,Cardiovasc Ultrasound
+31070015,0,0.1509873,1,journal_cv,2019,Mol Genet Genomic Med
+31123319,0,0.14957955,1,journal_cv,2019,Genet Med
+31209990,0,0.17435765,1,journal_cv,2019,Mol Genet Genomic Med
+31222985,0,0.14912932,1,journal_cv,2019,J Korean Med Sci
+31297990,1,0.8185632,1,journal_cv,2019,Mol Genet Genomic Med
+31312255,0,0.17703065,1,journal_cv,2019,Mol Cytogenet
+31391865,0,0.35749003,1,journal_cv,2019,Mol Cytogenet
+31497069,1,0.78427404,1,journal_cv,2019,Mol Cytogenet
+31756055,1,0.8104726,1,journal_cv,2020,Mol Genet Genomic Med
+31827621,1,0.76792115,1,journal_cv,2019,Mol Cytogenet
+31867191,0,0.17433487,1,journal_cv,2019,J Med Ultrasound
+31890033,1,0.8170393,1,journal_cv,2019,Mol Cytogenet
+31898422,1,0.75998735,1,journal_cv,2020,Mol Genet Genomic Med
+31998409,0,0.15545265,1,journal_cv,2020,Mol Cytogenet
+32055256,1,0.8161606,1,journal_cv,2020,Mol Cytogenet
+32067421,1,0.20969318,1,journal_cv,2020,Mol Genet Genomic Med
+32100971,1,0.8121754,1,journal_cv,2020,Mol Genet Genomic Med
+32158503,1,0.62562513,1,journal_cv,2020,Mol Cytogenet
+32341573,0,0.15005477,1,journal_cv,2020,Genet Med
+32463164,1,0.80678505,1,journal_cv,2020,Mol Genet Genomic Med
+32500674,1,0.80876184,1,journal_cv,2020,Mol Genet Genomic Med
+32514314,1,0.5139484,1,journal_cv,2020,Mol Cytogenet
+32539871,0,0.14885482,1,journal_cv,2020,Genet Res (Camb)
+32543076,1,0.8158458,1,journal_cv,2020,Mol Genet Genomic Med
+32543126,0,0.15512338,1,journal_cv,2020,Mol Genet Genomic Med
+32625247,1,0.8151949,1,journal_cv,2020,Mol Cytogenet
+32627967,1,0.7964653,1,journal_cv,2020,Mol Genet Genomic Med
+32767744,0,0.1846628,1,journal_cv,2020,Mol Genet Genomic Med
+32855656,1,0.8053762,1,journal_cv,2020,Mol Cytogenet
+32881366,1,0.81749386,1,journal_cv,2020,Mol Genet Genomic Med
+32904152,1,0.8184006,1,journal_cv,2020,Int J Clin Pediatr Dent
+32981126,0,0.18702619,1,journal_cv,2021,BJOG
+33030252,1,0.8044977,1,journal_cv,2020,Mol Genet Genomic Med
+33442022,0,0.21951738,1,journal_cv,2021,Genet Med
+33498637,0,0.15058681,1,journal_cv,2021,J Clin Med
+33638605,1,0.8092963,1,journal_cv,2021,Mol Genet Genomic Med
+33713577,1,0.8147878,1,journal_cv,2021,Mol Genet Genomic Med
+33717247,1,0.8162913,1,journal_cv,2021,Exp Ther Med
+33724704,1,0.809203,1,journal_cv,2021,Mol Genet Genomic Med
+33733630,1,0.8173955,1,journal_cv,2021,Mol Genet Genomic Med
+33951332,0,0.15590009,1,journal_cv,2021,Mol Genet Genomic Med
+34006293,1,0.7605731,1,journal_cv,2021,Mol Cytogenet
+34014041,1,0.81640375,1,journal_cv,2021,Mol Genet Genomic Med
+34045891,0,0.21289814,1,journal_cv,2021,Int J Gen Med
+34283385,0,0.17234886,1,journal_cv,2022,Ir J Med Sci
+34393503,0,0.15477706,1,journal_cv,2021,Int J Gen Med
+34411415,0,0.15597211,1,journal_cv,2022,BJOG
+34434471,1,0.8102747,1,journal_cv,2021,J Med Cases
+34480426,0,0.69686085,1,journal_cv,2021,Mol Genet Genomic Med
+34486251,0,0.16542524,1,journal_cv,2021,Mol Genet Genomic Med
+34582123,1,0.7928606,1,journal_cv,2021,Mol Genet Genomic Med
+34587985,1,0.8147078,1,journal_cv,2021,Mol Cytogenet
+34733861,0,0.16222987,1,journal_cv,2021,Front Med (Lausanne)
+34764685,0,0.157769,1,journal_cv,2021,Int J Gen Med
+34884332,0,0.15946823,1,journal_cv,2021,J Clin Med
+35207307,0,0.16822079,1,journal_cv,2022,J Clin Med
+35656167,0,0.7829732,1,journal_cv,2022,Mol Vis
+35806855,1,0.81628823,1,journal_cv,2022,J Clin Med
+35806909,0,0.15434584,1,journal_cv,2022,J Clin Med
+35887945,1,0.7881548,1,journal_cv,2022,J Clin Med
+36329475,1,0.8108088,1,journal_cv,2022,Mol Cytogenet
+36398477,0,0.15047747,1,journal_cv,2023,Mol Genet Genomic Med
+36538006,1,0.7696736,1,journal_cv,2023,Mol Genet Genomic Med
+36544198,1,0.8140747,1,journal_cv,2022,Mol Cytogenet
+36636555,0,0.1638945,1,journal_cv,2022,Genet Res (Camb)
+36687456,1,0.80631113,1,journal_cv,2022,Front Med (Lausanne)
+36734119,1,0.8024977,1,journal_cv,2023,Mol Genet Genomic Med
+36761008,1,0.814159,1,journal_cv,2023,Exp Ther Med
+36765363,0,0.14957207,1,journal_cv,2023,Mol Cytogenet
+36902683,1,0.80964124,1,journal_cv,2023,J Clin Med
+37013606,0,0.7896143,1,journal_cv,2023,Mol Genet Genomic Med
+37120754,1,0.79665875,1,journal_cv,2023,Mol Genet Genomic Med
+37337789,1,0.62636447,1,journal_cv,2023,Mol Genet Genomic Med
+37485807,1,0.814961,1,journal_cv,2023,Mol Genet Genomic Med
+37497277,0,0.17252378,1,journal_cv,2023,Front Med (Lausanne)
+37692779,0,0.53519416,1,journal_cv,2023,Front Med (Lausanne)
+37766479,0,0.15386085,1,journal_cv,2023,Mol Genet Genomic Med
+37908008,0,0.15150052,1,journal_cv,2023,Mol Cytogenet
+37930140,1,0.80517715,1,journal_cv,2024,Mol Genet Genomic Med
+38025018,1,0.81655,1,journal_cv,2023,J Med Ultrasound
+38073519,1,0.81540084,1,journal_cv,2024,Mol Genet Genomic Med
+38202188,0,0.15986097,1,journal_cv,2023,J Clin Med
+38214746,1,0.81399107,1,journal_cv,2024,Childs Nerv Syst
+38284444,1,0.80623585,1,journal_cv,2024,Mol Genet Genomic Med
+38284447,0,0.15247871,1,journal_cv,2024,Mol Genet Genomic Med
+38634212,1,0.27021477,1,journal_cv,2024,Mol Genet Genomic Med
+38815555,0,0.1499139,1,journal_cv,2024,Fetal Diagn Ther
+39064047,0,0.149584,1,journal_cv,2024,J Clin Med
+39161407,0,0.14842571,1,journal_cv,2024,Int J Gen Med
+39200946,0,0.20829196,1,journal_cv,2024,J Clin Med
+39359128,0,0.1608823,1,journal_cv,2024,Mol Genet Genomic Med
+39369703,0,0.32044974,1,journal_cv,2025,Fetal Diagn Ther
+39444480,0,0.14898564,1,journal_cv,2024,Iran J Public Health
+39575462,1,0.8075237,1,journal_cv,2024,Mol Genet Genomic Med
+39831619,0,0.5211363,1,journal_cv,2025,Mol Genet Genomic Med
+39881416,1,0.80984735,1,journal_cv,2025,Hereditas
+39945447,0,0.17562969,1,journal_cv,2025,Mol Genet Genomic Med
+39976347,1,0.8148729,1,journal_cv,2025,Mol Genet Genomic Med
+40041231,1,0.81149966,1,journal_cv,2022,Case Rep Perinat Med
+40041233,1,0.81598943,1,journal_cv,2022,Case Rep Perinat Med
+40041235,1,0.8156105,1,journal_cv,2022,Case Rep Perinat Med
+40041274,1,0.711604,1,journal_cv,2023,Case Rep Perinat Med
+40149550,1,0.56864095,1,journal_cv,2025,Biomedicines
+40237608,1,0.81749356,1,journal_cv,2025,Mol Genet Genomic Med
+40241902,0,0.15068464,1,journal_cv,2025,Front Med (Lausanne)
+40405131,0,0.16806662,1,journal_cv,2025,BMC Bioinformatics
+40491565,0,0.14993787,1,journal_cv,2025,Case Rep Perinat Med
+40507736,1,0.8180861,1,journal_cv,2025,J Clin Med
+40521769,1,0.7894957,1,journal_cv,2025,Mol Genet Genomic Med
+40531760,0,0.14976737,1,journal_cv,2025,Rev Assoc Med Bras (1992)
+40798945,1,0.80754566,1,journal_cv,2025,Mol Genet Genomic Med
+40832109,0,0.28909057,1,journal_cv,2025,Front Med (Lausanne)
+40893545,1,0.8102701,1,journal_cv,2025,Quant Imaging Med Surg
+41281425,0,0.16178758,1,journal_cv,2025,Acta Med Philipp
+41317100,1,0.80615044,1,journal_cv,2025,Mol Genet Genomic Med
+41317105,0,0.20519835,1,journal_cv,2025,Mol Genet Genomic Med
+41331848,1,0.80037093,1,journal_cv,2025,Hereditas
+41417372,0,0.24534188,1,journal_cv,2025,Rev Assoc Med Bras (1992)
+41423712,1,0.78529507,1,journal_cv,2025,Mol Genet Genomic Med
+41426592,1,0.8073142,1,journal_cv,2025,Front Med (Lausanne)
+41494975,0,0.4369764,1,journal_cv,2026,Mol Genet Genomic Med
+41622244,1,0.7998105,1,journal_cv,2026,Mol Cytogenet
+41716663,1,0.8176977,1,journal_cv,2026,Front Neurosci
+41768201,1,0.15707926,1,journal_cv,2025,Med Arch
+41862935,0,0.15898861,1,journal_cv,2026,Mol Cytogenet
+41947371,0,0.15275165,1,journal_cv,2026,Mol Genet Genomic Med
+41952427,1,0.80602396,1,journal_cv,2026,Mol Genet Genomic Med
+41965835,1,0.81870943,1,journal_cv,2026,Mol Cytogenet
+42002830,1,0.8008768,1,journal_cv,2026,Mol Genet Genomic Med
+42032740,1,0.8101827,1,journal_cv,2026,Mol Cytogenet
+42040609,1,0.81464016,1,journal_cv,2026,Front Med (Lausanne)
+42205458,0,0.6953831,1,journal_cv,2026,Exp Ther Med
+42210665,1,0.8078464,1,journal_cv,2026,Mol Genet Genomic Med
+42427124,1,0.78146416,1,journal_cv,2026,Mol Genet Genomic Med
+42487276,1,0.81400734,1,journal_cv,2026,Mol Genet Genomic Med
+42561194,0,0.16085176,1,journal_cv,2026,Rev Assoc Med Bras (1992)
+42577704,1,0.8071366,1,journal_cv,2026,Case Rep Perinat Med
+42634394,0,0.1502725,1,journal_cv,2026,Genet Res (Camb)
+42703076,0,0.18886262,1,journal_cv,2026,Mol Genet Genomic Med
+42769703,0,0.15047708,1,journal_cv,2026,Int J Gen Med
+42795903,1,0.62385464,1,journal_cv,2026,J Clin Med
+71231,0,0.18309446,1,journal_cv,1976,Environ Health Perspect
+17171632,0,0.14655824,2,journal_cv,2007,Ultrasound Obstet Gynecol
+20842178,0,0.15050407,2,journal_cv,2011,Eur J Hum Genet
+22471583,0,0.1474269,2,journal_cv,2012,J Matern Fetal Neonatal Med
+22747519,1,0.831246,2,journal_cv,2012,BMC Pediatr
+22919524,1,0.8251747,2,journal_cv,2012,Case Rep Obstet Gynecol
+23034220,0,0.20309897,2,journal_cv,2012,Ital J Pediatr
+23056970,1,0.8291089,2,journal_cv,2012,Case Rep Obstet Gynecol
+23133763,1,0.8288411,2,journal_cv,2012,Case Rep Genet
+23356557,0,0.16432591,2,journal_cv,2013,J Matern Fetal Neonatal Med
+23401814,1,0.81871957,2,journal_cv,2013,Case Rep Obstet Gynecol
+23678296,0,0.1603478,2,journal_cv,2013,Int J Biol Sci
+24024055,1,0.82809603,2,journal_cv,2013,Case Rep Obstet Gynecol
+24170809,0,0.15268815,2,journal_cv,2014,Nucleic Acids Res
+24220582,1,0.8318586,2,journal_cv,2014,Mol Med Rep
+25075572,0,0.15428121,2,journal_cv,2014,Braz J Med Biol Res
+25114813,1,0.8308954,2,journal_cv,2014,Case Rep Genet
+25215544,0,0.18235517,2,journal_cv,2014,Mol Med Rep
+25699192,1,0.8275083,2,journal_cv,2015,Case Rep Obstet Gynecol
+26260800,1,0.3782992,2,journal_cv,2015,J Transl Med
+26294991,1,0.8296885,2,journal_cv,2015,Case Rep Obstet Gynecol
+26346617,1,0.8017255,2,journal_cv,2015,Case Rep Obstet Gynecol
+27168972,0,0.2647756,2,journal_cv,2016,PeerJ
+27194416,1,0.8041136,2,journal_cv,2016,Ultrasound Obstet Gynecol
+27515011,0,0.15378678,2,journal_cv,2017,Ultrasound Obstet Gynecol
+27888703,0,0.14915547,2,journal_cv,2017,Eur J Obstet Gynecol Reprod Biol
+27994858,1,0.83134216,2,journal_cv,2016,Clin Kidney J
+28440418,1,0.82926744,2,journal_cv,2017,Mol Med Rep
+28785026,0,0.17588052,2,journal_cv,2017,Sci Rep
+28944865,0,0.15140612,2,journal_cv,2017,Mol Med Rep
+29115496,1,0.82444537,2,journal_cv,2018,Mol Med Rep
+29118296,1,0.75866777,2,journal_cv,2018,Endocr J
+29160607,0,0.22504218,2,journal_cv,2018,Ultrasound Obstet Gynecol
+29568912,0,0.14860092,2,journal_cv,2018,Mol Med Rep
+29610688,1,0.8297179,2,journal_cv,2018,Case Rep Genet
+30177949,1,0.8249336,2,journal_cv,2018,Front Genet
+31019836,1,0.14728947,2,journal_cv,2019,Turk J Obstet Gynecol
+31059048,1,0.82875144,2,journal_cv,2019,Mol Med Rep
+31115529,1,0.8179071,2,journal_cv,2019,Mol Med Rep
+31123326,0,0.14575903,2,journal_cv,2019,Sci Rep
+31319890,1,0.83072394,2,journal_cv,2019,Ital J Pediatr
+31428121,0,0.17366306,2,journal_cv,2019,Front Genet
+31638247,1,0.82723296,2,journal_cv,2019,Mol Med Rep
+32149439,0,0.148681,2,journal_cv,2021,Ultrasound Obstet Gynecol
+32386509,1,0.82964504,2,journal_cv,2020,BMC Pediatr
+32438493,0,0.15043426,2,journal_cv,2021,Ultrasound Obstet Gynecol
+32483189,0,0.14812897,2,journal_cv,2020,Sci Rep
+32484578,0,0.15384664,2,journal_cv,2021,Ultrasound Obstet Gynecol
+32682435,1,0.82284296,2,journal_cv,2020,Ital J Pediatr
+32805723,0,0.15181416,2,journal_cv,2020,Aging (Albany NY)
+32934329,0,0.16432428,2,journal_cv,2020,Sci Rep
+33187827,1,0.8068997,2,journal_cv,2020,Mol Genet Metab
+33193741,1,0.82920367,2,journal_cv,2020,Front Genet
+33247184,0,0.15189147,2,journal_cv,2020,Sci Rep
+33318309,1,0.82309633,2,journal_cv,2020,Aging (Albany NY)
+33692422,0,0.15353376,2,journal_cv,2021,Sci Rep
+33763271,1,0.7111075,2,journal_cv,2021,Case Rep Obstet Gynecol
+33868367,0,0.14553611,2,journal_cv,2021,Front Genet
+34084776,0,0.16583034,2,journal_cv,2021,Front Mol Biosci
+34090308,0,0.14795253,2,journal_cv,2021,Ultrasound Obstet Gynecol
+34285428,0,0.14433256,2,journal_cv,2020,Acta Clin Croat
+34358384,0,0.14470778,2,journal_cv,2022,Ultrasound Obstet Gynecol
+34367232,0,0.15480825,2,journal_cv,2021,Front Genet
+34548956,1,0.8305622,2,journal_cv,2021,Cureus
+34567078,0,0.2129254,2,journal_cv,2021,Front Genet
+34630509,1,0.82331806,2,journal_cv,2021,Front Genet
+34773875,0,0.1785997,2,journal_cv,2021,Eur J Obstet Gynecol Reprod Biol
+34914080,1,0.7997682,2,journal_cv,2022,Reprod Sci
+34980134,0,0.14532252,2,journal_cv,2022,J Transl Med
+35081921,1,0.83118176,2,journal_cv,2022,BMC Pediatr
+35096007,0,0.14606234,2,journal_cv,2021,Front Genet
+35229910,0,0.16020848,2,journal_cv,2022,Ultrasound Obstet Gynecol
+35259700,1,0.8235666,2,journal_cv,2022,Int J Surg Case Rep
+35360877,1,0.6681158,2,journal_cv,2022,Front Genet
+35397568,0,0.14517301,2,journal_cv,2022,J Transl Med
+35401667,1,0.830762,2,journal_cv,2022,Front Genet
+35571012,0,0.14936325,2,journal_cv,2022,Front Genet
+35578003,0,0.14723364,2,journal_cv,2022,J Hum Genet
+35651933,0,0.14595048,2,journal_cv,2022,Front Genet
+35711925,0,0.17359728,2,journal_cv,2022,Front Genet
+35865016,1,0.8311052,2,journal_cv,2022,Front Genet
+36035112,1,0.83104336,2,journal_cv,2022,Front Genet
+36092864,1,0.8116357,2,journal_cv,2022,Front Genet
+36099538,0,0.14958526,2,journal_cv,2023,Ultrasound Obstet Gynecol
+36105084,1,0.8295035,2,journal_cv,2022,Front Genet
+36127997,1,0.8276969,2,journal_cv,2022,Cureus
+36151134,0,0.1469235,2,journal_cv,2022,Sci Rep
+36186462,0,0.15809342,2,journal_cv,2022,Front Genet
+36226188,1,0.7846304,2,journal_cv,2022,Front Genet
+36276971,1,0.82838094,2,journal_cv,2022,Front Genet
+36386834,1,0.82920474,2,journal_cv,2022,Front Genet
+36386837,1,0.8324101,2,journal_cv,2022,Front Genet
+36396840,0,0.15704486,2,journal_cv,2022,Sci Rep
+36523456,0,0.16255961,2,journal_cv,2022,PeerJ
+36684682,0,0.15090618,2,journal_cv,2023,PeerJ
+36725972,0,0.16334638,2,journal_cv,2023,Sci Rep
+36743908,1,0.8161934,2,journal_cv,2023,Cureus
+36854820,0,0.14786528,2,journal_cv,2023,Sci Rep
+36859260,1,0.8209819,2,journal_cv,2023,BMC Pediatr
+36923788,0,0.24174851,2,journal_cv,2023,Front Genet
+37035737,0,0.1526056,2,journal_cv,2023,Front Genet
+37123790,1,0.82807326,2,journal_cv,2023,Cureus
+37147405,0,0.14829522,2,journal_cv,2023,Sci Rep
+37396033,0,0.1677217,2,journal_cv,2023,Front Genet
+37600658,0,0.14605682,2,journal_cv,2023,Front Genet
+37795247,0,0.14818221,2,journal_cv,2023,Front Genet
+37928238,1,0.82534534,2,journal_cv,2023,Front Genet
+37980516,0,0.16207571,2,journal_cv,2023,BMC Pediatr
+38027951,0,0.17988102,2,journal_cv,2023,Heliyon
+38034493,1,0.7929557,2,journal_cv,2023,Front Genet
+38259626,1,0.23291485,2,journal_cv,2023,Front Genet
+38273042,0,0.17054255,2,journal_cv,2024,Sci Rep
+38318287,0,0.15602943,2,journal_cv,2023,Front Genet
+38550721,1,0.83089054,2,journal_cv,2024,Int Med Case Rep J
+38606258,1,0.81643957,2,journal_cv,2024,Cureus
+38649697,0,0.15549904,2,journal_cv,2024,Sci Rep
+38846960,0,0.14894368,2,journal_cv,2024,Front Genet
+38957807,1,0.6586683,2,journal_cv,2024,Front Genet
+38987582,0,0.15345506,2,journal_cv,2024,Sci Rep
+38994932,1,0.4614357,2,journal_cv,2024,Cells
+39009665,0,0.43029848,2,journal_cv,2024,Sci Rep
+39169438,0,0.14684956,2,journal_cv,2024,Ital J Pediatr
+39268082,1,0.2880985,2,journal_cv,2024,Front Genet
+39347350,1,0.8303323,2,journal_cv,2024,Cureus
+39399712,1,0.15026784,2,journal_cv,2024,Transl Pediatr
+39502218,0,0.15072978,2,journal_cv,2024,Heliyon
+39516223,0,0.14774793,2,journal_cv,2024,Sci Rep
+39521787,0,0.18880206,2,journal_cv,2024,Sci Rep
+39837955,0,0.150968,2,journal_cv,2025,Sci Rep
+39890866,0,0.14592044,2,journal_cv,2025,Sci Rep
+39991384,1,0.82906276,2,journal_cv,2025,Cureus
+40017000,0,0.15424176,2,journal_cv,2025,Ultrasound Obstet Gynecol
+40123302,0,0.15366219,2,journal_cv,2025,Aust N Z J Obstet Gynaecol
+40195522,0,0.14659382,2,journal_cv,2026,Eur J Hum Genet
+40229386,0,0.15251571,2,journal_cv,2025,Sci Rep
+40229547,1,0.34581223,2,journal_cv,2025,Sci Rep
+40352787,1,0.83176965,2,journal_cv,2025,Front Genet
+40386307,1,0.8164743,2,journal_cv,2025,Biomed Rep
+40462392,0,0.14490515,2,journal_cv,2025,Turk J Obstet Gynecol
+40500351,0,0.24273027,2,journal_cv,2025,Eur J Hum Genet
+40518536,0,0.14451693,2,journal_cv,2025,J Transl Med
+40520226,1,0.82027763,2,journal_cv,2025,Front Genet
+40595133,0,0.18398504,2,journal_cv,2025,Sci Rep
+40603987,0,0.14376618,2,journal_cv,2025,Sci Rep
+40893934,0,0.14925526,2,journal_cv,2025,Front Genet
+40894389,0,0.16820204,2,journal_cv,2025,J Pregnancy
+40927362,0,0.14674795,2,journal_cv,2025,Front Genet
+41070225,1,0.4401558,2,journal_cv,2025,Front Genet
+41089214,1,0.8304903,2,journal_cv,2025,Front Genet
+41104258,1,0.81484187,2,journal_cv,2025,Case Rep Genet
+41111707,1,0.82307553,2,journal_cv,2025,Cureus
+41216287,1,0.8277649,2,journal_cv,2025,Front Genet
+41216289,1,0.8170918,2,journal_cv,2025,Front Genet
+41238796,0,0.1449776,2,journal_cv,2025,Sci Rep
+41367618,0,0.14800131,2,journal_cv,2025,Front Genet
+41461890,0,0.14569214,2,journal_cv,2025,Sci Rep
+41503326,1,0.8298456,2,journal_cv,2025,Cureus
+41555917,1,0.8258743,2,journal_cv,2025,Front Genet
+41555925,0,0.14469844,2,journal_cv,2025,Front Genet
+41608206,0,0.18234695,2,journal_cv,2025,Matern Fetal Med
+41658772,1,0.8312779,2,journal_cv,2026,Cureus
+41710465,1,0.83015454,2,journal_cv,2026,Int Med Case Rep J
+41906976,0,0.14618185,2,journal_cv,2026,Ultrasound Obstet Gynecol
+41939616,0,0.15582629,2,journal_cv,2026,Cureus
+41943072,0,0.14414519,2,journal_cv,2026,J Transl Med
+41953134,0,0.1462916,2,journal_cv,2026,Front Genet
+41974762,0,0.15059185,2,journal_cv,2026,Sci Rep
+42009805,0,0.14910944,2,journal_cv,2026,Sci Rep
+42110001,1,0.7119997,2,journal_cv,2026,Cureus
+42249814,0,0.14644778,2,journal_cv,2026,Ultrasound Obstet Gynecol
+42471198,0,0.15371098,2,journal_cv,2026,Am J Obstet Gynecol MFM
+42596935,0,0.19905385,2,journal_cv,2026,Pregnancy (Hoboken)
+42600089,0,0.14540234,2,journal_cv,2026,Ultrasound Obstet Gynecol
+42609877,1,0.82361776,2,journal_cv,2026,Front Genet
+18331649,1,0.8751258,3,journal_cv,2008,Cell Chromosome
+18831729,1,0.881689,3,journal_cv,2008,J Med Case Rep
+21513565,1,0.88301045,3,journal_cv,2011,Diagn Pathol
+23198897,0,0.11699625,3,journal_cv,2012,BMC Med Genomics
+23408600,1,0.18474013,3,journal_cv,2013,Prenat Diagn
+23968558,1,0.8779971,3,journal_cv,2013,Diagn Pathol
+24397966,0,0.11861981,3,journal_cv,2014,BMC Med Genomics
+24554804,0,0.11801255,3,journal_cv,2013,Acta Inform Med
+25728633,0,0.15794735,3,journal_cv,2015,Prenat Diagn
+26064910,0,0.14422788,3,journal_cv,2015,Biomed Res Int
+26502924,0,0.85869056,3,journal_cv,2015,BMC Med Genet
+26729329,1,0.47840685,3,journal_cv,2016,BMC Med Genet
+26785403,0,0.11831502,3,journal_cv,2016,Prenat Diagn
+27546542,0,0.1171416,3,journal_cv,2016,Bratisl Lek Listy
+27750376,0,0.11694945,3,journal_cv,2016,Prenat Diagn
+27846804,0,0.12852578,3,journal_cv,2016,BMC Med Genet
+28166604,0,0.13258786,3,journal_cv,2017,Prenat Diagn
+28207948,0,0.13261218,3,journal_cv,2017,Prenat Diagn
+28256057,1,0.518337,3,journal_cv,2017,Am J Med Genet A
+28413694,1,0.8804984,3,journal_cv,2017,AJP Rep
+28868271,1,0.88225526,3,journal_cv,2017,Int J Mol Cell Med
+29046733,1,0.86141384,3,journal_cv,2017,Clin Epigenetics
+29096039,1,0.16954625,3,journal_cv,2018,Prenat Diagn
+29164604,0,0.121098176,3,journal_cv,2018,Acta Obstet Gynecol Scand
+29487873,0,0.117591016,3,journal_cv,2018,Biomed Res Int
+29955609,1,0.8779384,3,journal_cv,2018,Biomed Res Int
+29977923,0,0.11591575,3,journal_cv,2018,Biomed Res Int
+30133550,0,0.11867018,3,journal_cv,2018,Arq Bras Cardiol
+30187503,1,0.33391887,3,journal_cv,2018,Prenat Diagn
+30198518,0,0.118554175,3,journal_cv,2019,Biomed Pap Med Fac Univ Palacky Olomouc Czech Repub
+30334587,0,0.12614173,3,journal_cv,2018,Prenat Diagn
+30359267,0,0.123692006,3,journal_cv,2018,BMC Med Genomics
+30399107,0,0.131646,3,journal_cv,2018,Obstet Gynecol
+30510841,0,0.12094625,3,journal_cv,2018,AJP Rep
+30581852,1,0.87871426,3,journal_cv,2018,Biomed Res Int
+30706183,0,0.14046392,3,journal_cv,2019,Arch Gynecol Obstet
+30714504,0,0.1251711,3,journal_cv,2019,J Obstet Gynaecol
+31196198,1,0.87972057,3,journal_cv,2019,BMC Med Genomics
+31299979,1,0.3017396,3,journal_cv,2019,Diagn Pathol
+31697845,0,0.117163636,3,journal_cv,2020,Prenat Diagn
+31697852,0,0.11627727,3,journal_cv,2020,Prenat Diagn
+31864361,1,0.85627776,3,journal_cv,2019,BMC Med Genomics
+31910817,1,0.87595147,3,journal_cv,2020,BMC Med Genet
+32282607,0,0.13539483,3,journal_cv,2020,Obstet Gynecol
+32333414,0,0.11950964,3,journal_cv,2020,Prenat Diagn
+32627857,0,0.12439269,3,journal_cv,2020,Prenat Diagn
+32631433,1,0.5427217,3,journal_cv,2020,BMC Med Genomics
+32779773,0,0.18813042,3,journal_cv,2020,Prenat Diagn
+32908864,0,0.12428638,3,journal_cv,2019,Biomed Res Int
+32917147,1,0.8758657,3,journal_cv,2020,BMC Med Genet
+32935260,0,0.41678137,3,journal_cv,2020,Mol Biol Rep
+33067800,0,0.117882326,3,journal_cv,2021,Prenat Diagn
+33151425,0,0.11997536,3,journal_cv,2021,Arch Gynecol Obstet
+33249554,0,0.11771778,3,journal_cv,2021,Acta Obstet Gynecol Scand
+33435955,0,0.12088629,3,journal_cv,2021,BMC Med Genomics
+33632221,0,0.116517395,3,journal_cv,2021,BMC Med Genomics
+33750440,1,0.87669265,3,journal_cv,2021,J Med Case Rep
+33757501,1,0.8792808,3,journal_cv,2021,BMC Med Genomics
+33785045,0,0.11740657,3,journal_cv,2021,BMC Med Genomics
+33817732,1,0.884404,3,journal_cv,2020,Rom J Morphol Embryol
+34147104,1,0.88164955,3,journal_cv,2021,BMC Med Genomics
+34193122,1,0.8762516,3,journal_cv,2021,BMC Med Genomics
+34376197,1,0.8735552,3,journal_cv,2021,BMC Med Genomics
+34611884,0,0.15423727,3,journal_cv,2022,Clin Genet
+34643287,0,0.11930292,3,journal_cv,2022,Prenat Diagn
+34722424,0,0.12618023,3,journal_cv,2021,Front Pediatr
+34746047,1,0.88074875,3,journal_cv,2021,Front Pediatr
+34789231,0,0.13613556,3,journal_cv,2021,BMC Med Genomics
+34904224,0,0.12366034,3,journal_cv,2022,Acta Obstet Gynecol Scand
+34958143,0,0.11820744,3,journal_cv,2022,Prenat Diagn
+35093090,1,0.88203835,3,journal_cv,2022,BMC Med Genomics
+35197665,0,0.116635084,3,journal_cv,2021,Acta Inform Med
+35209905,1,0.7689912,3,journal_cv,2022,BMC Med Genomics
+35241061,1,0.8703169,3,journal_cv,2022,BMC Med Genomics
+35354480,0,0.13385989,3,journal_cv,2022,BMC Med Genomics
+35463886,1,0.86483324,3,journal_cv,2022,Front Pediatr
+35506549,1,0.26517633,3,journal_cv,2022,Prenat Diagn
+35722491,0,0.121895246,3,journal_cv,2022,Front Pediatr
+35783302,0,0.13248837,3,journal_cv,2022,Front Pediatr
+35902388,0,0.1264124,3,journal_cv,2022,Mol Genet Genomics
+35941965,1,0.88322306,3,journal_cv,2022,AJP Rep
+35960415,0,0.12020872,3,journal_cv,2022,Mol Biol Rep
+36034547,1,0.2672286,3,journal_cv,2022,Front Pediatr
+36131268,1,0.88144416,3,journal_cv,2022,BMC Med Genomics
+36285155,0,0.12264868,3,journal_cv,2022,Evid Based Complement Alternat Med
+36471906,0,0.11841933,3,journal_cv,2023,Prenat Diagn
+36544138,1,0.6812407,3,journal_cv,2022,BMC Med Genomics
+36554045,0,0.115161605,3,journal_cv,2022,Healthcare (Basel)
+36602560,0,0.12011871,3,journal_cv,2024,Arch Gynecol Obstet
+36797717,0,0.14597002,3,journal_cv,2023,BMC Med Genomics
+36873643,0,0.12171506,3,journal_cv,2023,Front Pediatr
+36961397,0,0.11683314,3,journal_cv,2026,Reprod Fertil
+37009295,1,0.35139546,3,journal_cv,2023,Front Pediatr
+37013593,0,0.27103138,3,journal_cv,2023,BMC Med Genomics
+37168803,1,0.87837285,3,journal_cv,2023,Front Pediatr
+37248535,0,0.12872201,3,journal_cv,2023,BMC Med Genomics
+37284664,1,0.14472581,3,journal_cv,2022,Dis Markers
+37366235,0,0.14900438,3,journal_cv,2023,Acta Obstet Gynecol Scand
+37422672,1,0.8718812,3,journal_cv,2023,J Med Case Rep
+37477337,0,0.11608253,3,journal_cv,2023,Acta Obstet Gynecol Scand
+37535131,0,0.14769004,3,journal_cv,2024,Arch Gynecol Obstet
+37592254,1,0.86993957,3,journal_cv,2023,BMC Med Genomics
+37612587,1,0.37311783,3,journal_cv,2023,BMC Med Genomics
+37942256,1,0.8827536,3,journal_cv,2023,Int J Mol Cell Med
+37986075,0,0.12174233,3,journal_cv,2023,BMC Med Genomics
+38020944,0,0.12247681,3,journal_cv,2023,Int J Womens Health
+38369506,1,0.88331264,3,journal_cv,2024,J Med Case Rep
+38494511,0,0.11644725,3,journal_cv,2024,Arch Gynecol Obstet
+38735835,0,0.12409238,3,journal_cv,2025,Prenat Diagn
+38849481,1,0.4605422,3,journal_cv,2025,Pediatr Res
+39080034,0,0.12656441,3,journal_cv,2024,Mol Biol Rep
+39268228,1,0.86237556,3,journal_cv,2024,AJP Rep
+39350129,1,0.8809996,3,journal_cv,2024,BMC Med Genomics
+39356042,0,0.11656191,3,journal_cv,2024,Acta Obstet Gynecol Scand
+39363392,0,0.11978003,3,journal_cv,2024,Prenat Diagn
+39367626,0,0.11787231,3,journal_cv,2025,J Genet Couns
+39425694,1,0.8561851,3,journal_cv,2024,Prenat Diagn
+39681544,0,0.19452769,3,journal_cv,2025,Prenat Diagn
+39840309,0,0.5076204,3,journal_cv,2024,Front Pediatr
+39877340,1,0.87411875,3,journal_cv,2024,Front Pediatr
+39899060,0,0.12424108,3,journal_cv,2025,Arch Gynecol Obstet
+39962853,0,0.12467142,3,journal_cv,2025,Acta Obstet Gynecol Scand
+40035361,0,0.11989324,3,journal_cv,2025,Acta Obstet Gynecol Scand
+40122702,0,0.1227849,3,journal_cv,2026,Prenat Diagn
+40211337,0,0.12073048,3,journal_cv,2025,BMC Med Genomics
+40301840,0,0.11922138,3,journal_cv,2025,BMC Med Genomics
+40317787,1,0.87737876,3,journal_cv,2025,Prenat Diagn
+40361748,1,0.78719044,3,journal_cv,2025,Healthcare (Basel)
+40481473,1,0.88054115,3,journal_cv,2025,BMC Med Genomics
+40524352,1,0.8749418,3,journal_cv,2025,Prenat Diagn
+40528522,0,0.117640845,3,journal_cv,2025,Prenat Diagn
+40530359,1,0.87364006,3,journal_cv,2025,Int J Womens Health
+40616234,0,0.13142046,3,journal_cv,2025,Prenat Diagn
+40670315,0,0.1775607,3,journal_cv,2025,Prenat Diagn
+40703902,1,0.87424976,3,journal_cv,2025,Niger Med J
+40740247,1,0.879126,3,journal_cv,2025,AJOG Glob Rep
+40809379,1,0.8817324,3,journal_cv,2025,Front Pediatr
+40841462,0,0.12409457,3,journal_cv,2025,Arch Gynecol Obstet
+40909434,0,0.12202491,3,journal_cv,2025,Front Pediatr
+40992929,0,0.12020669,3,journal_cv,2025,Prenat Diagn
+41014177,0,0.12634522,3,journal_cv,2026,Clin Genet
+41108211,0,0.11836453,3,journal_cv,2026,Prenat Diagn
+41181173,0,0.13686408,3,journal_cv,2025,Front Pediatr
+41186686,0,0.12039377,3,journal_cv,2025,Arch Gynecol Obstet
+41267400,0,0.123369604,3,journal_cv,2026,HGG Adv
+41353713,1,0.14031315,3,journal_cv,2026,Prenat Diagn
+41388734,0,0.12328948,3,journal_cv,2026,Prenat Diagn
+41398988,0,0.11791565,3,journal_cv,2026,Acta Obstet Gynecol Scand
+41402700,0,0.11702816,3,journal_cv,2026,Prenat Diagn
+41486082,0,0.12079328,3,journal_cv,2026,Prenat Diagn
+41521034,0,0.1175342,3,journal_cv,2026,Prenat Diagn
+41598247,1,0.88176614,3,journal_cv,2026,Life (Basel)
+41641134,1,0.87846607,3,journal_cv,2025,Front Pediatr
+41714291,0,0.12334516,3,journal_cv,2026,Prenat Diagn
+41723443,0,0.11830137,3,journal_cv,2026,BMC Med Genomics
+41761011,1,0.74135214,3,journal_cv,2026,Prenat Diagn
+41775679,0,0.11832168,3,journal_cv,2026,Prenat Diagn
+41821338,0,0.11807192,3,journal_cv,2026,J Genet Couns
+41848878,0,0.121339254,3,journal_cv,2026,Arch Gynecol Obstet
+41859717,0,0.12163276,3,journal_cv,2026,Int J Womens Health
+41868040,0,0.13403787,3,journal_cv,2026,Int J Womens Health
+41960707,0,0.11919203,3,journal_cv,2026,J Glob Health
+41965611,1,0.88058144,3,journal_cv,2026,BMC Med Genomics
+41984209,0,0.11894074,3,journal_cv,2026,Arch Gynecol Obstet
+42082986,1,0.86943156,3,journal_cv,2026,J Med Case Rep
+42137573,1,0.8758719,3,journal_cv,2026,Front Pediatr
+42181563,0,0.12220725,3,journal_cv,2026,Front Pediatr
+42230359,0,0.1182328,3,journal_cv,2026,Arch Gynecol Obstet
+42482245,1,0.8831754,3,journal_cv,2026,J Med Case Rep
+42495255,1,0.8819431,3,journal_cv,2026,Front Pediatr
+42683127,0,0.11795836,3,journal_cv,2026,Int J Reprod Biomed
+42697554,0,0.12226183,3,journal_cv,2026,Prenat Diagn
+7877951,0,0.123935536,3,journal_cv,1994,Prenat Diagn
+12646976,1,0.88963586,4,journal_cv,2003,J Nippon Med Sch
+23748066,1,0.88852733,4,journal_cv,2013,J Clin Res Pediatr Endocrinol
+24826207,1,0.88584787,4,journal_cv,2014,Am J Case Rep
+25543334,0,0.12263669,4,journal_cv,2014,Reprod Biol Endocrinol
+25923536,1,0.88392246,4,journal_cv,2015,BMC Genomics
+26670660,1,0.8899358,4,journal_cv,2015,Am J Case Rep
+27090801,1,0.7071624,4,journal_cv,2016,Pediatr Radiol
+27684831,0,0.10459127,4,journal_cv,2016,Medicine (Baltimore)
+28220983,1,0.87714714,4,journal_cv,2017,J Gene Med
+28639595,0,0.8157869,4,journal_cv,2017,Indian J Med Res
+28723764,0,0.10282505,4,journal_cv,2017,Medicine (Baltimore)
+29137034,1,0.88126755,4,journal_cv,2017,Medicine (Baltimore)
+29553041,1,0.88858145,4,journal_cv,2018,J Clin Res Pediatr Endocrinol
+29642139,0,0.29687387,4,journal_cv,2018,Medicine (Baltimore)
+30142861,0,0.1034824,4,journal_cv,2018,Medicine (Baltimore)
+30393848,0,0.105357096,4,journal_cv,2018,Ginekol Pol
+30431620,0,0.11316146,4,journal_cv,2018,Medicine (Baltimore)
+30508919,0,0.11203702,4,journal_cv,2018,Medicine (Baltimore)
+30544381,1,0.8855443,4,journal_cv,2018,Medicine (Baltimore)
+30558042,0,0.10133652,4,journal_cv,2018,Medicine (Baltimore)
+30633228,0,0.3655924,4,journal_cv,2019,Medicine (Baltimore)
+30712880,0,0.104897924,4,journal_cv,2019,Lancet
+30762813,0,0.10257309,4,journal_cv,2019,Medicine (Baltimore)
+30946338,1,0.89052933,4,journal_cv,2019,Medicine (Baltimore)
+31096510,1,0.8739321,4,journal_cv,2019,Medicine (Baltimore)
+31165466,0,0.103442736,4,journal_cv,2019,Ginekol Pol
+31334199,1,0.8860624,4,journal_cv,2019,J Family Med Prim Care
+31499577,1,0.8905337,4,journal_cv,2019,J Obstet Gynaecol Res
+31523615,0,0.8077579,4,journal_cv,2019,Balkan J Med Genet
+31617258,1,0.8900634,4,journal_cv,2020,J Clin Lab Anal
+31626103,0,0.11324565,4,journal_cv,2019,Medicine (Baltimore)
+31762079,0,0.1048782,4,journal_cv,2020,J Clin Lab Anal
+31770195,1,0.8821773,4,journal_cv,2019,Medicine (Baltimore)
+31840411,1,0.8891543,4,journal_cv,2020,J Cell Mol Med
+31944387,1,0.88936555,4,journal_cv,2020,J Clin Lab Anal
+32000445,0,0.10115164,4,journal_cv,2020,Medicine (Baltimore)
+32080128,1,0.8903177,4,journal_cv,2020,Medicine (Baltimore)
+32342531,0,0.1043127,4,journal_cv,2020,J Clin Lab Anal
+32392875,1,0.8620501,4,journal_cv,2020,Diagnostics (Basel)
+32643293,1,0.88987935,4,journal_cv,2020,J Obstet Gynaecol Res
+32651932,0,0.10419388,4,journal_cv,2020,Mol Diagn Ther
+32702826,1,0.88940376,4,journal_cv,2020,Medicine (Baltimore)
+32779812,0,0.240157,4,journal_cv,2020,J Clin Lab Anal
+32794475,1,0.8719654,4,journal_cv,2020,Am J Case Rep
+32864771,0,0.15358636,4,journal_cv,2020,J Clin Lab Anal
+33019446,1,0.8879064,4,journal_cv,2020,Medicine (Baltimore)
+33081203,1,0.89037985,4,journal_cv,2020,Genes (Basel)
+33201576,0,0.10513954,4,journal_cv,2021,J Cell Mol Med
+33255631,0,0.1011765,4,journal_cv,2020,Genes (Basel)
+33311808,1,0.89098567,4,journal_cv,2020,Nagoya J Med Sci
+33474820,0,0.16875084,4,journal_cv,2021,J Obstet Gynaecol Res
+33545980,1,0.8498848,4,journal_cv,2021,Medicine (Baltimore)
+33615614,0,0.099850535,4,journal_cv,2021,J Gene Med
+33671041,1,0.88808054,4,journal_cv,2021,Diagnostics (Basel)
+33800913,0,0.11597883,4,journal_cv,2021,Genes (Basel)
+33816069,1,0.24335071,4,journal_cv,2020,Balkan J Med Genet
+33859509,0,0.123098776,4,journal_cv,2021,Risk Manag Healthc Policy
+33889037,0,0.10113639,4,journal_cv,2021,Risk Manag Healthc Policy
+33950970,1,0.890515,4,journal_cv,2021,Medicine (Baltimore)
+34011095,0,0.10255959,4,journal_cv,2021,Medicine (Baltimore)
+34042265,0,0.10529049,4,journal_cv,2021,J Cell Mol Med
+34073864,1,0.7316489,4,journal_cv,2021,Genes (Basel)
+34079909,0,0.106106885,4,journal_cv,2021,Neurol Genet
+34163268,0,0.115715556,4,journal_cv,2021,Risk Manag Healthc Policy
+34356094,1,0.8896372,4,journal_cv,2021,Genes (Basel)
+34374610,0,0.19208011,4,journal_cv,2021,Ann Med
+34405543,1,0.88485074,4,journal_cv,2021,J Cell Mol Med
+34569664,1,0.47687322,4,journal_cv,2021,J Clin Lab Anal
+34679516,1,0.8902033,4,journal_cv,2021,Diagnostics (Basel)
+34918667,1,0.8901155,4,journal_cv,2021,Medicine (Baltimore)
+34946839,1,0.88710755,4,journal_cv,2021,Genes (Basel)
+34946970,0,0.11062916,4,journal_cv,2021,Genes (Basel)
+35047609,1,0.88918984,4,journal_cv,2021,World J Clin Cases
+35192596,1,0.8886637,4,journal_cv,2022,Am J Case Rep
+35195919,0,0.101415284,4,journal_cv,2022,J Clin Lab Anal
+35205290,1,0.8788415,4,journal_cv,2022,Genes (Basel)
+35338537,1,0.88754344,4,journal_cv,2022,J Gene Med
+35456496,0,0.11530336,4,journal_cv,2022,Genes (Basel)
+35482990,1,0.8905742,4,journal_cv,2022,Medicine (Baltimore)
+35506821,0,0.10329203,4,journal_cv,2022,Ann Med
+35627109,0,0.10534883,4,journal_cv,2022,Genes (Basel)
+35713440,1,0.8859826,4,journal_cv,2022,Medicine (Baltimore)
+35843586,1,0.8892404,4,journal_cv,2022,J Obstet Gynaecol Res
+35893076,1,0.8857173,4,journal_cv,2022,Genes (Basel)
+35984138,0,0.10189511,4,journal_cv,2022,Medicine (Baltimore)
+36099005,0,0.10374896,4,journal_cv,2022,J Clin Lab Anal
+36140741,0,0.11352996,4,journal_cv,2022,Genes (Basel)
+36281281,1,0.89063764,4,journal_cv,2022,Radiol Case Rep
+36292572,1,0.8875891,4,journal_cv,2022,Genes (Basel)
+36316869,1,0.8910159,4,journal_cv,2022,Medicine (Baltimore)
+36316881,1,0.89072686,4,journal_cv,2022,Medicine (Baltimore)
+36360323,0,0.20924683,4,journal_cv,2022,Genes (Basel)
+36397455,1,0.8891443,4,journal_cv,2022,Medicine (Baltimore)
+36451403,0,0.1397693,4,journal_cv,2022,Medicine (Baltimore)
+36553497,0,0.1011849,4,journal_cv,2022,Genes (Basel)
+36553582,1,0.23790936,4,journal_cv,2022,Genes (Basel)
+36800618,1,0.89071786,4,journal_cv,2023,Medicine (Baltimore)
+36900003,0,0.19981277,4,journal_cv,2023,Diagnostics (Basel)
+36909308,0,0.105003275,4,journal_cv,2023,Front Endocrinol (Lausanne)
+36980940,1,0.72786516,4,journal_cv,2023,Genes (Basel)
+36980994,0,0.10581503,4,journal_cv,2023,Genes (Basel)
+37000066,1,0.89035046,4,journal_cv,2023,Medicine (Baltimore)
+37065765,0,0.10165179,4,journal_cv,2023,Front Endocrinol (Lausanne)
+37107671,1,0.8877242,4,journal_cv,2023,Genes (Basel)
+37243546,0,0.17899464,4,journal_cv,2023,Ann Med
+37628571,0,0.12531078,4,journal_cv,2023,Genes (Basel)
+37823350,1,0.42216313,4,journal_cv,2023,J Clin Lab Anal
+37880936,1,0.843598,4,journal_cv,2023,Am J Case Rep
+37895220,0,0.101471156,4,journal_cv,2023,Genes (Basel)
+38115160,0,0.101731405,4,journal_cv,2023,Cell Biosci
+38255008,1,0.8510039,4,journal_cv,2024,Genes (Basel)
+38457559,1,0.722575,4,journal_cv,2024,Medicine (Baltimore)
+38552051,0,0.102632344,4,journal_cv,2024,Medicine (Baltimore)
+38576814,1,0.87528133,4,journal_cv,2024,World J Clin Cases
+38666931,0,0.12793237,4,journal_cv,2024,Curr Issues Mol Biol
+39085968,0,0.10210287,4,journal_cv,2024,Eur J Med Res
+39239799,0,0.12045349,4,journal_cv,2024,Ann Med
+39262391,1,0.13673037,4,journal_cv,2024,Ann Med
+39410589,0,0.10327614,4,journal_cv,2024,Diagnostics (Basel)
+39410646,0,0.11469331,4,journal_cv,2024,Diagnostics (Basel)
+39444647,1,0.8560248,4,journal_cv,2024,Neurol Genet
+39596574,1,0.8828925,4,journal_cv,2024,Genes (Basel)
+39596664,1,0.76504105,4,journal_cv,2024,Genes (Basel)
+39624702,1,0.8894417,4,journal_cv,2025,Radiol Case Rep
+39630792,1,0.88634026,4,journal_cv,2024,Rev Paul Pediatr
+39641285,1,0.88719314,4,journal_cv,2025,Clin Dysmorphol
+39654217,0,0.10114757,4,journal_cv,2024,Medicine (Baltimore)
+39887707,0,0.11387948,4,journal_cv,2025,Int J Gynaecol Obstet
+39889153,1,0.8840093,4,journal_cv,2025,Medicine (Baltimore)
+39960922,0,0.10371635,4,journal_cv,2025,Medicine (Baltimore)
+40129811,1,0.88849306,4,journal_cv,2025,Radiol Case Rep
+40143423,1,0.8900273,4,journal_cv,2025,Am J Case Rep
+40150114,0,0.13662098,4,journal_cv,2025,Diagnostics (Basel)
+40192178,0,0.10101685,4,journal_cv,2025,J Clin Lab Anal
+40243207,0,0.10239281,4,journal_cv,2025,J Clin Lab Anal
+40428270,0,0.10407225,4,journal_cv,2025,Diagnostics (Basel)
+40428369,0,0.10173917,4,journal_cv,2025,Genes (Basel)
+40722537,1,0.87310505,4,journal_cv,2025,Diagnostics (Basel)
+40844101,0,0.14035787,4,journal_cv,2025,Indian J Med Res
+40864624,1,0.88454396,4,journal_cv,2025,Am J Case Rep
+40870028,0,0.10823615,4,journal_cv,2025,Genes (Basel)
+40930097,1,0.83950686,4,journal_cv,2025,Am J Hum Genet
+40941617,0,0.101530574,4,journal_cv,2025,Diagnostics (Basel)
+40984682,0,0.10166747,4,journal_cv,2025,Ann Med
+41059455,1,0.8881835,4,journal_cv,2025,Appl Clin Genet
+41153384,0,0.16226491,4,journal_cv,2025,Genes (Basel)
+41199647,0,0.10137659,4,journal_cv,2025,Future Sci OA
+41225980,1,0.8893093,4,journal_cv,2025,Diagnostics (Basel)
+41239616,1,0.88983256,4,journal_cv,2025,Medicine (Baltimore)
+41272990,0,0.10507148,4,journal_cv,2025,Brain Behav
+41300796,0,0.1037434,4,journal_cv,2025,Genes (Basel)
+41327724,0,0.11009366,4,journal_cv,2025,Medicine (Baltimore)
+41370217,1,0.88867897,4,journal_cv,2025,Am J Case Rep
+41457519,0,0.11736619,4,journal_cv,2026,Ann Med
+41464097,1,0.861186,4,journal_cv,2025,Diagnostics (Basel)
+41465157,1,0.8860106,4,journal_cv,2025,Genes (Basel)
+41477812,1,0.8894305,4,journal_cv,2026,Am J Case Rep
+41595457,0,0.115533546,4,journal_cv,2025,Genes (Basel)
+41595474,1,0.8864464,4,journal_cv,2026,Genes (Basel)
+41727820,1,0.88530916,4,journal_cv,2026,Radiol Case Rep
+41751512,0,0.10050953,4,journal_cv,2026,Genes (Basel)
+41751555,1,0.14065623,4,journal_cv,2026,Genes (Basel)
+41751559,0,0.10331482,4,journal_cv,2026,Genes (Basel)
+41751618,0,0.10684425,4,journal_cv,2026,Genes (Basel)
+41897562,0,0.10538152,4,journal_cv,2026,Diagnostics (Basel)
+41999034,1,0.8839394,4,journal_cv,2026,Am J Case Rep
+42260801,1,0.6545268,4,journal_cv,2026,Medicine (Baltimore)
+42290850,0,0.10227494,4,journal_cv,2026,Front Endocrinol (Lausanne)
+42394496,0,0.1765119,4,journal_cv,2026,Zhong Nan Da Xue Xue Bao Yi Xue Ban
+42504639,0,0.111269,4,journal_cv,2026,J Cell Mol Med
+42682406,1,0.874206,4,journal_cv,2026,Front Endocrinol (Lausanne)
+42713383,1,0.88919294,4,journal_cv,2026,Radiol Case Rep

@@ -39,10 +39,15 @@ def summarise(folds: list[dict], oof: pd.DataFrame) -> dict:
 
 
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dir", type=Path, default=OUT)
+    args = ap.parse_args()
+    out = args.dir
     summary = {}
     lines = ["# External validity", ""]
     for protocol in PROTOCOLS:
-        d = OUT / protocol
+        d = out / protocol
         folds = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(d.glob("fold_*.json"))]
         if not folds:
             continue
@@ -65,8 +70,8 @@ def main() -> None:
             f"| selected thresholds | {', '.join(f'{t:.3f}' for t in s['thresholds'])} |",
             "",
         ]
-    (OUT / "SUMMARY.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    (OUT / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    (out / "SUMMARY.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print("\n".join(lines))
 
 

@@ -1,0 +1,82 @@
+{
+  "protocol": "temporal",
+  "fold": 0,
+  "n_train": 173,
+  "n_val": 24,
+  "n_test": 667,
+  "pos_test": 292,
+  "best_epoch": 2,
+  "threshold_f1": 0.48340868949890137,
+  "threshold_p90": 0.48198044300079346,
+  "test_ap": 0.964998849571937,
+  "test_roc_auc": 0.9676986301369862,
+  "test_at_f1_thr": {
+    "n": 667,
+    "positives": 292,
+    "negatives": 375,
+    "threshold": 0.48340868949890137,
+    "recall": 0.7397260273972602,
+    "precision": 0.968609865470852,
+    "f1": 0.8388349514563107,
+    "f2": 0.7764198418404026,
+    "ap": 0.964998849571937,
+    "roc_auc": 0.9676986301369862,
+    "confusion_matrix": {
+      "tn": 368,
+      "fp": 7,
+      "fn": 76,
+      "tp": 216
+    },
+    "predicted_positive": 223,
+    "mean_score_positive": 0.4847117673656712,
+    "mean_score_negative": 0.4783866525491079
+  },
+  "test_at_shared_thr": {
+    "n": 667,
+    "positives": 292,
+    "negatives": 375,
+    "threshold": 0.39624494,
+    "recall": 1.0,
+    "precision": 0.43778110944527737,
+    "f1": 0.6089676746611054,
+    "f2": 0.7956403269754768,
+    "ap": 0.964998849571937,
+    "roc_auc": 0.9676986301369862,
+    "confusion_matrix": {
+      "tn": 0,
+      "fp": 375,
+      "fn": 0,
+      "tp": 292
+    },
+    "predicted_positive": 667,
+    "mean_score_positive": 0.4847117673656712,
+    "mean_score_negative": 0.4783866525491079
+  },
+  "elapsed_sec": 265.9,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6936940161479002,
+      "val_ap": 0.9198412698412699,
+      "val_f1_best": 0.8421052631578947
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6902430284919078,
+      "val_ap": 0.9833333333333333,
+      "val_f1_best": 0.9473684210526315
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6810151255888746,
+      "val_ap": 0.9833333333333333,
+      "val_f1_best": 0.9473684210526315
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.6641071883240187,
+      "val_ap": 0.9833333333333333,
+      "val_f1_best": 0.9473684210526315
+    }
+  ]
+}

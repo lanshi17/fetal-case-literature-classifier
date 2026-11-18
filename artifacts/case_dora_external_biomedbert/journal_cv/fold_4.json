@@ -1,0 +1,82 @@
+{
+  "protocol": "journal_cv",
+  "fold": 4,
+  "n_train": 608,
+  "n_val": 84,
+  "n_test": 172,
+  "pos_test": 87,
+  "best_epoch": 4,
+  "threshold_f1": 0.4372861385345459,
+  "threshold_p90": 0.19352419674396515,
+  "test_ap": 0.9933809602272022,
+  "test_roc_auc": 0.9928329952670722,
+  "test_at_f1_thr": {
+    "n": 172,
+    "positives": 87,
+    "negatives": 85,
+    "threshold": 0.4372861385345459,
+    "recall": 0.9425287356321839,
+    "precision": 0.9761904761904762,
+    "f1": 0.9590643274853801,
+    "f2": 0.9490740740740741,
+    "ap": 0.9933809602272022,
+    "roc_auc": 0.9928329952670722,
+    "confusion_matrix": {
+      "tn": 83,
+      "fp": 2,
+      "fn": 5,
+      "tp": 82
+    },
+    "predicted_positive": 84,
+    "mean_score_positive": 0.8302167683154688,
+    "mean_score_negative": 0.1382934132043053
+  },
+  "test_at_shared_thr": {
+    "n": 172,
+    "positives": 87,
+    "negatives": 85,
+    "threshold": 0.39624494,
+    "recall": 0.9540229885057471,
+    "precision": 0.9764705882352941,
+    "f1": 0.9651162790697675,
+    "f2": 0.9584295612009238,
+    "ap": 0.9933809602272022,
+    "roc_auc": 0.9928329952670722,
+    "confusion_matrix": {
+      "tn": 83,
+      "fp": 2,
+      "fn": 4,
+      "tp": 83
+    },
+    "predicted_positive": 85,
+    "mean_score_positive": 0.8302167683154688,
+    "mean_score_negative": 0.1382934132043053
+  },
+  "elapsed_sec": 634.0,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6830864438885137,
+      "val_ap": 0.9716793010910659,
+      "val_f1_best": 0.9393939393939394
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.40579139877502857,
+      "val_ap": 0.990010763412298,
+      "val_f1_best": 0.9565217391304348
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.23469692101015857,
+      "val_ap": 0.9935814325730292,
+      "val_f1_best": 0.9714285714285714
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.1907847429821758,
+      "val_ap": 0.9941621526659444,
+      "val_f1_best": 0.9714285714285714
+    }
+  ]
+}
