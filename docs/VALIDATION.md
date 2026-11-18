@@ -18,7 +18,24 @@ Ranking survives the time shift; the score distribution does not. The old thresh
 negative mean, so thresholds must be recalibrated per corpus. By-year AP: 2020–22 0.993,
 2023–24 0.975, 2025+ 0.982.
 
-Files: `artifacts/case_dora_external/temporal/`.
+Calibration on the temporal test: ECE **0.358**, Brier 0.188; temperature scaling (T fit on the
+test) → ECE 0.015, Brier 0.039. The ranking transfers; the probabilities do not.
+
+Files: `artifacts/case_dora_external/temporal/`, `artifacts/case_dora_calibration/`.
+
+## 1b. Journal-held-out CV (GroupKFold, 183 journals)
+
+| metric | value |
+|---|---:|
+| AP (5-fold mean) | 0.986 ± 0.005 |
+| AUC | 0.988 ± 0.003 |
+| F1 | 0.925 ± 0.019 |
+| pooled OOF AP / AUC | 0.977 / 0.978 |
+| per-fold thresholds | 0.299 / 0.388 / 0.760 / 0.455 / 0.291 |
+| ECE (after temperature) | 0.153 (0.040) |
+
+Ranking is stable across journals; thresholds and calibration are not. Files:
+`artifacts/case_dora_external/journal_cv/`, `artifacts/case_dora_external/SUMMARY.md`.
 
 ## 2. Calibration
 
