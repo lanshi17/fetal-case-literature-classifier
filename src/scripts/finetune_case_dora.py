@@ -441,7 +441,7 @@ def train_final(
         },
         "threshold": thr_f1,
         "threshold_p90": thr_p90,
-        "evidence": {"min_tokens": 128, "short_threshold": 0.75},
+        "evidence": {"min_tokens": 128, "short_threshold": 0.75, "review_margin": 0.05},
         "target_precision": args.target_precision,
         "final_epochs": epochs,
         "cv_metrics": metrics,

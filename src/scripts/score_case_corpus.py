@@ -125,6 +125,7 @@ def build_outputs(args: argparse.Namespace) -> None:
     ev = cfg.get("evidence", {})
     min_tokens = int(ev.get("min_tokens", 128))
     short_threshold = float(ev.get("short_threshold", 0.75))
+    review_margin = float(ev.get("review_margin", 0.05))
     thr = float(cfg["threshold"])
     thr_p90 = float(cfg.get("threshold_p90", thr))
 
@@ -161,6 +162,7 @@ def build_outputs(args: argparse.Namespace) -> None:
                 threshold_p90=thr_p90,
                 min_tokens=min_tokens,
                 short_threshold=short_threshold,
+                review_margin=review_margin,
                 p90=p90,
             )
             for s, n in zip(merged.loc[scored, "case_score"], merged.loc[scored, "n_tokens"])

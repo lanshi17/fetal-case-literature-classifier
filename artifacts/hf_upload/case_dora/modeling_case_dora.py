@@ -12,6 +12,7 @@ Usage
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -33,6 +34,7 @@ EMBED_DIM = 768
 # below this token count and abstain in the band between the two bars.
 DEFAULT_MIN_TOKENS = 128
 DEFAULT_SHORT_THRESHOLD = 0.75
+DEFAULT_REVIEW_MARGIN = 0.05
 
 
 def guarded_decision(
@@ -43,6 +45,7 @@ def guarded_decision(
     threshold_p90: float,
     min_tokens: int = DEFAULT_MIN_TOKENS,
     short_threshold: float = DEFAULT_SHORT_THRESHOLD,
+    review_margin: float = DEFAULT_REVIEW_MARGIN,
     p90: bool = False,
 ) -> str:
     thr = threshold_p90 if p90 else threshold
@@ -52,7 +55,11 @@ def guarded_decision(
         if prob < thr:
             return "non-case"
         return "insufficient"
-    return "case" if prob >= thr else "non-case"
+    if prob >= thr:
+        return "case"
+    if prob >= thr - review_margin:
+        return "insufficient"
+    return "non-case"
 
 
 def compose_document_text(title: str, abstract: str, text: str) -> str:
@@ -176,6 +183,8 @@ class CaseDoraPredictor:
         evidence = config.get("evidence", {})
         self.min_tokens = int(evidence.get("min_tokens", DEFAULT_MIN_TOKENS))
         self.short_threshold = float(evidence.get("short_threshold", DEFAULT_SHORT_THRESHOLD))
+        self.review_margin = float(evidence.get("review_margin", DEFAULT_REVIEW_MARGIN))
+        self.temperature = config.get("calibration", {}).get("temperature")
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device).eval()
 
@@ -218,7 +227,7 @@ class CaseDoraPredictor:
                 batch_size=1,
             )["logits"]
             prob = float(F.softmax(logits, dim=-1)[0, 1].detach().cpu())
-        return {
+        result = {
             "case_score": round(prob, 6),
             "case_decision": guarded_decision(
                 prob,
@@ -227,6 +236,7 @@ class CaseDoraPredictor:
                 threshold_p90=self.threshold_p90,
                 min_tokens=self.min_tokens,
                 short_threshold=self.short_threshold,
+                review_margin=self.review_margin,
             ),
             "case_decision_p90": guarded_decision(
                 prob,
@@ -235,6 +245,7 @@ class CaseDoraPredictor:
                 threshold_p90=self.threshold_p90,
                 min_tokens=self.min_tokens,
                 short_threshold=self.short_threshold,
+                review_margin=self.review_margin,
                 p90=True,
             ),
             "n_tokens": n_tokens,
@@ -243,3 +254,8 @@ class CaseDoraPredictor:
             "threshold_p90": self.threshold_p90,
             "n_chunks": len(chunks),
         }
+        if self.temperature:
+            z = math.log(prob / (1 - prob)) if 0 < prob < 1 else float("-inf" if prob <= 0 else "inf")
+            result["case_score_calibrated"] = round(1 / (1 + math.exp(-z / float(self.temperature))), 6)
+            result["temperature"] = float(self.temperature)
+        return result

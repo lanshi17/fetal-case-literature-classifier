@@ -22,6 +22,7 @@ DEFAULT_CONFIG = ROOT / "artifacts" / "case_dora" / "config.json"
 # reported as ``insufficient`` and routed to human review instead of asserted.
 DEFAULT_MIN_TOKENS = 128
 DEFAULT_SHORT_THRESHOLD = 0.75
+DEFAULT_REVIEW_MARGIN = 0.05
 
 
 def guarded_decision(
@@ -32,6 +33,7 @@ def guarded_decision(
     threshold_p90: float,
     min_tokens: int = DEFAULT_MIN_TOKENS,
     short_threshold: float = DEFAULT_SHORT_THRESHOLD,
+    review_margin: float = DEFAULT_REVIEW_MARGIN,
     p90: bool = False,
 ) -> str:
     """Map P(case) to ``case`` / ``non-case`` / ``insufficient``.
@@ -47,7 +49,11 @@ def guarded_decision(
         if score < thr:
             return "non-case"
         return "insufficient"
-    return "case" if score >= thr else "non-case"
+    if score >= thr:
+        return "case"
+    if score >= thr - review_margin:
+        return "insufficient"
+    return "non-case"
 
 
 class CaseDoraPredictor:
@@ -72,6 +78,7 @@ class CaseDoraPredictor:
         evidence = cfg.get("evidence", {})
         self.min_tokens = int(evidence.get("min_tokens", DEFAULT_MIN_TOKENS))
         self.short_threshold = float(evidence.get("short_threshold", DEFAULT_SHORT_THRESHOLD))
+        self.review_margin = float(evidence.get("review_margin", DEFAULT_REVIEW_MARGIN))
 
         if device is None:
             device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -91,6 +98,7 @@ class CaseDoraPredictor:
             threshold_p90=self.threshold_p90,
             min_tokens=self.min_tokens,
             short_threshold=self.short_threshold,
+            review_margin=self.review_margin,
             p90=p90,
         )
 

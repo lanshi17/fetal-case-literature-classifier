@@ -41,6 +41,9 @@ This is a **research artifact**, not a clinical decision tool.
 | Decision threshold | **0.3962** (F1-optimal on out-of-fold scores) |
 | High-precision threshold | **0.3502** (P ≥ 0.90) |
 | Short-input guard | below **128 tokens** a `case` call needs **p ≥ 0.75**; 0.396–0.75 → `insufficient` |
+| Review band | long inputs in **[τ − 0.05, τ)** → `insufficient` instead of `non-case` |
+| Calibration (OOF) | ECE **0.202**, Brier **0.089**; temperature scaling (T=0.338) → 0.080 / 0.054 |
+| Calibrated score | `case_score_calibrated = sigmoid(logit(case_score) / 0.338)`; decisions still use the uncalibrated score and threshold |
 
 Training labels: 864 papers with an existing `design` annotation (376 case report / case series,
 488 cohort / screening / review / method / validation / registry; 110 missing or “other” excluded).
@@ -144,7 +147,8 @@ out = clf.score(
 print(out)
 # {'case_score': 0.93, 'case_decision': 'case',
 #  'case_decision_p90': 'case', 'n_tokens': 212, 'evidence_sufficient': True,
-#  'threshold': 0.396..., 'threshold_p90': 0.350..., 'n_chunks': 1}
+#  'threshold': 0.396..., 'threshold_p90': 0.350..., 'n_chunks': 1,
+#  'case_score_calibrated': 0.90, 'temperature': 0.338}
 
 # Fragments shorter than 128 tokens do not get a binary call:
 out = clf.score(title="Fetal genetic testing was performed after ultrasound detection of a cardiac anomaly.")
@@ -183,6 +187,14 @@ DoRA-wrapped encoder and pooling exactly as used during training.
 - **Short inputs**: below 128 tokens the design signal is unreliable. Such inputs are scored but
   need p ≥ 0.75 for `case`; scores in [0.396, 0.75) return `insufficient` instead of `case`, and
   the corpus pipeline routes them to `case_dora_insufficient.csv` for human review.
+- **Uncalibrated scores**: `case_score` is a ranking score, not P(case). OOF ECE is 0.20; use the
+  thresholds rather than reading 0.9 as “90% correct”. `case_score_calibrated` applies
+  temperature scaling (T=0.338) for consumers that need probabilities; it is not used for the
+  released decisions. Long inputs within 0.05 below the threshold are labelled `insufficient`
+  and should be reviewed.
+- **Threshold drift**: on a temporal split (train ≤2019, test ≥2020) ranking stayed at AP 0.987,
+  but the score distribution shifted (negative mean 0.424 > threshold 0.396); recalibrate the
+  threshold per corpus. See the GitHub `README` §4.8.
 
 ## License
 

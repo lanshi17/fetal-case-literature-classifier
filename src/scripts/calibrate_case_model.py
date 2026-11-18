@@ -106,6 +106,11 @@ def analyse(name: str, d: pd.DataFrame, thr: float) -> dict[str, Any]:
     y = d["y"].to_numpy()
     p = d["score"].to_numpy()
     fold = d["fold"].to_numpy() if "fold" in d else np.zeros(len(d), dtype=int)
+    if len(np.unique(fold)) < 2:
+        from sklearn.model_selection import KFold
+        fold = np.zeros(len(y), dtype=int)
+        for k, (_, te) in enumerate(KFold(n_splits=5, shuffle=True, random_state=0).split(y)):
+            fold[te] = k
     ece, rows = ece_bins(y, p)
     tp2, tlist = temperature_cv(y, p, fold)
     iso = isotonic_cv(y, p, fold)

@@ -23,7 +23,8 @@
   "threshold_p90": 0.35017881,
   "evidence": {
     "min_tokens": 128,
-    "short_threshold": 0.75
+    "short_threshold": 0.75,
+    "review_margin": 0.05
   },
   "provenance": {
     "architecture": "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
@@ -86,5 +87,9 @@
   },
   "paths": {
     "checkpoint_dir": "artifacts/case_dora/checkpoint"
+  },
+  "calibration": {
+    "temperature": 0.3383,
+    "source": "OOF temperature scaling"
   }
 }

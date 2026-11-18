@@ -74,38 +74,59 @@ def split_sections(title: str, abstract: str, text: str) -> dict[str, str]:
     return out
 
 
-def encode_sections(rows: pd.DataFrame, model_path: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    from sentence_transformers import SentenceTransformer
+def encode_sections(rows: pd.DataFrame, tok: Any, st: Any) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Encode sections in one batched pass, then pool per section and per document."""
+    section_chunks: list[list[list[str]]] = []
+    for r in rows.itertuples(index=False):
+        sections = split_sections(r.title, r.abstract, r.text)
+        per_doc = []
+        for key in SECTIONS:
+            txt = sections[key]
+            per_doc.append(chunk_text(txt, tok, chunk_tokens=CHUNK_TOKENS, max_chunks=2, keep_first=2) if txt.strip() else [])
+        section_chunks.append(per_doc)
 
-    tok = AutoTokenizer.from_pretrained(model_path)
-    st = SentenceTransformer(model_path, device="cuda" if torch.cuda.is_available() else "cpu")
+    flat = [c for doc in section_chunks for sec in doc for c in sec]
+    print(f"  encoding {len(flat)} section chunks", flush=True)
+    vecs = st.encode(flat, batch_size=64, normalize_embeddings=True, show_progress_bar=False)
     sec_vecs = np.zeros((len(rows), len(SECTIONS), 768), dtype=np.float32)
     flat_all = np.zeros((len(rows), 768), dtype=np.float32)
     flat_head = np.zeros((len(rows), 768), dtype=np.float32)
-    for i, r in enumerate(rows.itertuples(index=False)):
-        sections = split_sections(r.title, r.abstract, r.text)
-        per_doc = []
-        for j, key in enumerate(SECTIONS):
-            txt = sections[key]
-            if not txt.strip():
+    cursor = 0
+    for i, doc in enumerate(section_chunks):
+        doc_vecs = []
+        for j, chunks in enumerate(doc):
+            if not chunks:
                 continue
-            chunks = chunk_text(txt, tok, chunk_tokens=CHUNK_TOKENS, max_chunks=2, keep_first=2)
-            vecs = st.encode(chunks, batch_size=32, normalize_embeddings=True, show_progress_bar=False)
-            sec_vecs[i, j] = vecs.mean(axis=0)
-            per_doc.append(vecs)
-        if per_doc:
-            merged = np.concatenate(per_doc, axis=0)
+            v = vecs[cursor:cursor + len(chunks)]
+            cursor += len(chunks)
+            sec_vecs[i, j] = v.mean(axis=0)
+            doc_vecs.append(v)
+        if doc_vecs:
+            merged = np.concatenate(doc_vecs, axis=0)
             flat_all[i] = merged.mean(axis=0)
             flat_head[i] = merged[:2].mean(axis=0)
-        if (i + 1) % 100 == 0:
-            print(f"  encoded {i+1}/{len(rows)}", flush=True)
     for arr in (sec_vecs, flat_all, flat_head):
         norm = np.linalg.norm(arr, axis=-1, keepdims=True)
         norm[norm == 0] = 1.0
         arr /= norm
-    flat = np.concatenate([flat_all, flat_head], axis=1)
+    flat_feat = np.concatenate([flat_all, flat_head], axis=1)
     section = sec_vecs.reshape(len(rows), -1)
-    return flat, section, sec_vecs
+    return flat_feat, section, sec_vecs
+
+
+def encode_documents(rows: pd.DataFrame, tok: Any, st: Any) -> list[np.ndarray]:
+    chunks = [
+        chunk_text(f"{r.title}. {r.abstract}\n\n{r.text}", tok, chunk_tokens=CHUNK_TOKENS, max_chunks=MAX_CHUNKS, keep_first=2)
+        for r in rows.itertuples(index=False)
+    ]
+    flat = [c for cs in chunks for c in cs]
+    print(f"  encoding {len(flat)} document chunks", flush=True)
+    vecs = st.encode(flat, batch_size=64, normalize_embeddings=True, show_progress_bar=False)
+    out, cursor = [], 0
+    for cs in chunks:
+        out.append(vecs[cursor:cursor + len(cs)].astype(np.float32))
+        cursor += len(cs)
+    return out
 
 
 def best_threshold(y: np.ndarray, s: np.ndarray) -> float:
@@ -189,18 +210,15 @@ def main() -> None:
     y = pos[pos | neg].astype(int).to_numpy()
     print(f"rows {len(rows)} pos {int(y.sum())}", flush=True)
 
-    flat, section, sec_vecs = encode_sections(rows, resolve_model_path(None))
+    model_path = resolve_model_path(None)
+    tok = AutoTokenizer.from_pretrained(model_path)
+    from sentence_transformers import SentenceTransformer
+    st = SentenceTransformer(model_path, device="cuda" if torch.cuda.is_available() else "cpu")
+    flat, section, sec_vecs = encode_sections(rows, tok, st)
     np.savez_compressed(OUT / "features.npz", flat=flat, section=section, sec_vecs=sec_vecs, y=y,
                         pmid=rows["pmid"].astype(str).to_numpy())
     # chunks in a single list per doc for the attention head
-    tok = AutoTokenizer.from_pretrained(resolve_model_path(None))
-    chunk_lists: list[np.ndarray] = []
-    from sentence_transformers import SentenceTransformer
-    st = SentenceTransformer(resolve_model_path(None), device="cuda" if torch.cuda.is_available() else "cpu")
-    for r in rows.itertuples(index=False):
-        chunks = chunk_text(f"{r.title}. {r.abstract}\n\n{r.text}", tok, chunk_tokens=CHUNK_TOKENS, max_chunks=MAX_CHUNKS, keep_first=2)
-        vecs = st.encode(chunks, batch_size=32, normalize_embeddings=True, show_progress_bar=False)
-        chunk_lists.append(vecs.astype(np.float32))
+    chunk_lists = encode_documents(rows, tok, st)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
