@@ -23,7 +23,8 @@
   "threshold_p90": 0.391392485,
   "evidence": {
     "min_tokens": 128,
-    "short_threshold": 0.75
+    "short_threshold": 0.75,
+    "review_margin": 0.05
   },
   "target_precision": 0.9,
   "final_epochs": 3,

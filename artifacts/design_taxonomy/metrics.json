@@ -1,0 +1,192 @@
+{
+  "n": 974,
+  "class_counts": {
+    "cohort": 409,
+    "case_report": 279,
+    "unclear": 110,
+    "case_series": 97,
+    "validation": 49,
+    "method": 18,
+    "review": 9,
+    "screening": 2,
+    "registry": 1
+  },
+  "macro_f1": 0.4185039752021499,
+  "weighted_f1": 0.7262746102427633,
+  "per_class": {
+    "case_report": {
+      "precision": 0.8279569892473119,
+      "recall": 0.8279569892473119,
+      "f1": 0.8279569892473119,
+      "support": 279
+    },
+    "case_series": {
+      "precision": 0.38461538461538464,
+      "recall": 0.4639175257731959,
+      "f1": 0.4205607476635514,
+      "support": 97
+    },
+    "review": {
+      "precision": 0.2,
+      "recall": 0.3333333333333333,
+      "f1": 0.25,
+      "support": 9
+    },
+    "method": {
+      "precision": 0.3125,
+      "recall": 0.5555555555555556,
+      "f1": 0.4,
+      "support": 18
+    },
+    "validation": {
+      "precision": 0.3978494623655914,
+      "recall": 0.7551020408163265,
+      "f1": 0.5211267605633803,
+      "support": 49
+    },
+    "screening": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 2
+    },
+    "registry": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 1
+    },
+    "cohort": {
+      "precision": 0.9169054441260746,
+      "recall": 0.78239608801956,
+      "f1": 0.8443271767810027,
+      "support": 409
+    },
+    "unclear": {
+      "precision": 0.5764705882352941,
+      "recall": 0.44545454545454544,
+      "f1": 0.5025641025641026,
+      "support": 110
+    }
+  },
+  "confusion": {
+    "labels": [
+      "case_report",
+      "case_series",
+      "review",
+      "method",
+      "validation",
+      "screening",
+      "registry",
+      "cohort",
+      "unclear"
+    ],
+    "matrix": [
+      [
+        231,
+        32,
+        0,
+        0,
+        9,
+        0,
+        0,
+        2,
+        5
+      ],
+      [
+        24,
+        45,
+        2,
+        3,
+        7,
+        0,
+        0,
+        13,
+        3
+      ],
+      [
+        0,
+        2,
+        3,
+        0,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      [
+        1,
+        0,
+        1,
+        10,
+        2,
+        0,
+        0,
+        0,
+        4
+      ],
+      [
+        0,
+        1,
+        0,
+        4,
+        37,
+        0,
+        0,
+        2,
+        5
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        5,
+        30,
+        4,
+        4,
+        27,
+        2,
+        0,
+        320,
+        17
+      ],
+      [
+        18,
+        7,
+        4,
+        11,
+        11,
+        1,
+        0,
+        9,
+        49
+      ]
+    ]
+  },
+  "binary_case_vs_other": {
+    "precision": 0.8383838383838383,
+    "recall": 0.8829787234042553,
+    "f1": 0.8601036269430052
+  },
+  "note": "rule-based design_class bootstrap, not expert re-annotation"
+}
