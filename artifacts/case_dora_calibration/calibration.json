@@ -121,44 +121,144 @@
         "abstain_rate": 0.0,
         "abstain_positives": 0,
         "abstain_negatives": 0,
-        "case_precision": 0.9417989417989417,
-        "case_recall": 0.9468085106382979
+        "case_precision": 0.96045197740113,
+        "case_recall": 0.9042553191489362
       },
       {
         "margin": 0.05,
-        "coverage": 0.96875,
-        "abstain_rate": 0.03125,
-        "abstain_positives": 5,
-        "abstain_negatives": 22,
-        "case_precision": 0.9417989417989417,
-        "case_recall": 0.9468085106382979
+        "coverage": 0.9861111111111112,
+        "abstain_rate": 0.013888888888888888,
+        "abstain_positives": 10,
+        "abstain_negatives": 2,
+        "case_precision": 0.96045197740113,
+        "case_recall": 0.9042553191489362
       },
       {
         "margin": 0.1,
-        "coverage": 0.7881944444444444,
-        "abstain_rate": 0.21180555555555555,
-        "abstain_positives": 7,
-        "abstain_negatives": 176,
-        "case_precision": 0.9417989417989417,
-        "case_recall": 0.9468085106382979
+        "coverage": 0.9745370370370371,
+        "abstain_rate": 0.02546296296296296,
+        "abstain_positives": 14,
+        "abstain_negatives": 8,
+        "case_precision": 0.96045197740113,
+        "case_recall": 0.9042553191489362
       },
       {
         "margin": 0.15,
-        "coverage": 0.7546296296296297,
-        "abstain_rate": 0.24537037037037038,
-        "abstain_positives": 10,
-        "abstain_negatives": 202,
-        "case_precision": 0.9417989417989417,
-        "case_recall": 0.9468085106382979
+        "coverage": 0.9525462962962963,
+        "abstain_rate": 0.047453703703703706,
+        "abstain_positives": 19,
+        "abstain_negatives": 22,
+        "case_precision": 0.96045197740113,
+        "case_recall": 0.9042553191489362
       },
       {
         "margin": 0.2,
-        "coverage": 0.7407407407407407,
-        "abstain_rate": 0.25925925925925924,
-        "abstain_positives": 14,
-        "abstain_negatives": 210,
-        "case_precision": 0.9417989417989417,
-        "case_recall": 0.9468085106382979
+        "coverage": 0.7974537037037037,
+        "abstain_rate": 0.2025462962962963,
+        "abstain_positives": 23,
+        "abstain_negatives": 152,
+        "case_precision": 0.96045197740113,
+        "case_recall": 0.9042553191489362
+      }
+    ]
+  },
+  {
+    "name": "temporal",
+    "n": 667,
+    "ap": 0.9869751207837498,
+    "auc": 0.9880182648401826,
+    "brier": 0.1878012359531221,
+    "ece": 0.3576609746626688,
+    "reliability": [
+      {
+        "lo": 0.3333333333333333,
+        "hi": 0.4,
+        "n": 119,
+        "pred": 0.3901679057983193,
+        "obs": 0.0
+      },
+      {
+        "lo": 0.4,
+        "hi": 0.4666666666666667,
+        "n": 218,
+        "pred": 0.4279705229357798,
+        "obs": 0.03669724770642202
+      },
+      {
+        "lo": 0.4666666666666667,
+        "hi": 0.5333333333333333,
+        "n": 79,
+        "pred": 0.4978575029113925,
+        "obs": 0.46835443037974683
+      },
+      {
+        "lo": 0.5333333333333333,
+        "hi": 0.6,
+        "n": 251,
+        "pred": 0.5677228184063744,
+        "obs": 0.9840637450199203
+      }
+    ],
+    "temperature": {
+      "temps": [
+        0.05649729602158585,
+        0.06727695654483591,
+        0.0671593248286547,
+        0.06783428726444259,
+        0.07027248154299809
+      ],
+      "brier": 0.03897834368052022,
+      "ece": 0.015068694406794097
+    },
+    "isotonic": {
+      "brier": 0.041835995891100736,
+      "ece": 0.02230786026862132
+    },
+    "abstention": [
+      {
+        "margin": 0.0,
+        "coverage": 1.0,
+        "abstain_rate": 0.0,
+        "abstain_positives": 0,
+        "abstain_negatives": 0,
+        "case_precision": 0.9540636042402827,
+        "case_recall": 0.9246575342465754
+      },
+      {
+        "margin": 0.05,
+        "coverage": 0.8995502248875562,
+        "abstain_rate": 0.10044977511244378,
+        "abstain_positives": 19,
+        "abstain_negatives": 48,
+        "case_precision": 0.9540636042402827,
+        "case_recall": 0.9246575342465754
+      },
+      {
+        "margin": 0.1,
+        "coverage": 0.6416791604197901,
+        "abstain_rate": 0.3583208395802099,
+        "abstain_positives": 21,
+        "abstain_negatives": 218,
+        "case_precision": 0.9540636042402827,
+        "case_recall": 0.9246575342465754
+      },
+      {
+        "margin": 0.15,
+        "coverage": 0.424287856071964,
+        "abstain_rate": 0.5757121439280359,
+        "abstain_positives": 22,
+        "abstain_negatives": 362,
+        "case_precision": 0.9540636042402827,
+        "case_recall": 0.9246575342465754
+      },
+      {
+        "margin": 0.2,
+        "coverage": 0.424287856071964,
+        "abstain_rate": 0.5757121439280359,
+        "abstain_positives": 22,
+        "abstain_negatives": 362,
+        "case_precision": 0.9540636042402827,
+        "case_recall": 0.9246575342465754
       }
     ]
   }

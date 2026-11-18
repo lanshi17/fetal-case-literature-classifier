@@ -1,0 +1,27 @@
+pmid,title,year,design,label,score,series_size,case_cue,cohort_cue,review_flags
+18955803,Prenatal diagnosis of fetal seizure: a case report.,2008,,1,,0,True,False,case_cue_unlabeled
+35791503,Analysis of L1CAM gene mutation and imaging appearance in three Chinese families with L1 syndrome: Three case reports.,2022,,1,,0,True,False,case_cue_unlabeled
+36609239,Prenatal diagnosis of Noonan syndrome in a set of monozygotic twins- a case report.,2023,,1,,0,True,False,case_cue_unlabeled
+37761271,Skeletal Dysplasia: A Case Report.,2023,,1,,0,True,False,case_cue_unlabeled
+40761308,Ultrasound combined with molecular genetics to diagnose hereditary Renpenning syndrome in early pregnancy: a case report.,2025,,1,,0,True,False,case_cue_unlabeled
+42017141,"Case Report: Rare triple-line chromosome 9 mosaicism (47,XX,+del(9)(q13)/47,XX,+9/46,XX) associated with severe neurodevelopmental impairment and congenital anomalies.",2026,,1,,0,True,False,case_cue_unlabeled
+42116066,A new 308 A-G substitution in HBG2 in an acyanotic newborn: case report.,2026,other,0,,0,True,False,case_cue_unlabeled
+41029435,Prenatal diagnosis of 1q21.1 microdeletions and microduplications: a retrospective case series.,2025,,1,,0,True,True,"case_cue_unlabeled,mixed_design_language"
+41710465,Phenotypic Spectrum and Chromosomal Discordance in Alobar Holoprosencephaly: A Comparative Case Series from a Tertiary Referral Center.,2026,case series,1,0.8833507,250,True,False,case_series_large
+33545980,Prenatal detection of terminal 9p24.3 microduplication encompassing DOCK8 gene: A variant of likely benign.,2021,case series,1,0.86503315,150,False,False,case_series_large
+34587985,Cytogenetic and molecular analysis of distal 4q duplication with distinctive phenotype using single-nucleotide polymorphism array.,2021,case series,1,0.8431314,60,False,False,case_series_large
+26260800,"Discordant circulating fetal DNA and subsequent cytogenetics reveal false negative, placental mosaic, and fetal mosaic cfDNA genotypes.",2015,case series,1,0.60391665,200,False,False,case_series_large
+40041231,Challenges in genetic counseling for congenital anomalies of the kidneys and urinary tract (CAKUT) spectrum.,2022,case series,1,0.5718652,612,False,False,case_series_large
+32158503,Non-invasive prenatal screening for Emanuel syndrome.,2020,case series,1,0.51164186,392,False,False,case_series_large
+32067421,Analyzing false-negative results detected in low-risk non-invasive prenatal screening cases.,2020,case series,1,0.47763154,975,False,False,case_series_large
+36553582,Prenatal Diagnosis of Chromosome 16p11.2 Microdeletion.,2022,case series,1,0.47333446,81,False,False,case_series_large
+30187503,Unexpected finding of uniparental disomy mosaicism in term placentas: Is it a common feature in trisomic placentas?,2018,case series,0,0.40341368,2073,False,False,case_series_large
+39262391,"Noninvasive prenatal screening and diagnosis of two fetuses with Williams syndrome in a cohort of 19,607 pregnancies.",2024,case series,1,0.33587557,90,False,True,case_series_large
+38259626,Small supernumerary marker chromosomes in prenatal diagnosis-molecular characterization and clinical outcomes.,2023,case series,0,0.24937712,620,False,False,case_series_large
+41751555,"Prenatal Diagnosis of Sex Chromosome Aneuploidies: A Retrospective Study Using QF-PCR, SNP-Based Chromosomal Microarray Analysis, and NIPT.",2026,case series,1,0.20849465,67,False,False,case_series_large
+42795903,Prenatal and Postnatal Identification of Phelan-McDermid Syndrome in a Tertiary Referral Center: A 15-Case Series and Literature Review.,2026,case series,1,0.33843604,210,True,True,"case_series_large,mixed_design_language"
+41494975,Prenatally Diagnosed 7q11.23 Copy Number Variations: A Retrospective Case Series.,2026,cohort,1,0.6501194,0,True,False,cohort_with_case_cue
+35229910,Exome sequencing as first-tier test for fetuses with severe central nervous system structural anomalies.,2022,cohort,1,0.29939425,114,True,False,cohort_with_case_cue
+41267400,Clinical significance of regions of homozygosity detection in prenatal chromosomal microarray analysis.,2026,cohort,1,0.120480366,546,True,False,cohort_with_case_cue
+41761011,CUL3-Related Neurodevelopmental Disorder: Expanding the Prenatal Phenotype.,2026,case series,1,0.81032217,37,True,True,mixed_design_language
+41716663,Case Report: Prenatal imaging and genetic integrated diagnosis of &lt;i&gt;SCN2A&lt;/i&gt; encephalopathy-a case of cryptical cortical dysplasia caused by a loss-of-function frameshift genetic variant.,2026,case report,1,0.61933523,0,True,True,mixed_design_language

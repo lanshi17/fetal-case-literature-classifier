@@ -1,0 +1,16 @@
+{
+  "n": 974,
+  "n_case_report": 279,
+  "n_case_series": 97,
+  "n_cohort": 413,
+  "flags": {
+    "case_series_large": 13,
+    "cohort_with_case_cue": 3,
+    "case_cue_unlabeled": 8,
+    "mixed_design_language": 4
+  },
+  "queue_size": 26,
+  "cohort_with_case_cue_rate": 0.007263922518159807,
+  "case_series_ge50": 13,
+  "case_series_median_size": 23.0
+}

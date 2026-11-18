@@ -679,6 +679,37 @@ OOF（部署阈值 0.3962）：TP 356 / FP 22 / FN 20 / TN 466，P 0.942 / R 0.9
 mean test AP 略高。默认仍用 NeuML（与已发布阈值/权重连续）；需要从规范上游 MIT 权重
 （BiomedBERT）复现时用 `artifacts/case_dora_biomedbert/`，其阈值 0.4347。
 
+### 4.7 校准、拒识与分层设计
+
+**校准（OOF 864 篇，`artifacts/case_dora_calibration/`）**
+
+| 模型 | ECE | Brier | 温度缩放后 ECE/Brier | isotonic 后 ECE/Brier |
+|---|---:|---:|---:|---:|
+| NeuML | 0.202 | 0.0886 | 0.080 / 0.054 | 0.040 / 0.048 |
+| BiomedBERT | 0.153 | 0.0756 | 0.070 / 0.061 | 0.103 / 0.080 |
+
+分数不能当概率读（0.85 以上实际正例率 98%，0.31 附近只有 1%）。阈值决策不受影响；
+温度缩放/isotonic 仅作分析，未改变发布权重。
+
+**拒识带**：长文本分数落在 `[τ − 0.05, τ)` 时输出 `insufficient`。OOF 上覆盖 96.9%，
+3.1% 进复核（5 正 / 22 负），case 的 P/R 不变（0.942/0.947）。margin 0.10 会把 176 篇
+高置信负例也拖进复核，不划算；0.05 是数据支持的拐点。短文本仍用 0.75 的高门槛。
+
+**分层设计标签（rule-based bootstrap，`artifacts/design_taxonomy/`）**
+
+| 类别 | n | F1 |
+|---|---:|---:|
+| case report | 279 | 0.828 |
+| case series | 97 | 0.421 |
+| cohort | 409 | 0.844 |
+| validation | 49 | 0.521 |
+| method | 18 | 0.400 |
+| review | 9 | 0.250 |
+| unclear | 110 | 0.503 |
+
+9 类 macro-F1 **0.419**；二分类把“case series vs cohort”的边界问题掩盖了。
+`design` 规则映射不是专家重标注，`screening`/`registry` 支持样本 <5，暂不可学。
+
 ---
 
 ## 5. 训练与复现（可选）

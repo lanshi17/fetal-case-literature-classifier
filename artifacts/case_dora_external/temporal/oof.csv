@@ -1,0 +1,668 @@
+pmid,y,score,fold,protocol,year,journal
+31304847,1,0.5689561,0,temporal,2020,J Int Med Res
+31617258,1,0.5776314,0,temporal,2020,J Clin Lab Anal
+31697845,0,0.38301018,0,temporal,2020,Prenat Diagn
+31697852,0,0.37630904,0,temporal,2020,Prenat Diagn
+31756055,1,0.57705945,0,temporal,2020,Mol Genet Genomic Med
+31762079,0,0.41427767,0,temporal,2020,J Clin Lab Anal
+31840411,1,0.5811958,0,temporal,2020,J Cell Mol Med
+31898422,1,0.53488314,0,temporal,2020,Mol Genet Genomic Med
+31910817,1,0.5724374,0,temporal,2020,BMC Med Genet
+31944387,1,0.5772732,0,temporal,2020,J Clin Lab Anal
+31998409,0,0.42555195,0,temporal,2020,Mol Cytogenet
+32000445,0,0.3885129,0,temporal,2020,Medicine (Baltimore)
+32055256,1,0.5560616,0,temporal,2020,Mol Cytogenet
+32059709,0,0.4139621,0,temporal,2020,BMC Pregnancy Childbirth
+32067421,1,0.43608806,0,temporal,2020,Mol Genet Genomic Med
+32080128,1,0.5688125,0,temporal,2020,Medicine (Baltimore)
+32100971,1,0.57872,0,temporal,2020,Mol Genet Genomic Med
+32149439,0,0.42164567,0,temporal,2021,Ultrasound Obstet Gynecol
+32158503,1,0.46277848,0,temporal,2020,Mol Cytogenet
+32185046,1,0.57571167,0,temporal,2020,Clin Case Rep
+32282607,0,0.48326644,0,temporal,2020,Obstet Gynecol
+32333414,0,0.41158214,0,temporal,2020,Prenat Diagn
+32341573,0,0.40098402,0,temporal,2020,Genet Med
+32342531,0,0.4007238,0,temporal,2020,J Clin Lab Anal
+32386509,1,0.5899051,0,temporal,2020,BMC Pediatr
+32392875,1,0.5682525,0,temporal,2020,Diagnostics (Basel)
+32424735,0,0.39810458,0,temporal,2020,J Assist Reprod Genet
+32438493,0,0.39431742,0,temporal,2021,Ultrasound Obstet Gynecol
+32463164,1,0.52554846,0,temporal,2020,Mol Genet Genomic Med
+32483189,0,0.3892251,0,temporal,2020,Sci Rep
+32484578,0,0.4283308,0,temporal,2021,Ultrasound Obstet Gynecol
+32500674,1,0.5594019,0,temporal,2020,Mol Genet Genomic Med
+32503639,0,0.400674,0,temporal,2020,Hum Genomics
+32514314,1,0.5121721,0,temporal,2020,Mol Cytogenet
+32539871,0,0.39733303,0,temporal,2020,Genet Res (Camb)
+32543076,1,0.5757605,0,temporal,2020,Mol Genet Genomic Med
+32543126,0,0.3926533,0,temporal,2020,Mol Genet Genomic Med
+32625247,1,0.57196707,0,temporal,2020,Mol Cytogenet
+32627857,0,0.4063053,0,temporal,2020,Prenat Diagn
+32627967,1,0.55155516,0,temporal,2020,Mol Genet Genomic Med
+32631433,1,0.50024617,0,temporal,2020,BMC Med Genomics
+32643293,1,0.52484983,0,temporal,2020,J Obstet Gynaecol Res
+32651932,0,0.41517076,0,temporal,2020,Mol Diagn Ther
+32682435,1,0.5608184,0,temporal,2020,Ital J Pediatr
+32702826,1,0.51860464,0,temporal,2020,Medicine (Baltimore)
+32712620,0,0.39409855,0,temporal,2020,Med Sci Monit
+32767744,0,0.4293347,0,temporal,2020,Mol Genet Genomic Med
+32779773,0,0.52054244,0,temporal,2020,Prenat Diagn
+32779812,0,0.48319122,0,temporal,2020,J Clin Lab Anal
+32794475,1,0.5390273,0,temporal,2020,Am J Case Rep
+32805723,0,0.3972514,0,temporal,2020,Aging (Albany NY)
+32845907,0,0.40150467,0,temporal,2020,PLoS One
+32855656,1,0.5273616,0,temporal,2020,Mol Cytogenet
+32864771,0,0.42354208,0,temporal,2020,J Clin Lab Anal
+32881366,1,0.5833619,0,temporal,2020,Mol Genet Genomic Med
+32904152,1,0.5729417,0,temporal,2020,Int J Clin Pediatr Dent
+32917147,1,0.5748552,0,temporal,2020,BMC Med Genet
+32934329,0,0.39853922,0,temporal,2020,Sci Rep
+32935260,0,0.49345094,0,temporal,2020,Mol Biol Rep
+32981126,0,0.440244,0,temporal,2021,BJOG
+33019446,1,0.5627922,0,temporal,2020,Medicine (Baltimore)
+33030252,1,0.5755202,0,temporal,2020,Mol Genet Genomic Med
+33067800,0,0.41458508,0,temporal,2021,Prenat Diagn
+33081203,1,0.5665972,0,temporal,2020,Genes (Basel)
+33094428,0,0.3767619,0,temporal,2020,J Assist Reprod Genet
+33151425,0,0.37282383,0,temporal,2021,Arch Gynecol Obstet
+33167762,0,0.41848394,0,temporal,2020,J Int Med Res
+33187827,1,0.5592082,0,temporal,2020,Mol Genet Metab
+33193741,1,0.5871331,0,temporal,2020,Front Genet
+33198662,0,0.39931652,0,temporal,2020,BMC Pregnancy Childbirth
+33201576,0,0.4315043,0,temporal,2021,J Cell Mol Med
+33247184,0,0.4346581,0,temporal,2020,Sci Rep
+33249554,0,0.39538422,0,temporal,2021,Acta Obstet Gynecol Scand
+33255631,0,0.39229837,0,temporal,2020,Genes (Basel)
+33311808,1,0.58615816,0,temporal,2020,Nagoya J Med Sci
+33317474,0,0.4174969,0,temporal,2020,BMC Pregnancy Childbirth
+33318309,1,0.539517,0,temporal,2020,Aging (Albany NY)
+33435955,0,0.38673672,0,temporal,2021,BMC Med Genomics
+33442022,0,0.45239595,0,temporal,2021,Genet Med
+33456614,1,0.54745394,0,temporal,2020,J Med Life
+33474820,0,0.4378411,0,temporal,2021,J Obstet Gynaecol Res
+33498637,0,0.40304518,0,temporal,2021,J Clin Med
+33509128,0,0.43913266,0,temporal,2021,BMC Pregnancy Childbirth
+33520070,1,0.56789476,0,temporal,2021,Pan Afr Med J
+33545980,1,0.548339,0,temporal,2021,Medicine (Baltimore)
+33602166,0,0.4142795,0,temporal,2021,BMC Pregnancy Childbirth
+33615614,0,0.38369483,0,temporal,2021,J Gene Med
+33632221,0,0.41351944,0,temporal,2021,BMC Med Genomics
+33638605,1,0.5864783,0,temporal,2021,Mol Genet Genomic Med
+33671041,1,0.578554,0,temporal,2021,Diagnostics (Basel)
+33692422,0,0.4093168,0,temporal,2021,Sci Rep
+33713577,1,0.57690793,0,temporal,2021,Mol Genet Genomic Med
+33717247,1,0.5707335,0,temporal,2021,Exp Ther Med
+33724704,1,0.57277966,0,temporal,2021,Mol Genet Genomic Med
+33733630,1,0.5830677,0,temporal,2021,Mol Genet Genomic Med
+33750440,1,0.56948936,0,temporal,2021,J Med Case Rep
+33757501,1,0.58097756,0,temporal,2021,BMC Med Genomics
+33763271,1,0.53693736,0,temporal,2021,Case Rep Obstet Gynecol
+33784964,0,0.3942209,0,temporal,2021,BMC Pregnancy Childbirth
+33785045,0,0.40191552,0,temporal,2021,BMC Med Genomics
+33800913,0,0.41065013,0,temporal,2021,Genes (Basel)
+33816069,1,0.48884502,0,temporal,2020,Balkan J Med Genet
+33817732,1,0.58421147,0,temporal,2020,Rom J Morphol Embryol
+33859509,0,0.42706585,0,temporal,2021,Risk Manag Healthc Policy
+33868367,0,0.39732513,0,temporal,2021,Front Genet
+33889037,0,0.42607796,0,temporal,2021,Risk Manag Healthc Policy
+33901244,0,0.3898623,0,temporal,2021,PLoS One
+33950970,1,0.5767828,0,temporal,2021,Medicine (Baltimore)
+33951332,0,0.39410374,0,temporal,2021,Mol Genet Genomic Med
+34000999,1,0.5788976,0,temporal,2021,BMC Pregnancy Childbirth
+34006293,1,0.54489577,0,temporal,2021,Mol Cytogenet
+34011095,0,0.39632043,0,temporal,2021,Medicine (Baltimore)
+34014041,1,0.57332474,0,temporal,2021,Mol Genet Genomic Med
+34016078,1,0.5533952,0,temporal,2021,BMC Pregnancy Childbirth
+34042265,0,0.3929748,0,temporal,2021,J Cell Mol Med
+34045891,0,0.41596308,0,temporal,2021,Int J Gen Med
+34073864,1,0.52829486,0,temporal,2021,Genes (Basel)
+34079909,0,0.3942915,0,temporal,2021,Neurol Genet
+34084500,1,0.57408845,0,temporal,2021,Clin Case Rep
+34084776,0,0.41819575,0,temporal,2021,Front Mol Biosci
+34090308,0,0.4097955,0,temporal,2021,Ultrasound Obstet Gynecol
+34147104,1,0.57871366,0,temporal,2021,BMC Med Genomics
+34163268,0,0.43303043,0,temporal,2021,Risk Manag Healthc Policy
+34193122,1,0.58496207,0,temporal,2021,BMC Med Genomics
+34238233,0,0.43206656,0,temporal,2021,BMC Pregnancy Childbirth
+34242293,0,0.39341646,0,temporal,2021,PLoS One
+34283385,0,0.40963465,0,temporal,2022,Ir J Med Sci
+34285428,0,0.45443574,0,temporal,2020,Acta Clin Croat
+34328233,0,0.40220773,0,temporal,2021,Paediatr Perinat Epidemiol
+34356094,1,0.5836606,0,temporal,2021,Genes (Basel)
+34358384,0,0.41721758,0,temporal,2022,Ultrasound Obstet Gynecol
+34367232,0,0.41482958,0,temporal,2021,Front Genet
+34374610,0,0.49525708,0,temporal,2021,Ann Med
+34376197,1,0.5780352,0,temporal,2021,BMC Med Genomics
+34384376,1,0.5742295,0,temporal,2021,BMC Pregnancy Childbirth
+34393503,0,0.3900889,0,temporal,2021,Int J Gen Med
+34405543,1,0.5572063,0,temporal,2021,J Cell Mol Med
+34411415,0,0.39808008,0,temporal,2022,BJOG
+34429082,0,0.39520532,0,temporal,2021,BMC Pregnancy Childbirth
+34434471,1,0.56807375,0,temporal,2021,J Med Cases
+34480426,0,0.5056269,0,temporal,2021,Mol Genet Genomic Med
+34486251,0,0.39501122,0,temporal,2021,Mol Genet Genomic Med
+34548956,1,0.56730425,0,temporal,2021,Cureus
+34567078,0,0.5019915,0,temporal,2021,Front Genet
+34569664,1,0.50898737,0,temporal,2021,J Clin Lab Anal
+34582123,1,0.5733792,0,temporal,2021,Mol Genet Genomic Med
+34587985,1,0.56664073,0,temporal,2021,Mol Cytogenet
+34611884,0,0.42838854,0,temporal,2022,Clin Genet
+34630509,1,0.5650346,0,temporal,2021,Front Genet
+34643287,0,0.4095601,0,temporal,2022,Prenat Diagn
+34679516,1,0.57292646,0,temporal,2021,Diagnostics (Basel)
+34722424,0,0.44120103,0,temporal,2021,Front Pediatr
+34733861,0,0.4091339,0,temporal,2021,Front Med (Lausanne)
+34746047,1,0.5844949,0,temporal,2021,Front Pediatr
+34764685,0,0.42386714,0,temporal,2021,Int J Gen Med
+34773875,0,0.43477526,0,temporal,2021,Eur J Obstet Gynecol Reprod Biol
+34789173,1,0.5747158,0,temporal,2021,BMC Pregnancy Childbirth
+34789231,0,0.452851,0,temporal,2021,BMC Med Genomics
+34853893,0,0.4892299,0,temporal,2022,Hum Genet
+34884332,0,0.4051904,0,temporal,2021,J Clin Med
+34904224,0,0.4280738,0,temporal,2022,Acta Obstet Gynecol Scand
+34914080,1,0.549758,0,temporal,2022,Reprod Sci
+34918667,1,0.5615938,0,temporal,2021,Medicine (Baltimore)
+34946839,1,0.56424576,0,temporal,2021,Genes (Basel)
+34946970,0,0.40539062,0,temporal,2021,Genes (Basel)
+34958143,0,0.40400657,0,temporal,2022,Prenat Diagn
+34980134,0,0.42373192,0,temporal,2022,J Transl Med
+34983622,0,0.44144034,0,temporal,2022,Orphanet J Rare Dis
+35016623,0,0.4210124,0,temporal,2022,BMC Pregnancy Childbirth
+35027977,1,0.5813688,0,temporal,2021,J Med Life
+35045821,0,0.4604338,0,temporal,2022,BMC Pregnancy Childbirth
+35047609,1,0.5793766,0,temporal,2021,World J Clin Cases
+35071484,0,0.38175872,0,temporal,2021,Ann Transl Med
+35081921,1,0.5864469,0,temporal,2022,BMC Pediatr
+35093090,1,0.57602805,0,temporal,2022,BMC Med Genomics
+35096007,0,0.39981246,0,temporal,2021,Front Genet
+35123446,1,0.5490592,0,temporal,2022,BMC Pregnancy Childbirth
+35192596,1,0.5760826,0,temporal,2022,Am J Case Rep
+35195919,0,0.3883575,0,temporal,2022,J Clin Lab Anal
+35197665,0,0.3747176,0,temporal,2021,Acta Inform Med
+35205290,1,0.5612432,0,temporal,2022,Genes (Basel)
+35207307,0,0.43921974,0,temporal,2022,J Clin Med
+35209905,1,0.5549508,0,temporal,2022,BMC Med Genomics
+35229910,0,0.41462645,0,temporal,2022,Ultrasound Obstet Gynecol
+35241061,1,0.5808467,0,temporal,2022,BMC Med Genomics
+35259700,1,0.57302815,0,temporal,2022,Int J Surg Case Rep
+35291955,0,0.4211155,0,temporal,2022,BMC Pregnancy Childbirth
+35338537,1,0.57298416,0,temporal,2022,J Gene Med
+35354480,0,0.4697542,0,temporal,2022,BMC Med Genomics
+35360877,1,0.48951125,0,temporal,2022,Front Genet
+35397568,0,0.43128848,0,temporal,2022,J Transl Med
+35401667,1,0.5832876,0,temporal,2022,Front Genet
+35428251,1,0.5197858,0,temporal,2022,BMC Pregnancy Childbirth
+35456496,0,0.40145338,0,temporal,2022,Genes (Basel)
+35463886,1,0.57434106,0,temporal,2022,Front Pediatr
+35482990,1,0.5782995,0,temporal,2022,Medicine (Baltimore)
+35506549,1,0.48391345,0,temporal,2022,Prenat Diagn
+35506821,0,0.4423464,0,temporal,2022,Ann Med
+35562572,0,0.42502096,0,temporal,2022,NPJ Genom Med
+35571012,0,0.39706448,0,temporal,2022,Front Genet
+35578003,0,0.38821268,0,temporal,2022,J Hum Genet
+35610593,1,0.57821506,0,temporal,2022,BMC Pregnancy Childbirth
+35627109,0,0.39809126,0,temporal,2022,Genes (Basel)
+35651933,0,0.41433793,0,temporal,2022,Front Genet
+35656167,0,0.53792894,0,temporal,2022,Mol Vis
+35711925,0,0.47195873,0,temporal,2022,Front Genet
+35713440,1,0.55435854,0,temporal,2022,Medicine (Baltimore)
+35722491,0,0.46898067,0,temporal,2022,Front Pediatr
+35783302,0,0.462207,0,temporal,2022,Front Pediatr
+35804426,0,0.3972762,0,temporal,2022,Orphanet J Rare Dis
+35806855,1,0.58493626,0,temporal,2022,J Clin Med
+35806909,0,0.38806927,0,temporal,2022,J Clin Med
+35843586,1,0.5424282,0,temporal,2022,J Obstet Gynaecol Res
+35865016,1,0.56422013,0,temporal,2022,Front Genet
+35887945,1,0.5346597,0,temporal,2022,J Clin Med
+35893076,1,0.5897806,0,temporal,2022,Genes (Basel)
+35902388,0,0.42646155,0,temporal,2022,Mol Genet Genomics
+35941965,1,0.5884436,0,temporal,2022,AJP Rep
+35960415,0,0.39476016,0,temporal,2022,Mol Biol Rep
+35984138,0,0.39497733,0,temporal,2022,Medicine (Baltimore)
+36011653,0,0.3935482,0,temporal,2022,Int J Environ Res Public Health
+36034547,1,0.5352347,0,temporal,2022,Front Pediatr
+36035112,1,0.5827971,0,temporal,2022,Front Genet
+36046039,1,0.5409137,0,temporal,2022,Front Oncol
+36092864,1,0.5624032,0,temporal,2022,Front Genet
+36099005,0,0.38609853,0,temporal,2022,J Clin Lab Anal
+36099538,0,0.41195288,0,temporal,2023,Ultrasound Obstet Gynecol
+36105084,1,0.5782063,0,temporal,2022,Front Genet
+36113068,1,0.5885377,0,temporal,2022,J Int Med Res
+36127997,1,0.5646627,0,temporal,2022,Cureus
+36131268,1,0.5745226,0,temporal,2022,BMC Med Genomics
+36140741,0,0.4488845,0,temporal,2022,Genes (Basel)
+36151134,0,0.44042078,0,temporal,2022,Sci Rep
+36168972,1,0.57378834,0,temporal,2023,Acta Med Port
+36186462,0,0.38678372,0,temporal,2022,Front Genet
+36226188,1,0.52912456,0,temporal,2022,Front Genet
+36260644,0,0.41421536,0,temporal,2022,PLoS One
+36276971,1,0.57129914,0,temporal,2022,Front Genet
+36281281,1,0.5818318,0,temporal,2022,Radiol Case Rep
+36285155,0,0.3886964,0,temporal,2022,Evid Based Complement Alternat Med
+36292572,1,0.5754885,0,temporal,2022,Genes (Basel)
+36307859,0,0.43716478,0,temporal,2022,Genome Med
+36316869,1,0.56279504,0,temporal,2022,Medicine (Baltimore)
+36316881,1,0.5754712,0,temporal,2022,Medicine (Baltimore)
+36329475,1,0.5775503,0,temporal,2022,Mol Cytogenet
+36333674,0,0.44836783,0,temporal,2022,BMC Pregnancy Childbirth
+36352425,0,0.5420227,0,temporal,2022,Orphanet J Rare Dis
+36360323,0,0.4325733,0,temporal,2022,Genes (Basel)
+36386834,1,0.5607287,0,temporal,2022,Front Genet
+36386837,1,0.5819783,0,temporal,2022,Front Genet
+36396840,0,0.40392298,0,temporal,2022,Sci Rep
+36397455,1,0.58127373,0,temporal,2022,Medicine (Baltimore)
+36398477,0,0.4018053,0,temporal,2023,Mol Genet Genomic Med
+36451403,0,0.4366135,0,temporal,2022,Medicine (Baltimore)
+36457118,0,0.43411657,0,temporal,2022,Hum Genomics
+36471906,0,0.41660672,0,temporal,2023,Prenat Diagn
+36476185,0,0.49782217,0,temporal,2022,BMC Pregnancy Childbirth
+36523456,0,0.40663594,0,temporal,2022,PeerJ
+36538006,1,0.56605506,0,temporal,2023,Mol Genet Genomic Med
+36544138,1,0.55871356,0,temporal,2022,BMC Med Genomics
+36544198,1,0.58600575,0,temporal,2022,Mol Cytogenet
+36553323,1,0.5575076,0,temporal,2022,Children (Basel)
+36553497,0,0.43837127,0,temporal,2022,Genes (Basel)
+36553582,1,0.5123135,0,temporal,2022,Genes (Basel)
+36554045,0,0.41572627,0,temporal,2022,Healthcare (Basel)
+36602560,0,0.39445397,0,temporal,2024,Arch Gynecol Obstet
+36636555,0,0.39365438,0,temporal,2022,Genet Res (Camb)
+36653756,0,0.51916724,0,temporal,2023,BMC Pregnancy Childbirth
+36684682,0,0.39924273,0,temporal,2023,PeerJ
+36687456,1,0.55215675,0,temporal,2022,Front Med (Lausanne)
+36703098,0,0.4144698,0,temporal,2023,BMC Pregnancy Childbirth
+36725972,0,0.39424932,0,temporal,2023,Sci Rep
+36734119,1,0.5768524,0,temporal,2023,Mol Genet Genomic Med
+36743908,1,0.5614035,0,temporal,2023,Cureus
+36755227,0,0.39089784,0,temporal,2023,BMC Pregnancy Childbirth
+36761008,1,0.57349646,0,temporal,2023,Exp Ther Med
+36765363,0,0.39316517,0,temporal,2023,Mol Cytogenet
+36797717,0,0.44621465,0,temporal,2023,BMC Med Genomics
+36800618,1,0.577546,0,temporal,2023,Medicine (Baltimore)
+36814213,1,0.57663286,0,temporal,2023,BMC Pregnancy Childbirth
+36854820,0,0.44365096,0,temporal,2023,Sci Rep
+36859260,1,0.59002316,0,temporal,2023,BMC Pediatr
+36864406,0,0.38006878,0,temporal,2023,BMC Pregnancy Childbirth
+36873643,0,0.43810505,0,temporal,2023,Front Pediatr
+36890431,1,0.55250305,0,temporal,2023,BMC Cardiovasc Disord
+36900003,0,0.44152117,0,temporal,2023,Diagnostics (Basel)
+36902683,1,0.55931497,0,temporal,2023,J Clin Med
+36909308,0,0.3952136,0,temporal,2023,Front Endocrinol (Lausanne)
+36923788,0,0.46335563,0,temporal,2023,Front Genet
+36961397,0,0.4067806,0,temporal,2026,Reprod Fertil
+36980940,1,0.49208623,0,temporal,2023,Genes (Basel)
+36980994,0,0.4210915,0,temporal,2023,Genes (Basel)
+37000066,1,0.57080024,0,temporal,2023,Medicine (Baltimore)
+37009295,1,0.5362894,0,temporal,2023,Front Pediatr
+37013593,0,0.5234412,0,temporal,2023,BMC Med Genomics
+37013606,0,0.51702416,0,temporal,2023,Mol Genet Genomic Med
+37035737,0,0.41324592,0,temporal,2023,Front Genet
+37065765,0,0.40966085,0,temporal,2023,Front Endocrinol (Lausanne)
+37106349,1,0.55268,0,temporal,2023,BMC Pregnancy Childbirth
+37107671,1,0.53880304,0,temporal,2023,Genes (Basel)
+37120754,1,0.57858133,0,temporal,2023,Mol Genet Genomic Med
+37123790,1,0.58319956,0,temporal,2023,Cureus
+37147405,0,0.4488823,0,temporal,2023,Sci Rep
+37168803,1,0.5821818,0,temporal,2023,Front Pediatr
+37243546,0,0.4715356,0,temporal,2023,Ann Med
+37248535,0,0.42916405,0,temporal,2023,BMC Med Genomics
+37284664,1,0.5114065,0,temporal,2022,Dis Markers
+37337789,1,0.50036436,0,temporal,2023,Mol Genet Genomic Med
+37366235,0,0.4206345,0,temporal,2023,Acta Obstet Gynecol Scand
+37396033,0,0.45823956,0,temporal,2023,Front Genet
+37422671,0,0.45950237,0,temporal,2023,BMC Pregnancy Childbirth
+37422672,1,0.5438082,0,temporal,2023,J Med Case Rep
+37477337,0,0.39093858,0,temporal,2023,Acta Obstet Gynecol Scand
+37485807,1,0.57723576,0,temporal,2023,Mol Genet Genomic Med
+37497277,0,0.44420558,0,temporal,2023,Front Med (Lausanne)
+37535131,0,0.46957073,0,temporal,2024,Arch Gynecol Obstet
+37592254,1,0.5710132,0,temporal,2023,BMC Med Genomics
+37600658,0,0.418093,0,temporal,2023,Front Genet
+37612587,1,0.5162706,0,temporal,2023,BMC Med Genomics
+37628571,0,0.4206165,0,temporal,2023,Genes (Basel)
+37684689,0,0.4568296,0,temporal,2023,Orphanet J Rare Dis
+37692779,0,0.48310226,0,temporal,2023,Front Med (Lausanne)
+37758165,1,0.5795797,0,temporal,2023,Eur J Med Genet
+37759207,1,0.5678093,0,temporal,2023,Orphanet J Rare Dis
+37766479,0,0.39679122,0,temporal,2023,Mol Genet Genomic Med
+37795247,0,0.40791684,0,temporal,2023,Front Genet
+37823350,1,0.5156971,0,temporal,2023,J Clin Lab Anal
+37875969,0,0.53850716,0,temporal,2023,Orphanet J Rare Dis
+37880936,1,0.54454213,0,temporal,2023,Am J Case Rep
+37895220,0,0.40848273,0,temporal,2023,Genes (Basel)
+37908008,0,0.44627658,0,temporal,2023,Mol Cytogenet
+37928238,1,0.5687969,0,temporal,2023,Front Genet
+37930140,1,0.5711213,0,temporal,2024,Mol Genet Genomic Med
+37942256,1,0.5532993,0,temporal,2023,Int J Mol Cell Med
+37951870,0,0.39312708,0,temporal,2023,BMC Pregnancy Childbirth
+37980516,0,0.44559425,0,temporal,2023,BMC Pediatr
+37986075,0,0.46826097,0,temporal,2023,BMC Med Genomics
+38020944,0,0.39429322,0,temporal,2023,Int J Womens Health
+38025018,1,0.58696,0,temporal,2023,J Med Ultrasound
+38027951,0,0.44290587,0,temporal,2023,Heliyon
+38028032,1,0.5534629,0,temporal,2023,Clin Case Rep
+38034493,1,0.54671186,0,temporal,2023,Front Genet
+38073519,1,0.586483,0,temporal,2024,Mol Genet Genomic Med
+38115160,0,0.42846432,0,temporal,2023,Cell Biosci
+38172840,0,0.49764773,0,temporal,2024,BMC Pregnancy Childbirth
+38202188,0,0.3958371,0,temporal,2023,J Clin Med
+38214746,1,0.5810969,0,temporal,2024,Childs Nerv Syst
+38255008,1,0.52859724,0,temporal,2024,Genes (Basel)
+38259626,1,0.4952991,0,temporal,2023,Front Genet
+38273042,0,0.44381762,0,temporal,2024,Sci Rep
+38284444,1,0.57257277,0,temporal,2024,Mol Genet Genomic Med
+38284447,0,0.40503538,0,temporal,2024,Mol Genet Genomic Med
+38297236,0,0.39384732,0,temporal,2024,BMC Pregnancy Childbirth
+38302905,0,0.44592094,0,temporal,2024,BMC Pregnancy Childbirth
+38318287,0,0.42305958,0,temporal,2023,Front Genet
+38369506,1,0.56996655,0,temporal,2024,J Med Case Rep
+38421226,1,0.5348243,0,temporal,2023,Rev Colomb Obstet Ginecol
+38440102,1,0.5646152,0,temporal,2024,Case Rep Womens Health
+38457559,1,0.49407429,0,temporal,2024,Medicine (Baltimore)
+38494511,0,0.42478266,0,temporal,2024,Arch Gynecol Obstet
+38550721,1,0.59846413,0,temporal,2024,Int Med Case Rep J
+38552051,0,0.39430168,0,temporal,2024,Medicine (Baltimore)
+38576814,1,0.5201101,0,temporal,2024,World J Clin Cases
+38580914,0,0.42510787,0,temporal,2024,BMC Pregnancy Childbirth
+38585583,1,0.58074677,0,temporal,2024,Clin Case Rep
+38606258,1,0.5554923,0,temporal,2024,Cureus
+38634212,1,0.47553512,0,temporal,2024,Mol Genet Genomic Med
+38649697,0,0.43145585,0,temporal,2024,Sci Rep
+38666931,0,0.43789032,0,temporal,2024,Curr Issues Mol Biol
+38735835,0,0.3997878,0,temporal,2025,Prenat Diagn
+38815555,0,0.3868272,0,temporal,2024,Fetal Diagn Ther
+38846960,0,0.38534424,0,temporal,2024,Front Genet
+38849204,1,0.5703868,0,temporal,2024,J Med Genet
+38849481,1,0.54629195,0,temporal,2025,Pediatr Res
+38957807,1,0.5362317,0,temporal,2024,Front Genet
+38987582,0,0.39374575,0,temporal,2024,Sci Rep
+38994932,1,0.4957628,0,temporal,2024,Cells
+39009665,0,0.5011889,0,temporal,2024,Sci Rep
+39039444,0,0.47799835,0,temporal,2024,BMC Pregnancy Childbirth
+39062246,0,0.5094859,0,temporal,2024,Children (Basel)
+39064047,0,0.38299367,0,temporal,2024,J Clin Med
+39080034,0,0.4458211,0,temporal,2024,Mol Biol Rep
+39085968,0,0.44371745,0,temporal,2024,Eur J Med Res
+39161407,0,0.382709,0,temporal,2024,Int J Gen Med
+39169438,0,0.42034948,0,temporal,2024,Ital J Pediatr
+39175064,0,0.3928724,0,temporal,2024,Orphanet J Rare Dis
+39198908,0,0.42049414,0,temporal,2024,J Cardiothorac Surg
+39200946,0,0.46952498,0,temporal,2024,J Clin Med
+39239799,0,0.45136985,0,temporal,2024,Ann Med
+39251974,0,0.42033634,0,temporal,2024,BMC Pregnancy Childbirth
+39262391,1,0.46277666,0,temporal,2024,Ann Med
+39268082,1,0.5077712,0,temporal,2024,Front Genet
+39268228,1,0.570249,0,temporal,2024,AJP Rep
+39347350,1,0.58028275,0,temporal,2024,Cureus
+39350038,0,0.44406205,0,temporal,2024,J Neurodev Disord
+39350129,1,0.5742216,0,temporal,2024,BMC Med Genomics
+39356042,0,0.39705244,0,temporal,2024,Acta Obstet Gynecol Scand
+39359128,0,0.4360769,0,temporal,2024,Mol Genet Genomic Med
+39363392,0,0.45925865,0,temporal,2024,Prenat Diagn
+39367626,0,0.38515028,0,temporal,2025,J Genet Couns
+39369703,0,0.4592589,0,temporal,2025,Fetal Diagn Ther
+39390395,0,0.44526902,0,temporal,2024,BMC Pregnancy Childbirth
+39399712,1,0.4614012,0,temporal,2024,Transl Pediatr
+39410589,0,0.37403554,0,temporal,2024,Diagnostics (Basel)
+39410646,0,0.4647036,0,temporal,2024,Diagnostics (Basel)
+39425694,1,0.54552996,0,temporal,2024,Prenat Diagn
+39444480,0,0.38169253,0,temporal,2024,Iran J Public Health
+39444647,1,0.56062585,0,temporal,2024,Neurol Genet
+39502218,0,0.4107588,0,temporal,2024,Heliyon
+39516223,0,0.4049833,0,temporal,2024,Sci Rep
+39521787,0,0.4557626,0,temporal,2024,Sci Rep
+39575462,1,0.5788676,0,temporal,2024,Mol Genet Genomic Med
+39587524,0,0.41434282,0,temporal,2024,BMC Pregnancy Childbirth
+39596574,1,0.5677924,0,temporal,2024,Genes (Basel)
+39596664,1,0.5195163,0,temporal,2024,Genes (Basel)
+39624702,1,0.5694041,0,temporal,2025,Radiol Case Rep
+39630792,1,0.586073,0,temporal,2024,Rev Paul Pediatr
+39641285,1,0.5680637,0,temporal,2025,Clin Dysmorphol
+39648848,0,0.44135678,0,temporal,2024,J Int Med Res
+39654217,0,0.3946432,0,temporal,2024,Medicine (Baltimore)
+39681544,0,0.477308,0,temporal,2025,Prenat Diagn
+39707235,0,0.49114403,0,temporal,2024,BMC Pregnancy Childbirth
+39725884,1,0.5684572,0,temporal,2024,BMC Pregnancy Childbirth
+39831619,0,0.5082858,0,temporal,2025,Mol Genet Genomic Med
+39837955,0,0.38135025,0,temporal,2025,Sci Rep
+39840309,0,0.5219624,0,temporal,2024,Front Pediatr
+39877340,1,0.5789171,0,temporal,2024,Front Pediatr
+39881416,1,0.59110546,0,temporal,2025,Hereditas
+39887707,0,0.4318523,0,temporal,2025,Int J Gynaecol Obstet
+39889153,1,0.59319085,0,temporal,2025,Medicine (Baltimore)
+39890866,0,0.4129626,0,temporal,2025,Sci Rep
+39899060,0,0.42553896,0,temporal,2025,Arch Gynecol Obstet
+39945447,0,0.44054872,0,temporal,2025,Mol Genet Genomic Med
+39960922,0,0.40299508,0,temporal,2025,Medicine (Baltimore)
+39962853,0,0.3861689,0,temporal,2025,Acta Obstet Gynecol Scand
+39976347,1,0.5756583,0,temporal,2025,Mol Genet Genomic Med
+39991384,1,0.58663267,0,temporal,2025,Cureus
+39994565,0,0.3952046,0,temporal,2025,BMC Pregnancy Childbirth
+40017000,0,0.3862764,0,temporal,2025,Ultrasound Obstet Gynecol
+40035361,0,0.43359736,0,temporal,2025,Acta Obstet Gynecol Scand
+40041231,1,0.5746559,0,temporal,2022,Case Rep Perinat Med
+40041233,1,0.58243585,0,temporal,2022,Case Rep Perinat Med
+40041235,1,0.5547903,0,temporal,2022,Case Rep Perinat Med
+40041274,1,0.5362966,0,temporal,2023,Case Rep Perinat Med
+40122702,0,0.39742678,0,temporal,2026,Prenat Diagn
+40123302,0,0.41384786,0,temporal,2025,Aust N Z J Obstet Gynaecol
+40129811,1,0.5575435,0,temporal,2025,Radiol Case Rep
+40143423,1,0.55785525,0,temporal,2025,Am J Case Rep
+40149550,1,0.5089642,0,temporal,2025,Biomedicines
+40150114,0,0.49350652,0,temporal,2025,Diagnostics (Basel)
+40188065,0,0.408581,0,temporal,2025,Hum Genomics
+40192178,0,0.38754654,0,temporal,2025,J Clin Lab Anal
+40195522,0,0.4494528,0,temporal,2026,Eur J Hum Genet
+40211337,0,0.39821824,0,temporal,2025,BMC Med Genomics
+40229386,0,0.37525794,0,temporal,2025,Sci Rep
+40229547,1,0.47323513,0,temporal,2025,Sci Rep
+40237608,1,0.58433,0,temporal,2025,Mol Genet Genomic Med
+40241902,0,0.40140328,0,temporal,2025,Front Med (Lausanne)
+40243207,0,0.4198656,0,temporal,2025,J Clin Lab Anal
+40301840,0,0.38708198,0,temporal,2025,BMC Med Genomics
+40317787,1,0.57888705,0,temporal,2025,Prenat Diagn
+40332537,0,0.45490995,0,temporal,2025,Int J Mol Sci
+40352787,1,0.5787912,0,temporal,2025,Front Genet
+40361748,1,0.54067004,0,temporal,2025,Healthcare (Basel)
+40386307,1,0.56523764,0,temporal,2025,Biomed Rep
+40392900,0,0.39698026,0,temporal,2025,PLoS One
+40403082,0,0.43443003,0,temporal,2025,PLoS One
+40405131,0,0.4067599,0,temporal,2025,BMC Bioinformatics
+40428270,0,0.38361514,0,temporal,2025,Diagnostics (Basel)
+40428369,0,0.40467697,0,temporal,2025,Genes (Basel)
+40462392,0,0.37512496,0,temporal,2025,Turk J Obstet Gynecol
+40481473,1,0.58397067,0,temporal,2025,BMC Med Genomics
+40491565,0,0.38456368,0,temporal,2025,Case Rep Perinat Med
+40500351,0,0.46886343,0,temporal,2025,Eur J Hum Genet
+40507736,1,0.56056553,0,temporal,2025,J Clin Med
+40518536,0,0.4020529,0,temporal,2025,J Transl Med
+40520226,1,0.5492179,0,temporal,2025,Front Genet
+40521769,1,0.55480534,0,temporal,2025,Mol Genet Genomic Med
+40524352,1,0.572262,0,temporal,2025,Prenat Diagn
+40528522,0,0.38904527,0,temporal,2025,Prenat Diagn
+40530359,1,0.56205404,0,temporal,2025,Int J Womens Health
+40531760,0,0.42938176,0,temporal,2025,Rev Assoc Med Bras (1992)
+40595133,0,0.48309097,0,temporal,2025,Sci Rep
+40603987,0,0.4279502,0,temporal,2025,Sci Rep
+40616234,0,0.414718,0,temporal,2025,Prenat Diagn
+40670315,0,0.4563611,0,temporal,2025,Prenat Diagn
+40684108,0,0.43943715,0,temporal,2025,BMC Pregnancy Childbirth
+40703902,1,0.53965265,0,temporal,2025,Niger Med J
+40722537,1,0.5613523,0,temporal,2025,Diagnostics (Basel)
+40740247,1,0.5674288,0,temporal,2025,AJOG Glob Rep
+40781288,1,0.58672506,0,temporal,2025,BMC Pregnancy Childbirth
+40790240,1,0.55240977,0,temporal,2025,Orphanet J Rare Dis
+40797307,0,0.384845,0,temporal,2025,BMC Pregnancy Childbirth
+40798945,1,0.52513045,0,temporal,2025,Mol Genet Genomic Med
+40804693,0,0.443912,0,temporal,2025,Orphanet J Rare Dis
+40806547,0,0.46749616,0,temporal,2025,Int J Mol Sci
+40809379,1,0.5760009,0,temporal,2025,Front Pediatr
+40817209,1,0.50005525,0,temporal,2025,BMC Pregnancy Childbirth
+40824895,0,0.37628877,0,temporal,2025,PLoS One
+40832109,0,0.4687157,0,temporal,2025,Front Med (Lausanne)
+40841462,0,0.40910184,0,temporal,2025,Arch Gynecol Obstet
+40844101,0,0.47540876,0,temporal,2025,Indian J Med Res
+40864624,1,0.5380546,0,temporal,2025,Am J Case Rep
+40870028,0,0.42362732,0,temporal,2025,Genes (Basel)
+40890635,0,0.43795958,0,temporal,2025,BMC Pregnancy Childbirth
+40893545,1,0.5501405,0,temporal,2025,Quant Imaging Med Surg
+40893934,0,0.3884366,0,temporal,2025,Front Genet
+40894389,0,0.44446635,0,temporal,2025,J Pregnancy
+40909434,0,0.43683955,0,temporal,2025,Front Pediatr
+40927362,0,0.3799193,0,temporal,2025,Front Genet
+40930097,1,0.56278443,0,temporal,2025,Am J Hum Genet
+40941617,0,0.38825095,0,temporal,2025,Diagnostics (Basel)
+40966236,0,0.38551474,0,temporal,2025,PLoS One
+40984682,0,0.39320463,0,temporal,2025,Ann Med
+40992929,0,0.37751305,0,temporal,2025,Prenat Diagn
+40993696,0,0.43817428,0,temporal,2025,Orphanet J Rare Dis
+41003474,1,0.56492776,0,temporal,2025,Reports (MDPI)
+41014177,0,0.43433952,0,temporal,2026,Clin Genet
+41053595,0,0.4011275,0,temporal,2025,BMC Pregnancy Childbirth
+41059455,1,0.590128,0,temporal,2025,Appl Clin Genet
+41070225,1,0.5042892,0,temporal,2025,Front Genet
+41089214,1,0.5729421,0,temporal,2025,Front Genet
+41104258,1,0.5672525,0,temporal,2025,Case Rep Genet
+41108211,0,0.39299455,0,temporal,2026,Prenat Diagn
+41111707,1,0.560857,0,temporal,2025,Cureus
+41146295,0,0.40549117,0,temporal,2025,BMC Res Notes
+41150639,0,0.39200988,0,temporal,2025,PLoS One
+41153384,0,0.44528958,0,temporal,2025,Genes (Basel)
+41181173,0,0.43577597,0,temporal,2025,Front Pediatr
+41186686,0,0.3762552,0,temporal,2025,Arch Gynecol Obstet
+41199213,0,0.3960053,0,temporal,2025,BMC Pregnancy Childbirth
+41199647,0,0.39696077,0,temporal,2025,Future Sci OA
+41216287,1,0.55971533,0,temporal,2025,Front Genet
+41216289,1,0.56773806,0,temporal,2025,Front Genet
+41225654,1,0.55217916,0,temporal,2025,Hum Genomics
+41225980,1,0.5788957,0,temporal,2025,Diagnostics (Basel)
+41238796,0,0.3949154,0,temporal,2025,Sci Rep
+41239616,1,0.58798766,0,temporal,2025,Medicine (Baltimore)
+41258163,0,0.40331644,0,temporal,2025,Hum Genomics
+41267400,0,0.41422287,0,temporal,2026,HGG Adv
+41272990,0,0.4370235,0,temporal,2025,Brain Behav
+41281425,0,0.42037374,0,temporal,2025,Acta Med Philipp
+41286677,1,0.52037215,0,temporal,2025,BMC Pregnancy Childbirth
+41300796,0,0.3874008,0,temporal,2025,Genes (Basel)
+41317100,1,0.57169396,0,temporal,2025,Mol Genet Genomic Med
+41317105,0,0.43052277,0,temporal,2025,Mol Genet Genomic Med
+41327724,0,0.40138826,0,temporal,2025,Medicine (Baltimore)
+41331848,1,0.54133415,0,temporal,2025,Hereditas
+41353713,1,0.46340832,0,temporal,2026,Prenat Diagn
+41367618,0,0.40051362,0,temporal,2025,Front Genet
+41370217,1,0.5602456,0,temporal,2025,Am J Case Rep
+41388734,0,0.43586856,0,temporal,2026,Prenat Diagn
+41398945,0,0.42406327,0,temporal,2025,BMC Pregnancy Childbirth
+41398988,0,0.43859506,0,temporal,2026,Acta Obstet Gynecol Scand
+41402700,0,0.44813854,0,temporal,2026,Prenat Diagn
+41417372,0,0.49761608,0,temporal,2025,Rev Assoc Med Bras (1992)
+41423712,1,0.5554301,0,temporal,2025,Mol Genet Genomic Med
+41426592,1,0.57837063,0,temporal,2025,Front Med (Lausanne)
+41436988,0,0.457445,0,temporal,2025,BMC Pregnancy Childbirth
+41457519,0,0.44680062,0,temporal,2026,Ann Med
+41461890,0,0.4120053,0,temporal,2025,Sci Rep
+41462830,0,0.42041463,0,temporal,2025,Children (Basel)
+41464097,1,0.5531833,0,temporal,2025,Diagnostics (Basel)
+41465157,1,0.58006537,0,temporal,2025,Genes (Basel)
+41477812,1,0.5820809,0,temporal,2026,Am J Case Rep
+41486082,0,0.39996913,0,temporal,2026,Prenat Diagn
+41494975,0,0.4923646,0,temporal,2026,Mol Genet Genomic Med
+41503326,1,0.56406176,0,temporal,2025,Cureus
+41521034,0,0.4129444,0,temporal,2026,Prenat Diagn
+41526847,0,0.42105925,0,temporal,2026,BMC Pregnancy Childbirth
+41555917,1,0.5664002,0,temporal,2025,Front Genet
+41555925,0,0.38919628,0,temporal,2025,Front Genet
+41584385,1,0.5636497,0,temporal,2026,Clin Case Rep
+41595457,0,0.4098179,0,temporal,2025,Genes (Basel)
+41595474,1,0.57527727,0,temporal,2026,Genes (Basel)
+41598247,1,0.562329,0,temporal,2026,Life (Basel)
+41608206,0,0.4689573,0,temporal,2025,Matern Fetal Med
+41620759,1,0.5777347,0,temporal,2026,Hum Genomics
+41622244,1,0.55105966,0,temporal,2026,Mol Cytogenet
+41629874,0,0.39557415,0,temporal,2026,BMC Pregnancy Childbirth
+41634881,0,0.42016852,0,temporal,2026,Hum Genomics
+41639648,0,0.39162546,0,temporal,2026,BMC Pregnancy Childbirth
+41641134,1,0.5828475,0,temporal,2025,Front Pediatr
+41658772,1,0.58624786,0,temporal,2026,Cureus
+41690709,0,0.439005,0,temporal,2026,J Med Genet
+41710465,1,0.5698558,0,temporal,2026,Int Med Case Rep J
+41714291,0,0.43221018,0,temporal,2026,Prenat Diagn
+41716663,1,0.56711096,0,temporal,2026,Front Neurosci
+41723443,0,0.41229558,0,temporal,2026,BMC Med Genomics
+41727820,1,0.56891894,0,temporal,2026,Radiol Case Rep
+41738333,1,0.47700316,0,temporal,2026,Ultrasound J
+41751512,0,0.4146527,0,temporal,2026,Genes (Basel)
+41751555,1,0.46249074,0,temporal,2026,Genes (Basel)
+41751559,0,0.4345307,0,temporal,2026,Genes (Basel)
+41751618,0,0.39331108,0,temporal,2026,Genes (Basel)
+41761011,1,0.5535079,0,temporal,2026,Prenat Diagn
+41768201,1,0.400562,0,temporal,2025,Med Arch
+41775679,0,0.40608558,0,temporal,2026,Prenat Diagn
+41821338,0,0.41441482,0,temporal,2026,J Genet Couns
+41828453,1,0.55689406,0,temporal,2026,Int J Mol Sci
+41848878,0,0.37752825,0,temporal,2026,Arch Gynecol Obstet
+41858965,1,0.5800873,0,temporal,2025,Pan Afr Med J
+41859717,0,0.3959959,0,temporal,2026,Int J Womens Health
+41862935,0,0.39933494,0,temporal,2026,Mol Cytogenet
+41863018,0,0.45430496,0,temporal,2026,Hum Genomics
+41868040,0,0.45699528,0,temporal,2026,Int J Womens Health
+41897562,0,0.42069325,0,temporal,2026,Diagnostics (Basel)
+41906976,0,0.39679843,0,temporal,2026,Ultrasound Obstet Gynecol
+41939616,0,0.45209566,0,temporal,2026,Cureus
+41943072,0,0.39419335,0,temporal,2026,J Transl Med
+41947371,0,0.40230945,0,temporal,2026,Mol Genet Genomic Med
+41952427,1,0.5539669,0,temporal,2026,Mol Genet Genomic Med
+41953134,0,0.38709798,0,temporal,2026,Front Genet
+41960707,0,0.40424547,0,temporal,2026,J Glob Health
+41965611,1,0.5747016,0,temporal,2026,BMC Med Genomics
+41965835,1,0.5484171,0,temporal,2026,Mol Cytogenet
+41968367,0,0.4098052,0,temporal,2026,BMC Res Notes
+41974762,0,0.39890987,0,temporal,2026,Sci Rep
+41984209,0,0.45218474,0,temporal,2026,Arch Gynecol Obstet
+41999034,1,0.57938695,0,temporal,2026,Am J Case Rep
+42002830,1,0.5679467,0,temporal,2026,Mol Genet Genomic Med
+42009805,0,0.43547752,0,temporal,2026,Sci Rep
+42016332,1,0.5806807,0,temporal,2026,Clin Case Rep
+42032740,1,0.54780895,0,temporal,2026,Mol Cytogenet
+42035033,0,0.55514675,0,temporal,2026,BMC Pregnancy Childbirth
+42040609,1,0.56780535,0,temporal,2026,Front Med (Lausanne)
+42067806,0,0.38617787,0,temporal,2026,BMC Pregnancy Childbirth
+42082986,1,0.56668186,0,temporal,2026,J Med Case Rep
+42108507,0,0.41583857,0,temporal,2026,Hum Genomics
+42110001,1,0.54858494,0,temporal,2026,Cureus
+42137573,1,0.52263796,0,temporal,2026,Front Pediatr
+42181563,0,0.43581423,0,temporal,2026,Front Pediatr
+42186005,1,0.5554728,0,temporal,2026,BMC Pregnancy Childbirth
+42205458,0,0.5169035,0,temporal,2026,Exp Ther Med
+42210665,1,0.55903095,0,temporal,2026,Mol Genet Genomic Med
+42230359,0,0.39215544,0,temporal,2026,Arch Gynecol Obstet
+42249814,0,0.45243934,0,temporal,2026,Ultrasound Obstet Gynecol
+42260801,1,0.51672703,0,temporal,2026,Medicine (Baltimore)
+42286522,0,0.48640656,0,temporal,2026,BMC Pregnancy Childbirth
+42290850,0,0.37555817,0,temporal,2026,Front Endocrinol (Lausanne)
+42297386,1,0.5663548,0,temporal,2026,J Int Med Res
+42394496,0,0.47660097,0,temporal,2026,Zhong Nan Da Xue Xue Bao Yi Xue Ban
+42410591,1,0.5612176,0,temporal,2026,BMC Pregnancy Childbirth
+42427124,1,0.54047245,0,temporal,2026,Mol Genet Genomic Med
+42443849,0,0.47083434,0,temporal,2026,BMC Pregnancy Childbirth
+42471198,0,0.40723544,0,temporal,2026,Am J Obstet Gynecol MFM
+42482245,1,0.5802548,0,temporal,2026,J Med Case Rep
+42487276,1,0.57300645,0,temporal,2026,Mol Genet Genomic Med
+42495255,1,0.57136506,0,temporal,2026,Front Pediatr
+42504639,0,0.45007214,0,temporal,2026,J Cell Mol Med
+42561194,0,0.44614607,0,temporal,2026,Rev Assoc Med Bras (1992)
+42566411,0,0.39576817,0,temporal,2026,PLoS One
+42577704,1,0.572585,0,temporal,2026,Case Rep Perinat Med
+42596935,0,0.47070372,0,temporal,2026,Pregnancy (Hoboken)
+42600089,0,0.42731923,0,temporal,2026,Ultrasound Obstet Gynecol
+42607148,1,0.5807272,0,temporal,2026,J Int Med Res
+42609877,1,0.5693587,0,temporal,2026,Front Genet
+42634394,0,0.4096634,0,temporal,2026,Genet Res (Camb)
+42681615,0,0.45872366,0,temporal,2026,BMC Pregnancy Childbirth
+42682406,1,0.5704564,0,temporal,2026,Front Endocrinol (Lausanne)
+42683127,0,0.38490328,0,temporal,2026,Int J Reprod Biomed
+42697554,0,0.43627474,0,temporal,2026,Prenat Diagn
+42703076,0,0.45921052,0,temporal,2026,Mol Genet Genomic Med
+42713383,1,0.58371276,0,temporal,2026,Radiol Case Rep
+42751320,1,0.42932764,0,temporal,2026,J Med Life
+42769703,0,0.37907472,0,temporal,2026,Int J Gen Med
+42795903,1,0.5150896,0,temporal,2026,J Clin Med
