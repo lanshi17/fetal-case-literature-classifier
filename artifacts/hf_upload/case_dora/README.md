@@ -105,6 +105,18 @@ Out-of-fold confusion at the deployed thresholds:
 | 0.3962 (F1-optimal) | 356 | 22 | 20 | 466 | 0.942 | 0.947 | 0.944 |
 | 0.3502 (P≥0.90 on val) | 361 | 40 | 15 | 448 | 0.900 | 0.960 | 0.929 |
 
+### External validity
+
+| protocol | AP | F1 |
+|---|---:|---:|
+| random 5-fold | 0.987 ± 0.009 | 0.938 ± 0.021 |
+| temporal (train ≤2019, test ≥2020) | 0.987 | 0.939 |
+| journal GroupKFold (183 journals) | 0.986 ± 0.005 | 0.925 ± 0.019 |
+
+Ranking transfers across time and journals; the score distribution does not. Temporal threshold
+0.505 vs 0.396 in-domain; journal folds range 0.299–0.760. Recalibrate the threshold on the target
+corpus (or use `case_score_calibrated`). Details in the GitHub `docs/VALIDATION.md`.
+
 ### Baselines and ablations (5-fold)
 
 All methods use identical splits; thresholds are selected on each fold's inner validation split.
